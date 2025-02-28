@@ -3,11 +3,14 @@ require("dotenv").config();
 const path = require("path");
 
 // Path absolut ke file MDB
-const dbPath = path.resolve(__dirname, "../", process.env.DB_PATH);
+const dbPath = path
+  .join(__dirname, "..", process.env.DB_PATH)
+  .replace(/\\/g, "/");
+const dbDSN = process.env.DB_DSN;
 const dbPassword = process.env.DB_PASSWORD || "";
 
 // Konfigurasi koneksi ODBC tanpa DSN
-const connectionString = `Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=${dbPath};PWD=${dbPassword};`;
+const connectionString = `DSN=${dbDSN};PWD=${dbPassword};`;
 
 let db;
 
