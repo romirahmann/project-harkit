@@ -3,5 +3,10 @@
     "path": "/register",
     "method": "post",
     "controller": "UserController.register"
+  },
+  {
+    "path": "/users",
+    "method": "get",
+    "controller": "UserController.getUsers"
   }
 ]

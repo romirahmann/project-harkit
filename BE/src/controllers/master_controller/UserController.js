@@ -28,6 +28,18 @@ const hashPassword = async (plainPassword) => {
     throw e;
   }
 };
+
+const getUsers = async (req, res) => {
+  try {
+    const users = await model.getAllUsers();
+    return api.ok(res, users);
+  } catch (error) {
+    console.error("❌ Error fetching users:", error);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
 module.exports = {
   register,
+  getUsers,
 };

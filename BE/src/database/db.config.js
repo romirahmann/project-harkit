@@ -1,28 +1,31 @@
-const db = require("knex")({
-  client: "mysql",
-  connection: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  },
-  useNullAsDefault: false,
-  log: {
-    warn(message) {
-      console.log(message);
-    },
-    error(message) {
-      console.log(message);
-    },
-    deprecate(message) {
-      console.log(message);
-    },
-    debug(message) {
-      console.log(message);
-    },
-  },
-});
+const odbc = require("odbc");
+require("dotenv").config();
+const path = require("path");
 
-db.client.config.connectionOptions = { mulipleStatments: false };
-module.exports = db;
+// Path absolut ke file MDB
+const dbPath = path.resolve(__dirname, "../", process.env.DB_PATH);
+const dbPassword = process.env.DB_PASSWORD || "";
+
+// Konfigurasi koneksi ODBC tanpa DSN
+const connectionString = `Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=${dbPath};PWD=${dbPassword};`;
+
+let db;
+
+async function connectDB() {
+  try {
+    db = await odbc.connect(connectionString);
+    console.log("✅ Database connected successfully!");
+  } catch (error) {
+    console.error("❌ Database connection error:", error);
+    process.exit(1);
+  }
+}
+
+const getDB = () => {
+  if (!db) {
+    throw new Error("Database not connected. Call connectDB() first.");
+  }
+  return db;
+};
+
+module.exports = { connectDB, getDB };

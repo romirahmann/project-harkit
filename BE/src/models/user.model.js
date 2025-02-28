@@ -1,9 +1,8 @@
-const db = require("../database/db.config");
+const { getDB } = require("../database/db.config");
 
-const insert = async (data) => {
-  await db("users").insert(data);
+const getAllUsers = async () => {
+  const db = getDB(); // Panggil `getDB()` setelah koneksi berhasil
+  return db.query("SELECT * FROM Users"); // Tambahkan return
 };
 
-module.exports = {
-  insert,
-};
+module.exports = { getAllUsers };
