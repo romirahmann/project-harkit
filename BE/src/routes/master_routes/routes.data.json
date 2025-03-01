@@ -8,5 +8,130 @@
     "path": "/users",
     "method": "get",
     "controller": "UserController.getUsers"
+  },
+  {
+    "path": "/employees",
+    "method": "get",
+    "controller": "EmployeeController.getAllEmployee"
+  },
+  {
+    "path": "/employee/:id",
+    "method": "get",
+    "controller": "EmployeeController.getEmployeeById"
+  },
+  {
+    "path": "/employee",
+    "method": "post",
+    "controller": "EmployeeController.createEmployee"
+  },
+  {
+    "path": "/employee/:id",
+    "method": "put",
+    "controller": "EmployeeController.updateEmployee"
+  },
+  {
+    "path": "/employee/:id",
+    "method": "delete",
+    "controller": "EmployeeController.deleteEmployee"
+  },
+  {
+    "path": "/prosess",
+    "method": "get",
+    "controller": "ProsesController.getAllProses"
+  },
+  {
+    "path": "/proses/:idproses",
+    "method": "get",
+    "controller": "ProsesController.getProsesById"
+  },
+  {
+    "path": "/proses",
+    "method": "post",
+    "controller": "ProsesController.createProses"
+  },
+  {
+    "path": "/proses/:idproses",
+    "method": "put",
+    "controller": "ProsesController.updateProses"
+  },
+  {
+    "path": "/proses/:idproses",
+    "method": "delete",
+    "controller": "ProsesController.deleteProses"
+  },
+  {
+    "path": "/targets",
+    "method": "get",
+    "controller": "TargetController.getAllTargets"
+  },
+  {
+    "path": "/target/:id",
+    "method": "get",
+    "controller": "TargetController.getTargetById"
+  },
+  {
+    "path": "/target",
+    "method": "post",
+    "controller": "TargetController.createTarget"
+  },
+  {
+    "path": "/target/:id",
+    "method": "put",
+    "controller": "TargetController.updateTarget"
+  },
+  {
+    "path": "/target/:id",
+    "method": "delete",
+    "controller": "TargetController.deleteTarget"
+  },
+  {
+    "path": "/datamrs",
+    "method": "get",
+    "controller": "MrController.getAllDataMR"
+  },
+  {
+    "path": "/datamr/:nourut/:kode_checklist",
+    "method": "get",
+    "controller": "MrController.getDataMRByKeys"
+  },
+  {
+    "path": "/datamr",
+    "method": "post",
+    "controller": "MrController.createDataMR"
+  },
+  {
+    "path": "/datamr/:nourut/:kode_checklist",
+    "method": "put",
+    "controller": "MrController.updateDataMR"
+  },
+  {
+    "path": "/datamr/:nourut/:kode_checklist",
+    "method": "delete",
+    "controller": "MrController.deleteDataMR"
+  },
+  {
+    "path": "/candras",
+    "method": "get",
+    "controller": "CandraController.getAllCandra"
+  },
+  {
+    "path": "/candra/:kode_checklist/:idproses",
+    "method": "get",
+    "controller": "CandraController.getCandraByKeys"
+  },
+  {
+    "path": "/candra",
+    "method": "post",
+    "controller": "CandraController.createCandra"
+  },
+  {
+    "path": "/candra/:kode_checklist/:idproses",
+    "method": "put",
+    "controller": "CandraController.updateCandra"
+  },
+  {
+    "path": "/candra/:kode_checklist/:idproses",
+    "method": "delete",
+    "controller": "CandraController.deleteCandra"
   }
 ]

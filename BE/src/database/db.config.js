@@ -3,9 +3,6 @@ require("dotenv").config();
 const path = require("path");
 
 // Path absolut ke file MDB
-const dbPath = path
-  .join(__dirname, "..", process.env.DB_PATH)
-  .replace(/\\/g, "/");
 const dbDSN = process.env.DB_DSN;
 const dbPassword = process.env.DB_PASSWORD || "";
 
