@@ -32,7 +32,7 @@ const login = async (req, res) => {
     };
     const token = generateToken(payload);
 
-    return api.ok(res, { token, payload });
+    return api.ok(res, { token, user: payload });
   } catch (error) {
     console.error("❌ Error logging in:", error);
     return api.error(res, "Internal Server Error", 500);

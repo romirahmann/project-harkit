@@ -1,5 +1,5 @@
-import { Outlet, Link } from "@tanstack/react-router";
-import React, { useState } from "react";
+import { Outlet, Link, useNavigate } from "@tanstack/react-router";
+import React, { useEffect, useState } from "react";
 import {
   FaBars,
   FaUser,
@@ -14,11 +14,25 @@ import {
 } from "react-icons/fa";
 import { MdDocumentScanner } from "react-icons/md";
 import { IoDocumentsSharp } from "react-icons/io5";
+import { TbLogout } from "react-icons/tb";
 
 export function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
   const [isKelolaDataOpen, setIsKelolaDataOpen] = useState(false);
+  const [userLogin, setUserLogin] = useState({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userData"));
+    setUserLogin(user);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userData");
+    navigate({ to: "/login" });
+  };
 
   return (
     <div className="flex h-screen">
@@ -136,8 +150,21 @@ export function Layout() {
             </button>
             {isUserPopupOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg p-4">
-                <p className="text-sm font-semibold">John Doe</p>
-                <p className="text-sm text-gray-500">johndoe@example.com</p>
+                <p className="text-md font-semibold uppercase ">
+                  {userLogin?.username}
+                </p>
+                <p className="text-sm text-gray-500">{userLogin?.jabatan}</p>
+
+                <div className="btn mt-4">
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center bg-red-800 py-1 px-3 rounded-lg"
+                  >
+                    {" "}
+                    <TbLogout className="text-white" />{" "}
+                    <span className="text-white ms-2">Logout</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
