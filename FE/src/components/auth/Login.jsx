@@ -23,7 +23,7 @@ export function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log(formLogin, baseUrl);
+    // console.log(formLogin, baseUrl);
     if (formLogin) {
       axios
         .post(`${baseUrl}/api/auth/login`, formLogin)
@@ -35,7 +35,7 @@ export function Login() {
           setTimeout(() => {
             setAllert(false);
             navigate({ to: "/" });
-          }, 3000);
+          }, 2000);
         })
         .catch((res) => {
           console.log(res);
@@ -71,7 +71,7 @@ export function Login() {
         )}
         <div className="login p-2">
           <div className="box-login bg-white/20 backdrop-blur-md  md:w-[32em] shadow-lg shadow-gray-900 rounded-lg md:rounded-l-lg ">
-            <div className="form p-20 mb-10">
+            <div className="form p-12 mb-10">
               {status && (
                 <div
                   className="flex items-center p-2 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
@@ -95,7 +95,7 @@ export function Login() {
               )}
               <div className="brand flex justify-center items-center">
                 <img src="/images/logo_candra.png" className="w-12" alt="" />
-                <span className="text-3xl text-white font-bold mx-2">
+                <span className="text-3xl text-white font-bold mx-5">
                   CANDRA
                 </span>
               </div>

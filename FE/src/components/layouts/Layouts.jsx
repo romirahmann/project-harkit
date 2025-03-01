@@ -65,31 +65,37 @@ export function Layout() {
               </li>
             </Link>
 
-            {/* Update Data */}
-            <Link to={"/update-database"}>
-              <li className="flex items-center p-4 text-white hover:bg-blue-600 cursor-pointer">
-                <FaDatabase size={20} />
-                {isSidebarOpen && <span className="ml-3">Update Data</span>}
-              </li>
-            </Link>
+            {userLogin?.jabatan === "Admin" ? (
+              <div className="admin">
+                {/* Update Data */}
+                <Link to={"/update-database"}>
+                  <li className="flex items-center p-4 text-white hover:bg-blue-600 cursor-pointer">
+                    <FaDatabase size={20} />
+                    {isSidebarOpen && <span className="ml-3">Update Data</span>}
+                  </li>
+                </Link>
 
-            {/* Kelola Data */}
-            <li
-              className="flex items-center p-4 text-white hover:bg-blue-600 cursor-pointer"
-              onClick={() => setIsKelolaDataOpen(!isKelolaDataOpen)}
-            >
-              <FaTasks size={20} />
-              {isSidebarOpen && (
-                <>
-                  <span className="ml-3">Kelola Data</span>
-                  <FaCaretDown
-                    className={`ml-auto transition-transform ${
-                      isKelolaDataOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </>
-              )}
-            </li>
+                {/* Kelola Data */}
+                <li
+                  className="flex items-center p-4 text-white hover:bg-blue-600 cursor-pointer"
+                  onClick={() => setIsKelolaDataOpen(!isKelolaDataOpen)}
+                >
+                  <FaTasks size={20} />
+                  {isSidebarOpen && (
+                    <>
+                      <span className="ml-3">Kelola Data</span>
+                      <FaCaretDown
+                        className={`ml-auto transition-transform ${
+                          isKelolaDataOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </>
+                  )}
+                </li>
+              </div>
+            ) : (
+              ""
+            )}
 
             {/* Sub-menu Kelola Data */}
             {isKelolaDataOpen && (
