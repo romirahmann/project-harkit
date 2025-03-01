@@ -2,7 +2,7 @@
 import { Modal } from "flowbite-react";
 import { motion } from "framer-motion";
 import { FaTrash } from "react-icons/fa";
-export const RemoveModal = ({ isOpen, onClose, data }) => {
+export const RemoveModal = ({ isOpen, onClose, data, deleted }) => {
   return (
     <>
       <Modal show={isOpen} onClose={onClose} size="md">
@@ -19,7 +19,10 @@ export const RemoveModal = ({ isOpen, onClose, data }) => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button className="bg-red-500 px-3 py-2 rounded-md ms-auto font-bold text-white hover:bg-red-600">
+          <button
+            onClick={() => deleted(data?.id)}
+            className="bg-red-500 px-3 py-2 rounded-md ms-auto font-bold text-white hover:bg-red-600"
+          >
             Delete
           </button>
         </Modal.Footer>

@@ -151,9 +151,14 @@ export function Layout() {
             <span className="ms-2 text-2xl font-bold">CANDRA</span>
           </span>
           <div className="relative">
-            <button onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}>
-              <FaUser size={24} />
-            </button>
+            <div className="iconUser flex items-center">
+              <p className="text-md font-semibold uppercase me-4 ">
+                {userLogin?.username}
+              </p>
+              <button onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}>
+                <FaUser size={24} />
+              </button>
+            </div>
             {isUserPopupOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg p-4">
                 <p className="text-md font-semibold uppercase ">

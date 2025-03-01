@@ -1,7 +1,11 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import { useContext, useState } from "react";
 import { Modal, Button } from "flowbite-react";
+import { ApiUrl } from "../../../context/Urlapi";
+import axios from "axios";
 
-export function AddUser({ isOpen, onClose }) {
+export function AddUser({ isOpen, onClose, addUser }) {
+  const baseUrl = useContext(ApiUrl);
   // State untuk menyimpan input form
   const [formData, setFormData] = useState({
     username: "",
@@ -9,6 +13,8 @@ export function AddUser({ isOpen, onClose }) {
     jabatan: "",
     password: "",
   });
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Handle perubahan input
   const handleChange = (e) => {
@@ -21,8 +27,24 @@ export function AddUser({ isOpen, onClose }) {
   // Handle submit form
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("User Data:", formData);
-    onClose(); // Tutup modal setelah submit
+    try {
+      axios.post(`${baseUrl}/master/register`, formData);
+      setSuccessMessage(`User berhasil ditambahkan!.`);
+      // console.log(res.data.data);
+      setTimeout(() => {
+        addUser();
+        setSuccessMessage("");
+        setFormData({
+          username: "",
+          email: "",
+          jabatan: "",
+          password: "",
+        });
+        onClose();
+      }, 1500);
+    } catch (e) {
+      setErrorMessage("User gagal ditambahkan!");
+    }
   };
 
   return (
@@ -35,6 +57,25 @@ export function AddUser({ isOpen, onClose }) {
 
       <Modal.Body>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Pesan Sukses */}
+          {successMessage && (
+            <div
+              className="p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+              role="alert"
+            >
+              <span className="font-medium">{successMessage}</span>
+            </div>
+          )}
+
+          {/* Pesan Error */}
+          {errorMessage && (
+            <div
+              className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+              role="alert"
+            >
+              <span className="font-medium">{errorMessage}</span>
+            </div>
+          )}
           {/* Username & Email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

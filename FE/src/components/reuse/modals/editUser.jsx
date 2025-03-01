@@ -1,13 +1,35 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Modal } from "flowbite-react";
+import { ApiUrl } from "../../../context/Urlapi";
+import axios from "axios";
 
-export function EditUser({ isOpen, onClose, userData }) {
+export function EditUser({ isOpen, onClose, userData, updateUser }) {
+  const baseUrl = useContext(ApiUrl);
   const [formData, setFormData] = useState({
-    username: userData?.username || "",
-    email: userData?.email || "",
-    role: userData?.role || "User",
+    id: "",
+    username: "",
+    email: "",
+    jabatan: "",
     password: "",
+    trn_date: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Update formData saat userData berubah
+  useEffect(() => {
+    if (userData) {
+      setFormData({
+        id: userData.id,
+        username: userData.username || "",
+        email: userData.email || "",
+        jabatan: userData.jabatan || "User",
+        password: userData.password,
+        trn_date: userData.trn_date,
+      });
+    }
+  }, [userData]);
 
   // Handle perubahan input
   const handleChange = (e) => {
@@ -15,9 +37,28 @@ export function EditUser({ isOpen, onClose, userData }) {
   };
 
   // Submit perubahan
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onClose();
+    setLoading(true);
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    try {
+      await axios.put(`${baseUrl}/master/user/${userData.id}`, formData);
+      setSuccessMessage(`User dengan ID ${formData.id} berhasil diperbarui.`);
+      setTimeout(() => {
+        updateUser();
+        setSuccessMessage("");
+        onClose();
+      }, 1500);
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Terjadi kesalahan saat memperbarui user."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,6 +70,26 @@ export function EditUser({ isOpen, onClose, userData }) {
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Pesan Sukses */}
+          {successMessage && (
+            <div
+              className="p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+              role="alert"
+            >
+              <span className="font-medium">{successMessage}</span>
+            </div>
+          )}
+
+          {/* Pesan Error */}
+          {errorMessage && (
+            <div
+              className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+              role="alert"
+            >
+              <span className="font-medium">{errorMessage}</span>
+            </div>
+          )}
+
           {/* Username */}
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -65,8 +126,8 @@ export function EditUser({ isOpen, onClose, userData }) {
               Role
             </label>
             <select
-              name="role"
-              value={formData.role}
+              name="jabatan"
+              value={formData.jabatan}
               onChange={handleChange}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             >
@@ -74,32 +135,24 @@ export function EditUser({ isOpen, onClose, userData }) {
               <option value="User">User</option>
             </select>
           </div>
-
-          {/* Password (Opsional) */}
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              New Password (optional)
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
-          </div>
         </form>
       </Modal.Body>
       <Modal.Footer>
         <button
           onClick={handleSubmit}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          className={`text-white px-4 py-2 rounded-lg ${
+            loading
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
+          disabled={loading}
         >
-          Save Changes
+          {loading ? "Saving..." : "Save Changes"}
         </button>
         <button
           onClick={onClose}
           className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+          disabled={loading}
         >
           Cancel
         </button>

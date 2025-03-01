@@ -10,6 +10,16 @@
     "controller": "UserController.getUsers"
   },
   {
+    "path": "/user/:id",
+    "method": "put",
+    "controller": "UserController.updateUser"
+  },
+  {
+    "path": "/user/:id",
+    "method": "delete",
+    "controller": "UserController.deleteUser"
+  },
+  {
     "path": "/employees",
     "method": "get",
     "controller": "EmployeeController.getAllEmployee"

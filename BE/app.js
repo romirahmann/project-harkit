@@ -1,10 +1,13 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const { createServer } = require("http");
 const { connectDB } = require("./src/database/db.config");
 const mainRoutes = require("./src/routes/routes");
+const { initializeSocket } = require("./src/services/socket.service");
 
 const app = express();
+const server = createServer(app); // Buat HTTP Server
 
 // Middleware
 app.use(express.json());
@@ -20,7 +23,7 @@ connectDB()
     app.get("/", (req, res) => {
       res.status(200).json({
         status: true,
-        service: "Backend Project Starter Kit",
+        service: "Backend Project Starter Kit with WebSocket",
       });
     });
 
@@ -35,9 +38,12 @@ connectDB()
       });
     });
 
+    // Inisialisasi WebSocket
+    initializeSocket(server);
+
     // Jalankan server setelah database terkoneksi
     const PORT = process.env.PORT || 8800;
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(
         `🚀 Backend is Running on PORT: ${PORT} ${
           process.env.DEV === "TRUE" ? "<Development Mode>" : ""
@@ -49,3 +55,6 @@ connectDB()
     console.error("❌ Failed to connect to database:", err);
     process.exit(1);
   });
+
+// Ekspor server untuk keperluan lain jika dibutuhkan
+module.exports = { app, server };

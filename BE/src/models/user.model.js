@@ -8,7 +8,8 @@ const getAllUsers = async () => {
 
 const getUserById = async (id) => {
   const db = getDB();
-  const result = await db.query("SELECT * FROM Users WHERE id = ?", [id]);
+  const query = `SELECT * FROM Users WHERE id = ${id}`;
+  const result = await db.query(query);
   return result.length > 0 ? result[0] : null;
 };
 
@@ -25,16 +26,26 @@ const createUser = async (data) => {
 const updateUser = async (id, data) => {
   const db = getDB();
   const { username, email, password, jabatan, trn_date } = data;
-  const result = await db.query(
-    "UPDATE Users SET username = ?, email = ?, password = ?, jabatan = ?, trn_date = ? WHERE id = ?",
-    [username, email, password, jabatan, trn_date, id]
-  );
+
+  const query = `
+    UPDATE Users 
+    SET 
+      username = '${username}', 
+      email = '${email}', 
+      password = '${password}', 
+      jabatan = '${jabatan}', 
+      trn_date = '${trn_date}'
+    WHERE id = ${id}
+  `;
+
+  const result = await db.query(query);
   return result;
 };
 
 const deleteUser = async (id) => {
   const db = getDB();
-  const result = await db.query("DELETE FROM Users WHERE id = ?", [id]);
+  const query = `DELETE FROM Users WHERE id = ${id}`;
+  const result = await db.query(query);
   return result;
 };
 

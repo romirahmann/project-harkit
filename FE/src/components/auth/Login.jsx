@@ -26,7 +26,7 @@ export function Login() {
     // console.log(formLogin, baseUrl);
     if (formLogin) {
       axios
-        .post(`${baseUrl}/api/auth/login`, formLogin)
+        .post(`${baseUrl}/auth/login`, formLogin)
         .then((res) => {
           // console.log(res.data.data);
           localStorage.setItem("token", res.data.data.token);

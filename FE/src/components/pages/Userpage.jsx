@@ -10,6 +10,7 @@ import { ApiUrl } from "../../context/Urlapi";
 import { FaEdit } from "react-icons/fa";
 import { AddUser } from "../reuse/modals/AddUser";
 import { EditUser } from "../reuse/modals/editUser";
+import useSocket from "../../context/useSocket";
 
 export function Userpage() {
   const [users, setUsers] = useState([]);
@@ -22,6 +23,9 @@ export function Userpage() {
   const [showModalEdit, setModalEdit] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [selectedUser, setSelectedUser] = useState();
+  // STATUS
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     getUsers();
@@ -44,13 +48,54 @@ export function Userpage() {
     setModalEdit(true);
   };
 
-  const handleRemove = (user) => {
-    showModalRemove ? setShowModalRemove(false) : setShowModalRemove(true);
-    setSelectedUser(user);
+  const handleApiDeleted = async (id) => {
+    try {
+      console.log(id);
+      await axios.delete(`${baseUrl}/master/user/${id}`);
+      setSuccessMessage(`User ID ${id} berhasil dihapus!`);
+      setShowModalRemove(false);
+      getUsers();
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 1500);
+    } catch (err) {
+      setErrorMessage(`User ID ${id} berhasil dihapus!`);
+      setShowModalRemove(false);
+      getUsers();
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 1500);
+      console.log(err);
+    }
   };
+
+  const handleRemove = (user) => {
+    setSelectedUser(user);
+    setShowModalRemove(true);
+  };
+
   return (
     <>
       <div className="container-fluid p-4 ">
+        {/* Pesan Sukses */}
+        {successMessage && (
+          <div
+            className="p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+            role="alert"
+          >
+            <span className="font-medium">{successMessage}</span>
+          </div>
+        )}
+
+        {/* Pesan Error */}
+        {errorMessage && (
+          <div
+            className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">{errorMessage}</span>
+          </div>
+        )}
         <div className="titlePage flex mb-3 items-center">
           <FaUsersGear className="text-4xl text-gray-700" />
           <h1 className="text-3xl ms-2 font-bold text-gray-700 dark:text-white">
@@ -94,7 +139,7 @@ export function Userpage() {
                 {paginatedData?.length > 0 ? (
                   paginatedData.map((user, index) => (
                     <tr
-                      key={index}
+                      key={user.id}
                       className=" border-b dark:bg-gray-800 dark:border-gray-900 border-gray-300"
                     >
                       <th
@@ -157,14 +202,24 @@ export function Userpage() {
             isOpen={showModalRemove}
             onClose={() => setShowModalRemove(false)}
             data={selectedUser}
+            deleted={(id) => handleApiDeleted(id)}
           />{" "}
         </motion.div>
         {/* MODAL ADD */}
-        <AddUser isOpen={showModalAdd} onClose={() => setModalAdd(false)} />
+        <AddUser
+          isOpen={showModalAdd}
+          onClose={() => setModalAdd(false)}
+          addUser={() => {
+            getUsers();
+          }}
+        />
         <EditUser
           isOpen={showModalEdit}
           onClose={() => setModalEdit(false)}
           userData={selectedUser}
+          updateUser={() => {
+            getUsers();
+          }}
         />
       </div>
     </>
