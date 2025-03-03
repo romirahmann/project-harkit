@@ -9,6 +9,9 @@ import { Login } from "../auth/Login";
 import { ProtectedRoute } from "../auth/ProtectedRoute";
 import { Userpage } from "../pages/Userpage";
 import { Proses } from "../pages/Proses";
+import { EmployeePage } from "../pages/EmployeePage";
+import { CandraPage } from "../pages/CandraPage";
+import { MrPage } from "../pages/MrPage";
 
 const rootRoute = createRootRoute();
 
@@ -51,9 +54,43 @@ const prosesPage = createRoute({
     </ProtectedRoute>
   ),
 });
+const employeePage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/data-karyawan",
+  component: () => (
+    <ProtectedRoute>
+      <EmployeePage />
+    </ProtectedRoute>
+  ),
+});
+const candraPage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/data-candra",
+  component: () => (
+    <ProtectedRoute>
+      <CandraPage />
+    </ProtectedRoute>
+  ),
+});
+const mrPage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/data-mr",
+  component: () => (
+    <ProtectedRoute>
+      <MrPage />
+    </ProtectedRoute>
+  ),
+});
 
 const routeTree = rootRoute.addChildren([
-  layoutRoute.addChildren([dashboardPage, userPage, prosesPage]),
+  layoutRoute.addChildren([
+    dashboardPage,
+    userPage,
+    prosesPage,
+    employeePage,
+    candraPage,
+    mrPage,
+  ]),
   loginRoute,
 ]);
 

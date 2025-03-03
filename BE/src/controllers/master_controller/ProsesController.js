@@ -30,14 +30,19 @@ const getProsesById = async (req, res) => {
 };
 
 const createProses = async (req, res) => {
-  const { nama_proses, urutan, trn_date } = req.body;
+  const { idproses, nama_proses, urutan, trn_date } = req.body;
 
-  if (!nama_proses || !urutan || !trn_date) {
+  if (!idproses || !nama_proses || !urutan || !trn_date) {
     return api.error(res, "All fields are required", 400);
   }
 
   try {
-    const result = await model.createProses({ nama_proses, urutan, trn_date });
+    const result = await model.createProses({
+      idproses,
+      nama_proses,
+      urutan,
+      trn_date,
+    });
     if (result > 0) {
       return api.ok(res, "Proses successfully added");
     }
@@ -49,18 +54,16 @@ const createProses = async (req, res) => {
 };
 
 const updateProses = async (req, res) => {
-  const { idproses } = req.params;
-  const { nama_proses, urutan, trn_date } = req.body;
+  const { id } = req.params;
+  const { idproses, nama_proses, urutan, trn_date } = req.body;
 
-  if (!idproses) {
-    return api.error(res, "ID is required", 400);
-  }
   if (!nama_proses || !urutan || !trn_date) {
     return api.error(res, "All fields are required", 400);
   }
 
   try {
-    const result = await model.updateProses(idproses, {
+    const result = await model.updateProses(id, {
+      idproses,
       nama_proses,
       urutan,
       trn_date,
@@ -76,14 +79,14 @@ const updateProses = async (req, res) => {
 };
 
 const deleteProses = async (req, res) => {
-  const { idproses } = req.params;
+  const { id } = req.params;
 
-  if (!idproses) {
+  if (!id) {
     return api.error(res, "ID is required", 400);
   }
 
   try {
-    const result = await model.deleteProses(idproses);
+    const result = await model.deleteProses(id);
     if (result > 0) {
       return api.ok(res, "Proses successfully deleted");
     }

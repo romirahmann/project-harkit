@@ -60,12 +60,12 @@
     "controller": "ProsesController.createProses"
   },
   {
-    "path": "/proses/:idproses",
+    "path": "/proses/:id",
     "method": "put",
     "controller": "ProsesController.updateProses"
   },
   {
-    "path": "/proses/:idproses",
+    "path": "/proses/:id",
     "method": "delete",
     "controller": "ProsesController.deleteProses"
   },
@@ -120,6 +120,11 @@
     "controller": "MrController.deleteDataMR"
   },
   {
+    "path": "/export-datamr",
+    "method": "get",
+    "controller": "MrController.exportCsv"
+  },
+  {
     "path": "/candras",
     "method": "get",
     "controller": "CandraController.getAllCandra"
@@ -140,8 +145,13 @@
     "controller": "CandraController.updateCandra"
   },
   {
-    "path": "/candra/:kode_checklist/:idproses",
+    "path": "/candra/:id",
     "method": "delete",
     "controller": "CandraController.deleteCandra"
+  },
+  {
+    "path": "/export-candra",
+    "method": "get",
+    "controller": "CandraController.exportCsv"
   }
 ]

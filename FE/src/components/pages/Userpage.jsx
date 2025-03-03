@@ -10,7 +10,6 @@ import { ApiUrl } from "../../context/Urlapi";
 import { FaEdit } from "react-icons/fa";
 import { AddUser } from "../reuse/modals/AddUser";
 import { EditUser } from "../reuse/modals/editUser";
-import useSocket from "../../context/useSocket";
 
 export function Userpage() {
   const [users, setUsers] = useState([]);
@@ -50,7 +49,7 @@ export function Userpage() {
 
   const handleApiDeleted = async (id) => {
     try {
-      console.log(id);
+      // console.log(id);
       await axios.delete(`${baseUrl}/master/user/${id}`);
       setSuccessMessage(`User ID ${id} berhasil dihapus!`);
       setShowModalRemove(false);

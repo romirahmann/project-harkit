@@ -1,5 +1,8 @@
 const model = require("../../models/mr.model");
 const api = require("../../tools/common");
+const { Parser } = require("json2csv");
+const fs = require("fs");
+const path = require("path");
 
 const getAllDataMR = async (req, res) => {
   try {
@@ -75,43 +78,36 @@ const createDataMR = async (req, res) => {
 
 const updateDataMR = async (req, res) => {
   const { nourut, kode_checklist } = req.params;
-  const {
-    NoMR,
-    NamaPasien,
-    Tanggal,
-    Qty_Image,
-    Urut,
-    Mulai,
-    Selesai,
-    rumahsakit,
-    nobox,
-    filePath,
-  } = req.body;
+  const { NoMR, NamaPasien, Tanggal, nobox } = req.body;
 
-  if (!nourut || !kode_checklist)
+  if (!nourut || !kode_checklist) {
     return api.error(res, "NoUrut and Kode_Checklist are required", 400);
-  if (
-    !NoMR ||
-    !NamaPasien ||
-    !Tanggal ||
-    !Qty_Image ||
-    !Urut ||
-    !Mulai ||
-    !Selesai ||
-    !rumahsakit ||
-    !nobox ||
-    !filePath
-  ) {
-    return api.error(res, "All fields are required", 400);
+  }
+
+  if (!NoMR || !NamaPasien || !Tanggal || !nobox) {
+    return api.error(
+      res,
+      "All fields (NoMR, NamaPasien, Tanggal, nobox) are required",
+      400
+    );
   }
 
   try {
-    const result = await model.updateDataMR(nourut, kode_checklist, req.body);
-    if (result > 0) return api.ok(res, "DataMR successfully updated");
-    return api.error(res, "Failed to update DataMR", 500);
+    const result = await model.updateDataMR(nourut, kode_checklist, {
+      NoMR,
+      NamaPasien,
+      Tanggal,
+      nobox,
+    });
+
+    if (result > 0) {
+      return api.ok(res, "Data MR successfully updated");
+    }
+
+    return api.error(res, "Failed to update Data MR", 500);
   } catch (error) {
-    console.error("❌ Error updating DataMR:", error);
-    return api.error(res, "Failed to update DataMR", 500);
+    console.error("❌ Error updating Data MR:", error);
+    return api.error(res, "An error occurred while updating Data MR", 500);
   }
 };
 
@@ -130,10 +126,56 @@ const deleteDataMR = async (req, res) => {
   }
 };
 
+const exportCsv = async (req, res) => {
+  try {
+    const data = await model.getAllDataMR();
+    if (data.length === 0) {
+      return api.error(res, "Data Not Found!", 400);
+    }
+
+    // Definisikan kolom yang akan diekspor
+    const fields = [
+      "NoUrut",
+      "NoMR",
+      "Kode_Checklist",
+      "NamaPasien",
+      "Tanggal",
+      "Qty_Image",
+      "Urut",
+      "Mulai",
+      "Selesai",
+      "nobox",
+      "rumahsakit",
+      "FilePath",
+    ];
+    // Konversi data ke CSV
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(data);
+    // Simpan CSV ke file sementara
+    const filePath = path.join(__dirname, "../../exports/candra_export.csv");
+    fs.writeFileSync(filePath, csv);
+
+    // Kirim file CSV ke client
+    res.download(filePath, "data_MR.csv", (err) => {
+      if (err) {
+        console.error("Error saat mengirim file:", err);
+        res.status(500).json({ message: "Gagal mengunduh file" });
+      }
+
+      // Hapus file setelah dikirim (opsional)
+      fs.unlinkSync(filePath);
+    });
+  } catch (error) {
+    console.error("❌ Error exporting CSV:", error);
+    return api.error(res, "Failed to export CSV", 500);
+  }
+};
+
 module.exports = {
   getAllDataMR,
   getDataMRByKeys,
   createDataMR,
   updateDataMR,
   deleteDataMR,
+  exportCsv,
 };

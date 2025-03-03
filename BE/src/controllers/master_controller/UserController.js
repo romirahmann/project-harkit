@@ -1,7 +1,6 @@
 const argon2 = require("argon2");
 const model = require("../../models/user.model");
 const api = require("../../tools/common");
-const { getIo } = require("../../services/socket.service");
 
 const register = async (req, res) => {
   const newUser = req.body;
@@ -67,11 +66,6 @@ const updateUser = async (req, res) => {
 
     let result = await model.updateUser(id, updatedData);
     if (result.affectedRows === 0) return api.error(res, "User not found", 404);
-
-    // Dapatkan instance WebSocket
-    const io = getIo();
-    console.log(io.emit("update-users"));
-    io.emit("update-users");
 
     return api.ok(res, { message: "User updated successfully" });
   } catch (error) {

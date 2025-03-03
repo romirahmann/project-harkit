@@ -1,0 +1,206 @@
+/* eslint-disable no-unused-vars */
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { PaginationComponent } from "../reuse/PaginationComponent";
+import { SearchComponent } from "../reuse/SearchComponent";
+import { FaCirclePlus, FaTrash } from "react-icons/fa6";
+import { motion } from "framer-motion";
+import { ApiUrl } from "../../context/Urlapi";
+import { RemoveModal } from "../reuse/RemoveModal";
+import { FaEdit, FaClipboardList, FaFileExport } from "react-icons/fa";
+import moment from "moment";
+import { EditCandra } from "../reuse/modals/EditCandra";
+// import { AddDatacandra } from "../reuse/modals/AddDatacandra";
+// import { EditDatacandra } from "../reuse/modals/EditDatacandra";
+
+export function CandraPage() {
+  const [datacandra, setDatacandra] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredData, setFilteredData] = useState([]);
+  const [paginatedData, setPaginatedData] = useState();
+  const [showModalRemove, setShowModalRemove] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+  const baseUrl = useContext(ApiUrl);
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    getDatacandra();
+  }, []);
+
+  const getDatacandra = async () => {
+    await axios
+      .get(`${baseUrl}/master/candras`)
+      .then((res) => {
+        setDatacandra(res.data.data);
+        setFilteredData(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleRemove = (data) => {
+    setShowModalRemove(true);
+    setSelectedData(data);
+  };
+
+  const handleEdit = (data) => {
+    setShowModalEdit(true);
+    setSelectedData(data);
+  };
+
+  const handleApiDeleted = async (id) => {
+    await axios
+      .delete(`${baseUrl}/master/candra/${id}`)
+      .then(() => {
+        setSuccessMessage(`Data dengan ID ${id} berhasil dihapus!`);
+        setShowModalRemove(false);
+        getDatacandra();
+        setTimeout(() => setSuccessMessage(""), 1500);
+      })
+      .catch((err) => {
+        setErrorMessage(`Data dengan ID ${id} gagal dihapus!`);
+        setShowModalRemove(false);
+        getDatacandra();
+        setTimeout(() => setErrorMessage(""), 1500);
+        console.log(err);
+      });
+  };
+
+  const handleExportCsv = () => {
+    const exportCsv = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/master/export-candra`, {
+          responseType: "blob",
+        });
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "data_candra.csv"); // Nama file
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("❌ Error saat mendownload CSV:", error);
+      }
+    };
+    exportCsv();
+  };
+
+  return (
+    <div className="container-fluid p-4">
+      {successMessage && (
+        <div className="p-4 mt-4 text-sm text-green-800 bg-green-50">
+          {successMessage}
+        </div>
+      )}
+      {errorMessage && (
+        <div className="p-4 mt-4 text-sm text-red-800 bg-red-50">
+          {errorMessage}
+        </div>
+      )}
+
+      <div className="titlePage flex mb-3 items-center">
+        <FaClipboardList className="text-3xl text-gray-700" />
+        <h1 className="text-3xl ms-3 font-bold text-gray-700">Data Candra</h1>
+      </div>
+
+      <div className="searchBar flex my-2 mt-10">
+        <button
+          onClick={() => handleExportCsv()}
+          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center"
+        >
+          <FaFileExport /> <span className="ms-2">Export CSV</span>
+        </button>
+        <div className="ms-auto">
+          <SearchComponent result={setFilteredData} data={datacandra} />
+        </div>
+      </div>
+
+      <div className="relative overflow-x-auto sm:rounded-lg">
+        <table className="w-full text-sm text-left text-gray-700">
+          <thead className="text-xs font-bold text-gray-300 bg-[#043A70]">
+            <tr>
+              <th className="px-6 py-3">N</th>
+              <th className="px-6 py-3">Kode Checklist</th>
+              <th className="px-6 py-3">ID Proses</th>
+              <th className="px-6 py-3">NIK</th>
+              <th className="px-6 py-3">Qty Image</th>
+              <th className="px-6 py-3">Nama Proses</th>
+              <th className="px-6 py-3">Nama Karyawan</th>
+              <th className="px-6 py-3">Tanggal</th>
+              <th className="px-6 py-3">Mulai</th>
+              <th className="px-6 py-3">Selesai</th>
+              <th className="px-6 py-3">Action</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white">
+            {paginatedData?.length > 0 ? (
+              paginatedData.map((data, index) => (
+                <tr key={data.id} className="border-b">
+                  <td className="px-6 py-4">{index + 1}</td>
+                  <td className="px-6 py-4">{data.kode_checklist}</td>
+                  <td className="px-6 py-4">{data.idproses}</td>
+                  <td className="px-6 py-4">{data.nik}</td>
+                  <td className="px-6 py-4">{data.qty_image}</td>
+                  <td className="px-6 py-4">{data.nama_proses}</td>
+                  <td className="px-6 py-4">{data.nama_karyawan}</td>
+                  <td className="px-6 py-4">
+                    {moment(data.tanggal).format("DD-MM-YYYY")}
+                  </td>
+                  <td className="px-6 py-4">{data.mulai_formatted}</td>
+                  <td className="px-6 py-4">{data.selesai_formatted}</td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => handleEdit(data)}
+                      className="text-green-500 px-1 py-1 rounded-md"
+                    >
+                      <FaEdit size={20} />
+                    </button>
+                    <button
+                      onClick={() => handleRemove(data)}
+                      className="text-red-600 px-1 py-1 rounded-md"
+                    >
+                      <FaTrash size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr className="text-center border-b">
+                <td colSpan={13} className="px-6 py-4">
+                  Data not found!
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        {/* Pagination */}
+        <PaginationComponent
+          setPaginatedData={setPaginatedData}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          data={filteredData}
+        />
+
+        <EditCandra
+          isOpen={showModalEdit}
+          onClose={() => setShowModalEdit(false)}
+          candraData={selectedData}
+          updateCandra={() => getDatacandra()}
+        />
+        <RemoveModal
+          isOpen={showModalRemove}
+          onClose={() => setShowModalRemove(false)}
+          data={selectedData}
+          deleted={(id) => handleApiDeleted(id)}
+        />
+      </div>
+    </div>
+  );
+}

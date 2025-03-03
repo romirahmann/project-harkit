@@ -2,7 +2,22 @@ const { getDB } = require("../database/db.config");
 
 const getAllCandra = async () => {
   const db = getDB();
-  const query = "SELECT * FROM tblcandra";
+  const query = `
+    SELECT 
+      id,
+      kode_checklist, 
+      idproses, 
+      nik, 
+      qty_image, 
+      nama_proses, 
+      nama_karyawan, 
+      tanggal, 
+      FORMAT(mulai, 'HH:nn:ss') AS mulai_formatted, 
+      FORMAT(selesai, 'HH:nn:ss') AS selesai_formatted, 
+      submittedby,
+      editBy
+    FROM tblcandra
+  `;
   const result = await db.query(query);
   return result;
 };
@@ -56,6 +71,9 @@ const updateCandra = async (kode_checklist, idproses, data) => {
     editby,
   } = data;
 
+  if (qty_image === null) {
+    qty_image = 0;
+  }
   const query = `
     UPDATE tblcandra
     SET nik = '${nik}', qty_image = ${qty_image}, nama_proses = '${nama_proses}', 
@@ -68,10 +86,10 @@ const updateCandra = async (kode_checklist, idproses, data) => {
   return result.count; // ✅ Return jumlah baris yang diperbarui
 };
 
-const deleteCandra = async (kode_checklist, idproses) => {
+const deleteCandra = async (id) => {
   const db = getDB();
   const query = `
-    DELETE FROM tblcandra WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
+    DELETE FROM tblcandra WHERE id = ${id}
   `;
 
   const result = await db.query(query);

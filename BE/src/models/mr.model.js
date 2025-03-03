@@ -3,7 +3,7 @@ const { getDB } = require("../database/db.config");
 const getAllDataMR = async () => {
   const db = getDB();
   return await db.query(
-    "SELECT NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, Selesai, rumahsakit,nobox,FilePath FROM tblDataMR"
+    "SELECT NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, Selesai, rumahsakit, nobox, FilePath FROM tblDataMR"
   );
 };
 
@@ -65,41 +65,18 @@ const createDataMR = async (data) => {
 
 const updateDataMR = async (NoUrut, Kode_Checklist, data) => {
   const db = getDB();
-  const {
-    NoMR,
-    NamaPasien,
-    Tanggal,
-    Qty_Image,
-    Urut,
-    Mulai,
-    Selesai,
-    rumahsakit,
-    nobox,
-    filePath,
-  } = data;
+  const { NoMR, NamaPasien, Tanggal, nobox } = data;
 
   const query = `
-    UPDATE tblDataMR 
-    SET NoMR = ?, NamaPasien = ?, Tanggal = ?, Qty_Image = ?, 
-        Urut = ?, Mulai = ?, Selesai = ?, rumahsakit = ?, nobox = ?, filePath = ?
-    WHERE NoUrut = ? AND Kode_Checklist = ?`;
+  UPDATE tblDataMR 
+  SET NoMR = '${NoMR}', 
+      NamaPasien = '${NamaPasien}', 
+      Tanggal = '${Tanggal}', 
+      nobox = '${nobox}'
+  WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'
+`;
 
-  const values = [
-    NoMR,
-    NamaPasien,
-    Tanggal,
-    Qty_Image,
-    Urut,
-    Mulai,
-    Selesai,
-    rumahsakit,
-    nobox,
-    filePath,
-    NoUrut,
-    Kode_Checklist,
-  ];
-
-  const result = await db.query(query, values);
+  const result = await db.query(query);
   return result.count;
 };
 

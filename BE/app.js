@@ -4,7 +4,6 @@ const cors = require("cors");
 const { createServer } = require("http");
 const { connectDB } = require("./src/database/db.config");
 const mainRoutes = require("./src/routes/routes");
-const { initializeSocket } = require("./src/services/socket.service");
 
 const app = express();
 const server = createServer(app); // Buat HTTP Server
@@ -37,9 +36,6 @@ connectDB()
         message: "Endpoint not found",
       });
     });
-
-    // Inisialisasi WebSocket
-    initializeSocket(server);
 
     // Jalankan server setelah database terkoneksi
     const PORT = process.env.PORT || 8800;

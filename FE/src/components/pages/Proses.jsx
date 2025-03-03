@@ -3,11 +3,13 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { PaginationComponent } from "../reuse/PaginationComponent";
 import { SearchComponent } from "../reuse/SearchComponent";
-import { FaUsersGear, FaCirclePlus, FaTrash } from "react-icons/fa6";
+import { FaCirclePlus, FaTrash } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { ApiUrl } from "../../context/Urlapi";
 import { RemoveModal } from "../reuse/RemoveModal";
 import { FaEdit, FaTasks } from "react-icons/fa";
+import { AddProses } from "../reuse/modals/AddProses";
+import { EditProses } from "../reuse/modals/EditProses";
 
 export function Proses() {
   const [proses, setProses] = useState([]);
@@ -15,8 +17,13 @@ export function Proses() {
   const [filteredData, setFilteredData] = useState([]);
   const [paginatedData, setPaginatedData] = useState();
   const [showModalRemove, setShowModalRemove] = useState(false);
-  const [selectedUser, setSelectedUser] = useState();
+  const [showModalAdd, setShowModalAdd] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
+  const [selectedProses, setSelectedProses] = useState(null);
   const baseUrl = useContext(ApiUrl);
+  // STATUS
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     getProses();
@@ -34,13 +41,57 @@ export function Proses() {
       });
   };
 
-  const handleRemove = (user) => {
+  const handleRemove = (proses) => {
     showModalRemove ? setShowModalRemove(false) : setShowModalRemove(true);
-    setSelectedUser(user);
+    setSelectedProses(proses);
+  };
+  const handleEdit = (proses) => {
+    setShowModalEdit(true);
+    setSelectedProses(proses);
+  };
+  const handleApiDeleted = async (id) => {
+    await axios
+      .delete(`${baseUrl}/master/proses/${id}`)
+      .then((res) => {
+        setSuccessMessage(`Proses ID ${id} berhasil dihapus!`);
+        setShowModalRemove(false);
+        getProses();
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 1500);
+      })
+      .catch((err) => {
+        setErrorMessage(`Proses ID ${id} gagal dihapus!`);
+        setShowModalRemove(false);
+        getProses();
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 1500);
+        console.log(err);
+      });
   };
   return (
     <>
       <div className="container-fluid p-4 ">
+        {/* Pesan Sukses */}
+        {successMessage && (
+          <div
+            className="p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+            role="alert"
+          >
+            <span className="font-medium">{successMessage}</span>
+          </div>
+        )}
+
+        {/* Pesan Error */}
+        {errorMessage && (
+          <div
+            className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert"
+          >
+            <span className="font-medium">{errorMessage}</span>
+          </div>
+        )}
         <div className="titlePage flex mb-3 items-center">
           <FaTasks className="text-3xl text-gray-700" />
           <h1 className="text-3xl ms-3 font-bold text-gray-700 dark:text-white">
@@ -48,7 +99,10 @@ export function Proses() {
           </h1>
         </div>
         <div className="searchBar items-center flex my-2 mt-10">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+          <button
+            onClick={() => setShowModalAdd(true)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center"
+          >
             <FaCirclePlus /> <span className="ms-2">Add</span>
           </button>
           <div className=" dark:bg-gray-900 ms-auto">
@@ -94,7 +148,10 @@ export function Proses() {
                       <td className="px-6 py-4">{proses.nama_proses}</td>
                       <td className="px-6 py-4">{proses.urutan}</td>
                       <td className="px-6 py-4">
-                        <button className="text-green-500 hover:bg-green-600 hover:text-white text-center font-medium px-1 py-1  rounded-md">
+                        <button
+                          onClick={() => handleEdit(proses)}
+                          className="text-green-500 hover:bg-green-600 hover:text-white text-center font-medium px-1 py-1  rounded-md"
+                        >
                           <FaEdit size={20} />
                         </button>
                         <button
@@ -140,9 +197,21 @@ export function Proses() {
           <RemoveModal
             isOpen={showModalRemove}
             onClose={() => setShowModalRemove(false)}
-            data={selectedUser}
+            data={selectedProses}
+            deleted={(id) => handleApiDeleted(id)}
           />{" "}
         </motion.div>
+        <AddProses
+          isOpen={showModalAdd}
+          onClose={() => setShowModalAdd(false)}
+          addProses={() => getProses()}
+        />
+        <EditProses
+          isOpen={showModalEdit}
+          onClose={() => setShowModalEdit(false)}
+          prosesData={selectedProses}
+          updateProses={() => getProses()}
+        />
       </div>
     </>
   );

@@ -1,12 +1,16 @@
 export const SearchComponent = ({ result, data }) => {
   const handleSearch = (value) => {
     const query = value.toLowerCase();
-    const filteredData = data.filter((item) => {
-      const matchQuery = Object.values(item).some((val) =>
-        val.toString().toLowerCase().includes(query)
-      );
-      return matchQuery;
-    });
+    const filteredData = data.filter((item) =>
+      Object.values(item).some((val) => {
+        if (val === null || val === undefined) {
+          return false; // Lewati nilai null/undefined
+        }
+        return val.toString().toLowerCase().includes(query);
+      })
+    );
+
+    // Update state, tetap update dengan array kosong jika tidak ada hasil
     result(filteredData);
   };
 

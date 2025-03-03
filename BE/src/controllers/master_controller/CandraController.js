@@ -1,5 +1,8 @@
 const model = require("../../models/candra.model");
 const api = require("../../tools/common");
+const { Parser } = require("json2csv");
+const fs = require("fs");
+const path = require("path");
 
 const getAllCandra = async (req, res) => {
   try {
@@ -89,21 +92,58 @@ const updateCandra = async (req, res) => {
 };
 
 const deleteCandra = async (req, res) => {
-  let { kode_checklist, idproses } = req.params;
-
-  kode_checklist = kode_checklist.replace(/'/g, "''");
-  idproses = idproses.replace(/'/g, "''");
-
-  if (!kode_checklist || !idproses)
-    return api.error(res, "kode_checklist and idproses are required", 400);
+  let { id } = req.params;
 
   try {
-    const deleted = await model.deleteCandra(kode_checklist, idproses);
+    const deleted = await model.deleteCandra(id);
     if (!deleted) return api.error(res, "Candra not found", 404);
     return api.ok(res, { deleted }, "Candra deleted successfully");
   } catch (error) {
     console.error("❌ Error deleting Candra:", error);
     return api.error(res, "Failed to delete Candra", 500);
+  }
+};
+
+const exportCsv = async (req, res) => {
+  try {
+    const data = await model.getAllCandra();
+    if (data.length === 0) {
+      return api.error(res, "Data Not Found!", 400);
+    }
+
+    // Definisikan kolom yang akan diekspor
+    const fields = [
+      "kode_checklist",
+      "idproses",
+      "nik",
+      "qty_image",
+      "nama_proses",
+      "nama_karyawan",
+      "tanggal",
+      "mulai_formatted",
+      "selesai_formatted",
+      "submittedby",
+    ];
+    // Konversi data ke CSV
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(data);
+    // Simpan CSV ke file sementara
+    const filePath = path.join(__dirname, "../../exports/candra_export.csv");
+    fs.writeFileSync(filePath, csv);
+
+    // Kirim file CSV ke client
+    res.download(filePath, "data_candra.csv", (err) => {
+      if (err) {
+        console.error("Error saat mengirim file:", err);
+        res.status(500).json({ message: "Gagal mengunduh file" });
+      }
+
+      // Hapus file setelah dikirim (opsional)
+      fs.unlinkSync(filePath);
+    });
+  } catch (error) {
+    console.error("❌ Error exporting CSV:", error);
+    return api.error(res, "Failed to export CSV", 500);
   }
 };
 
@@ -113,4 +153,5 @@ module.exports = {
   createCandra,
   updateCandra,
   deleteCandra,
+  exportCsv,
 };

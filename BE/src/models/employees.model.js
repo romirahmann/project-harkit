@@ -14,12 +14,23 @@ const getKaryawanById = async (id) => {
 
 const createKaryawan = async (data) => {
   const db = getDB();
-  const { trn_date, nik, nama_karyawan, submittedby } = data;
+  const { nik, nama_karyawan, submittedby } = data;
 
-  const query = `INSERT INTO tblkaryawan (trn_date, nik, nama_karyawan, submittedby) VALUES (${trn_date}, '${nik}', '${nama_karyawan}', '${submittedby}')`;
+  // Format tanggal
+  const today = new Date();
+  const formattedDate = `#${today.getFullYear()}/${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}/${String(today.getDate()).padStart(2, "0")} ${String(
+    today.getHours()
+  ).padStart(2, "0")}:${String(today.getMinutes()).padStart(2, "0")}:${String(
+    today.getSeconds()
+  ).padStart(2, "0")}#`;
+
+  // Gunakan Parameterized Query untuk keamanan
+  const query = `INSERT INTO tblkaryawan (trn_date, nik, nama_karyawan, submittedby) VALUES ('${formattedDate},'${nik}', '${nama_karyawan}', '${submittedby}' )`;
+
   const result = await db.query(query);
-
-  return result.count; // ✅ Return jumlah baris yang terpengaruh
+  return result.count;
 };
 
 const updateKaryawan = async (id, data) => {

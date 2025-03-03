@@ -7,7 +7,7 @@ export const PaginationComponent = ({
   setCurrentPage,
   data,
 }) => {
-  const itemsPerPage = 20;
+  const itemsPerPage = 10;
   const totalPages = useMemo(
     () => Math.ceil((data?.length || 0) / itemsPerPage),
     [data]
@@ -20,6 +20,8 @@ export const PaginationComponent = ({
         currentPage * itemsPerPage
       );
       setPaginatedData(paginatedData);
+    } else {
+      setPaginatedData([]); // Pastikan paginatedData kosong jika tidak ada data
     }
   }, [currentPage, data, setPaginatedData]);
 

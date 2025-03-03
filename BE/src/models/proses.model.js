@@ -16,36 +16,37 @@ const getProsesById = async (idproses) => {
 
 const createProses = async (data) => {
   const db = getDB();
-  const { nama_proses, urutan, trn_date } = data;
+  const { idproses, nama_proses, urutan, trn_date } = data;
 
   const safeNamaProses = nama_proses.replace(/'/g, "''"); // Escape single quotes
 
-  const query = `INSERT INTO tblproses (nama_proses, urutan, trn_date) 
-                 VALUES ('${safeNamaProses}', ${urutan}, #${trn_date}#)`;
+  const query = `INSERT INTO tblproses (idproses, nama_proses, urutan, trn_date) 
+                 VALUES ('${idproses}','${safeNamaProses}', ${urutan}, #${trn_date}#)`;
 
   const result = await db.query(query);
   return result.count; // ✅ Return jumlah baris yang terpengaruh
 };
 
-const updateProses = async (idproses, data) => {
+const updateProses = async (id, data) => {
   const db = getDB();
-  const { nama_proses, urutan, trn_date } = data;
+  const { idproses, nama_proses, urutan, trn_date } = data;
 
   const safeNamaProses = nama_proses.replace(/'/g, "''");
 
   const query = `UPDATE tblproses 
-                 SET nama_proses = '${safeNamaProses}', 
+                 SET idproses = '${idproses}',
+                    nama_proses = '${safeNamaProses}', 
                      urutan = ${urutan}, 
                      trn_date = #${trn_date}# 
-                 WHERE idproses = ${idproses}`;
+                 WHERE id = ${id}`;
 
   const result = await db.query(query);
   return result.count; // ✅ Return jumlah baris yang diperbarui
 };
 
-const deleteProses = async (idproses) => {
+const deleteProses = async (id) => {
   const db = getDB();
-  const query = `DELETE FROM tblproses WHERE idproses = ${idproses}`;
+  const query = `DELETE FROM tblproses WHERE id = ${id}`;
   const result = await db.query(query);
   return result.count; // ✅ Return jumlah baris yang dihapus
 };
