@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { createServer } = require("http");
 const { connectDB } = require("./src/database/db.config");
+const { connectDB2 } = require("./src/database/update.config");
 const mainRoutes = require("./src/routes/routes");
 
 const app = express();
@@ -10,13 +11,20 @@ const server = createServer(app); // Buat HTTP Server
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // Atau ganti dengan "http://192.168.9.192:3000" jika hanya untuk frontend tertentu
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.urlencoded({ extended: true }));
 
 // Koneksi Database sebelum server berjalan
-connectDB()
+Promise.all([connectDB(), connectDB2()])
   .then(() => {
-    console.log("✅ Database connection established");
+    console.log("✅ All Database connections established");
 
     // Route Utama
     app.get("/", (req, res) => {

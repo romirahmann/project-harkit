@@ -12,6 +12,7 @@ import { Proses } from "../pages/Proses";
 import { EmployeePage } from "../pages/EmployeePage";
 import { CandraPage } from "../pages/CandraPage";
 import { MrPage } from "../pages/MrPage";
+import { UpdatePage } from "../pages/UpdatePage";
 
 const rootRoute = createRootRoute();
 
@@ -81,6 +82,15 @@ const mrPage = createRoute({
     </ProtectedRoute>
   ),
 });
+const updatePage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/update-database",
+  component: () => (
+    <ProtectedRoute>
+      <UpdatePage />
+    </ProtectedRoute>
+  ),
+});
 
 const routeTree = rootRoute.addChildren([
   layoutRoute.addChildren([
@@ -90,6 +100,7 @@ const routeTree = rootRoute.addChildren([
     employeePage,
     candraPage,
     mrPage,
+    updatePage,
   ]),
   loginRoute,
 ]);

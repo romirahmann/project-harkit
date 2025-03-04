@@ -14,7 +14,7 @@ let db;
 async function connectDB() {
   try {
     db = await odbc.connect(connectionString);
-    console.log("✅ Database connected successfully!");
+    console.log("✅ Database 1 connected successfully!");
   } catch (error) {
     console.error("❌ Database connection error:", error);
     process.exit(1);

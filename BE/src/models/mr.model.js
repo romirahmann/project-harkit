@@ -7,6 +7,18 @@ const getAllDataMR = async () => {
   );
 };
 
+const dataExisting = async (NoUrut, Kode_Checklist) => {
+  const db = getDB();
+
+  const query = `
+    SELECT COUNT(*) AS total_count FROM tblDataMR 
+     WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'
+  `;
+
+  const result = await db.query(query);
+  return result[0].total_count > 0;
+};
+
 const getDataMRByKeys = async (NoUrut, Kode_Checklist) => {
   const db = getDB();
 
@@ -35,16 +47,59 @@ const createDataMR = async (data) => {
     Selesai,
     rumahsakit,
     nobox,
-    filePath,
+    FilePath,
   } = data;
-
+  // Konversi tanggal ke format Access atau NULL
+  const formattedTanggal = Tanggal ? `#${Tanggal}#` : "NULL";
   const query = `
     INSERT INTO tblDataMR 
     (NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, 
      Selesai, rumahsakit, nobox, filePath) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', ${formattedTanggal} , ${Qty_Image}, '${Kode_Checklist}', '${Urut}', '${Mulai}', '${Selesai}', '${rumahsakit}', '${nobox}', '${FilePath}')`;
 
-  const values = [
+  const result = await db.query(query);
+  return result;
+};
+
+const dataExistingByMR = async (NoMR) => {
+  const db = getDB();
+
+  const query = `
+    SELECT COUNT(*) AS total_count FROM tblDataMR 
+     WHERE NoMR = '${NoMR}' 
+  `;
+
+  const result = await db.query(query);
+  return result[0].total_count > 0;
+};
+
+const updateQtyMR = async (data) => {
+  const db = getDB();
+  const { NoMR, totalPages, nobox } = data; // Ambil properti yang tidak ada spasi
+  const filePath = data["File Path"]; // Ambil "File Path" menggunakan bracket notation
+
+  const query = `
+  UPDATE tblDataMR 
+  SET Qty_Image = '${totalPages}', 
+      FilePath = '${filePath}', 
+      
+  WHERE NoMR = '${NoMR}'
+`;
+
+  const result = await db.query(query);
+  return result.count;
+};
+
+const getQtyByMR = async () => {
+  const db = getDB();
+  const query = `SELECT Kode_Checklist, SUM(Qty_Image) AS totalPages FROM tblDataMR GROUP BY Kode_Checklist;`;
+  const result = await db.query(query);
+  return result;
+};
+
+const createDataMRt3 = async (data) => {
+  const db = getDB();
+  const {
     NoUrut,
     NoMR,
     NamaPasien,
@@ -54,13 +109,31 @@ const createDataMR = async (data) => {
     Urut,
     Mulai,
     Selesai,
-    rumahsakit,
-    nobox,
-    filePath,
-  ];
+    Ket,
+  } = data;
+  // Konversi tanggal ke format Access atau NULL
+  const formattedTanggal = Tanggal ? `#${Tanggal}#` : "NULL";
+  const query = `
+    INSERT INTO tblDataMR 
+    (NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, 
+     Selesai, ket) 
+    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', ${
+    formattedTanggal || null
+  }, ${Qty_Image}, '${Kode_Checklist}', '${Urut}', '${Mulai}', '${Selesai}', '${Ket}')`;
+  const result = db.query(query);
+  return result;
+};
 
-  const result = await db.query(query, values);
-  return result.count;
+const dataExistingT3 = async (NoUrut, Kode_Checklist) => {
+  const db = getDB();
+
+  const query = `
+    SELECT COUNT(*) AS total_count FROM tblDataMRt3 
+     WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'
+  `;
+
+  const result = await db.query(query);
+  return result[0].total_count > 0;
 };
 
 const updateDataMR = async (NoUrut, Kode_Checklist, data) => {
@@ -95,4 +168,10 @@ module.exports = {
   createDataMR,
   updateDataMR,
   deleteDataMR,
+  dataExisting,
+  createDataMRt3,
+  dataExistingT3,
+  dataExistingByMR,
+  updateQtyMR,
+  getQtyByMR,
 };

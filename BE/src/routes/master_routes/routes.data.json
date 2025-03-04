@@ -153,5 +153,11 @@
     "path": "/export-candra",
     "method": "get",
     "controller": "CandraController.exportCsv"
+  },
+  {
+    "path": "/upload-mdb",
+    "method": "post",
+    "controller": "UploadController.uploadFile",
+    "middleware": "upload.single"
   }
 ]

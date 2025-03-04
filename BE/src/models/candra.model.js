@@ -22,6 +22,18 @@ const getAllCandra = async () => {
   return result;
 };
 
+const dataExisting = async (kode_checklist, idproses) => {
+  const db = getDB();
+
+  const query = `
+    SELECT COUNT(*) as count FROM tblcandra 
+    WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
+  `;
+
+  const result = await db.query(query);
+  return result[0].count > 0;
+};
+
 const getCandraByKeys = async (kode_checklist, idproses) => {
   const db = getDB();
 
@@ -44,14 +56,18 @@ const createCandra = async (data) => {
     nama_proses,
     nama_karyawan,
     tanggal,
-    mulai,
-    selesai,
+    mulai_formatted,
+    selesai_formatted,
     submittedby,
   } = data;
 
   const query = `
     INSERT INTO tblcandra (kode_checklist, idproses, nik, qty_image, nama_proses, nama_karyawan, tanggal, mulai, selesai, submittedby)
-    VALUES ('${kode_checklist}', '${idproses}', '${nik}', ${qty_image}, '${nama_proses}', '${nama_karyawan}', '${tanggal}', '${mulai}', '${selesai}', '${submittedby}')
+    VALUES ('${kode_checklist}', '${idproses}', '${nik}', ${parseInt(
+    qty_image
+  )}, '${nama_proses}', '${nama_karyawan}', #${
+    tanggal || ""
+  }#, '${mulai_formatted}', '${selesai_formatted}', '${submittedby}')
   `;
 
   const result = await db.query(query);
@@ -86,6 +102,17 @@ const updateCandra = async (kode_checklist, idproses, data) => {
   return result.count; // ✅ Return jumlah baris yang diperbarui
 };
 
+const updateCandraByMR = async (data) => {
+  const db = getDB();
+  const { Kode_Checklist, totalPages } = data;
+  if (totalPages === null) {
+    totalPages = 0;
+  }
+  const query = `UPDATE tblcandra SET qty_image = ${totalPages} WHERE kode_checklist = '${Kode_Checklist}'`;
+  const result = await db.query(query);
+  return result;
+};
+
 const deleteCandra = async (id) => {
   const db = getDB();
   const query = `
@@ -102,4 +129,6 @@ module.exports = {
   createCandra,
   updateCandra,
   deleteCandra,
+  dataExisting,
+  updateCandraByMR,
 };
