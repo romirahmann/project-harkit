@@ -13,6 +13,7 @@ import { EmployeePage } from "../pages/EmployeePage";
 import { CandraPage } from "../pages/CandraPage";
 import { MrPage } from "../pages/MrPage";
 import { UpdatePage } from "../pages/UpdatePage";
+import { ScanPage } from "../pages/ScanPage";
 
 const rootRoute = createRootRoute();
 
@@ -91,6 +92,15 @@ const updatePage = createRoute({
     </ProtectedRoute>
   ),
 });
+const scanPage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/scanning",
+  component: () => (
+    <ProtectedRoute>
+      <ScanPage />
+    </ProtectedRoute>
+  ),
+});
 
 const routeTree = rootRoute.addChildren([
   layoutRoute.addChildren([
@@ -101,6 +111,7 @@ const routeTree = rootRoute.addChildren([
     candraPage,
     mrPage,
     updatePage,
+    scanPage,
   ]),
   loginRoute,
 ]);

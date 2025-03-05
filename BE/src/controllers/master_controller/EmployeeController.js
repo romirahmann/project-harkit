@@ -28,6 +28,23 @@ const getEmployeeById = async (req, res) => {
     return api.error(res, "Failed to get employee", 500);
   }
 };
+const getEmployeeByNIK = async (req, res) => {
+  const { nik } = req.params;
+  if (!nik) {
+    return api.error(res, "ID is required", 400);
+  }
+
+  try {
+    const data = await model.getKaryawanByNIK(nik);
+    if (!data) {
+      return api.error(res, "Employee not found", 404);
+    }
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting employee by ID:", error);
+    return api.error(res, "Failed to get employee", 500);
+  }
+};
 
 const createEmployee = async (req, res) => {
   const { trn_date, nik, nama_karyawan, submittedby } = req.body;
@@ -102,4 +119,5 @@ module.exports = {
   createEmployee,
   updateEmployee,
   deleteEmployee,
+  getEmployeeByNIK,
 };

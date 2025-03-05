@@ -1,0 +1,379 @@
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { ApiUrl } from "../../context/Urlapi";
+import { MdDocumentScanner } from "react-icons/md";
+import moment from "moment";
+import dayjs from "dayjs";
+import { PaginationComponent } from "../reuse/PaginationComponent";
+import { SearchComponent } from "../reuse/SearchComponent";
+
+export function ScanPage() {
+  const baseUrl = useContext(ApiUrl);
+  const [dataCandra, setDataCandra] = useState([]);
+
+  const [step, setStep] = useState(1);
+  const [isLocked, setIsLocked] = useState(false);
+  const [userLogin, setUserLogin] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginatedData, setPaginatedData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [totalItemShow, setTotalItemShow] = useState(10);
+
+  const [formData, setFormData] = useState({
+    kode_checklist: "",
+    idproses: "",
+    nama_proses: "",
+    qty_image: 0,
+    nik: "",
+    nama_karyawan: "",
+    mulai: "",
+    selesai: "",
+    submittedby: "",
+    tanggal: "",
+  });
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userData"));
+    setUserLogin(user);
+  }, []);
+
+  useEffect(() => {
+    fetchDataCandra();
+  }, []);
+
+  useEffect(() => {
+    if (formData.idproses.trim() && !isLocked) {
+      axios
+        .get(`${baseUrl}/master/proses/${formData.idproses}`)
+        .then((res) =>
+          setFormData((prev) => ({
+            ...prev,
+            nama_proses: res.data.data.nama_proses || "",
+          }))
+        )
+        .catch(() => setFormData((prev) => ({ ...prev, nama_proses: "" })));
+    }
+  }, [formData.idproses, isLocked]);
+
+  useEffect(() => {
+    if (formData.nik.trim() && !isLocked) {
+      axios
+        .get(`${baseUrl}/master/employee-by-nik/${formData.nik}`)
+        .then((res) =>
+          setFormData((prev) => ({
+            ...prev,
+            nama_karyawan: res.data.data.nama_karyawan || "",
+          }))
+        )
+        .catch(() => setFormData((prev) => ({ ...prev, nama_karyawan: "" })));
+    }
+  }, [formData.nik, isLocked]);
+
+  useEffect(() => {
+    // Memastikan totalItemShow tidak null atau NaN
+    if (!totalItemShow || isNaN(totalItemShow)) {
+      setTotalItemShow(10);
+    }
+    // Update pagination data saat totalItemShow berubah
+    setCurrentPage(1); // Reset ke halaman pertama
+  }, [totalItemShow]);
+  const fetchDataCandra = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/master/candra-now`);
+      setDataCandra(response.data.data);
+      setFilteredData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleNextStep = (field) => {
+    if (formData[field].trim()) {
+      setStep((prev) => prev + 1);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const dateNow = dayjs().format("YYYY-MM-DD");
+    const timestamp = dayjs().format("HH:mm:ss");
+    const submittedByUser = userLogin?.username || "";
+
+    const newFormData = {
+      ...formData,
+      mulai: timestamp,
+      selesai: "00:00:00",
+      submittedby: submittedByUser,
+      tanggal: dateNow,
+    };
+    setFormData(newFormData);
+    await axios
+      .post(`${baseUrl}/master/add-scan`, newFormData)
+      .then((res) => {
+        setSuccessMessage(res.data.data);
+        fetchDataCandra();
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 2000);
+      })
+      .catch((err) => {
+        setErrorMessage(err.response.data.data.message);
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 2000);
+      });
+
+    if (!isLocked) {
+      setFormData({
+        kode_checklist: "",
+        idproses: "",
+        nama_proses: "",
+        qty_image: 0,
+        nik: "",
+        nama_karyawan: "",
+        mulai: "",
+        selesai: "",
+        submittedby: "",
+        tanggal: "",
+      });
+    }
+    setStep(1);
+  };
+
+  const handleSelesai = (scan) => {
+    // console.log(scan);
+    const timestamp = moment().format("HH:mm:ss");
+    let newData = {
+      ...scan,
+      selesai_formatted: timestamp,
+    };
+
+    if (newData) {
+      axios
+        .put(
+          `${baseUrl}/master/finish-proses/${newData.kode_checklist}/${newData.idproses}`,
+          newData
+        )
+        .then((res) => {
+          setSuccessMessage(
+            `Proses dengan ID ${newData.idproses} dan kode checklist ${newData.kode_checklist} telah selesai`
+          );
+          fetchDataCandra();
+          setTimeout(() => {
+            setSuccessMessage("");
+          }, 2000);
+        })
+        .catch((err) => {
+          setErrorMessage(`Silahkan ulangi klik tombol selesai`);
+        });
+    } else {
+      setErrorMessage("Data Not Found!");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 1500);
+    }
+  };
+  return (
+    <div className="container-fluid">
+      {/* Pesan Sukses */}
+      {successMessage && (
+        <div
+          className="p-4 text-sm text-green-800 rounded-lg bg-green-50"
+          role="alert"
+        >
+          <span className="font-medium">{successMessage}</span>
+        </div>
+      )}
+
+      {/* Pesan Error */}
+      {errorMessage && (
+        <div
+          className="p-4 text-sm text-red-800 rounded-lg bg-red-50"
+          role="alert"
+        >
+          <span className="font-medium">{errorMessage}</span>
+        </div>
+      )}
+      <div className="titlePage flex my-5 items-center">
+        <MdDocumentScanner className="text-4xl text-gray-700" />
+        <h1 className="text-3xl ms-2 font-bold text-gray-700">
+          SCANNING PROSES RS "HARAPAN KITA"
+        </h1>
+      </div>
+      <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="p-4 col-1 border rounded-lg shadow-md">
+          <form onSubmit={handleSubmit} className="space-y-3 p-4">
+            <h2 className="text-2xl text-center font-semibold mb-4">
+              SCAN MULAI
+            </h2>
+            <input
+              type="text"
+              name="kode_checklist"
+              placeholder="Kode Checklist"
+              value={formData.kode_checklist || ""}
+              onChange={handleChange}
+              onBlur={() => handleNextStep("kode_checklist")}
+              className="w-full p-2 border border-gray-200 rounded"
+              required
+            />
+            <input
+              type="text"
+              name="idproses"
+              placeholder="ID Proses"
+              value={formData.idproses || ""}
+              onChange={handleChange}
+              onBlur={() => handleNextStep("idproses")}
+              className="w-full p-2 border border-gray-200 rounded"
+              required
+              disabled={step < 2 || isLocked}
+            />
+
+            <input
+              type="text"
+              name="nik"
+              placeholder="NIK"
+              value={formData.nik || ""}
+              onChange={handleChange}
+              onBlur={() => handleNextStep("nik")}
+              className="w-full p-2 border border-gray-200 rounded"
+              required
+              disabled={step < 3 || isLocked}
+            />
+            <input
+              type="text"
+              name="nama_proses"
+              placeholder="Nama Proses"
+              value={formData.nama_proses || ""}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded bg-gray-100"
+            />
+            <input
+              type="text"
+              name="nama_karyawan"
+              placeholder="Nama Karyawan"
+              value={formData.nama_karyawan || ""}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded bg-gray-100"
+            />
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="lockValues"
+                checked={isLocked}
+                onChange={() => setIsLocked(!isLocked)}
+              />
+              <label htmlFor="lockValues">Kunci ID Proses & NIK</label>
+            </div>
+            <button
+              type="submit"
+              className="w-full hover:bg-blue-800 cursor-pointer bg-blue-600 text-white p-2 rounded"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+        <div className="col-span-3 border rounded-lg shadow-md overflow-auto p-5">
+          <h2 className="text-2xl text-center font-semibold mb-4">
+            SCAN SELESAI
+          </h2>
+          <div className="header flex">
+            <div className="showItem">
+              <label htmlFor="itemShow" className="text-gray-600 me-2">
+                Show:
+              </label>
+              <select
+                id="itemShow"
+                className="px-2 py-1 border border-gray-300 rounded"
+                value={totalItemShow}
+                onChange={(e) => {
+                  setTotalItemShow(Number(e.target.value));
+                }}
+              >
+                {[10, 20, 50, 100].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* Input Search */}
+            <div className="mb-4 ms-auto">
+              <SearchComponent result={setFilteredData} data={dataCandra} />
+            </div>
+          </div>
+          <table className="w-full border-collapse border text-sm">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border p-2">No</th>
+                <th className="border p-2">Kode Checklist</th>
+                <th className="border p-2">ID Proses</th>
+                <th className="border p-2">Nama Proses</th>
+                <th className="border p-2">Nama Karyawan</th>
+                <th className="border p-2">Mulai</th>
+                <th className="border p-2">Selesai</th>
+                <th className="border p-2">Lembar Scan</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedData.length > 0 ? (
+                filteredData.map((scan, index) => (
+                  <tr key={index} className="text-center">
+                    <td className="border p-2">{index + 1}</td>
+                    <td className="border p-2">{scan.kode_checklist}</td>
+                    <td className="border p-2">{scan.idproses}</td>
+                    <td className="border p-2">{scan.nama_proses}</td>
+                    <td className="border p-2">{scan.nama_karyawan}</td>
+                    <td className="border p-2">{scan.mulai_formatted}</td>
+                    <td className="border p-2">
+                      {scan.selesai_formatted !== "00:00:00" ? (
+                        scan.selesai_formatted
+                      ) : (
+                        <button
+                          onClick={() => handleSelesai(scan)}
+                          className="p-2 px-3 text-white bg-blue-700 hover:bg-blue-800 rounded-lg"
+                        >
+                          Selesai
+                        </button>
+                      )}
+                    </td>
+                    <td className="border p-2">
+                      {scan.idproses == "1003" && scan.qty_image === 0 ? (
+                        <button className="p-2 px-3 bg-blue-700 hover:bg-blue-800 rounded-lg">
+                          Selesai
+                        </button>
+                      ) : (
+                        scan.qty_image
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="text-center border p-4">
+                    Data tidak ditemukan
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          {/* Pagination */}
+          <PaginationComponent
+            setPaginatedData={setPaginatedData}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            data={filteredData || []}
+            itemShow={totalItemShow}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}

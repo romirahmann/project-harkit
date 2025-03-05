@@ -34,6 +34,29 @@ const dataExisting = async (kode_checklist, idproses) => {
   return result[0].count > 0;
 };
 
+const getAllByDateNow = async () => {
+  const db = getDB();
+  const query = `
+    SELECT 
+      id,
+      kode_checklist, 
+      idproses, 
+      nik, 
+      qty_image, 
+      nama_proses, 
+      nama_karyawan, 
+      tanggal, 
+      FORMAT(mulai, 'HH:nn:ss') AS mulai_formatted, 
+      FORMAT(selesai, 'HH:nn:ss') AS selesai_formatted, 
+      submittedby,
+      editBy
+    FROM tblcandra
+    WHERE tanggal = FORMAT(NOW(), 'yyyy-MM-dd')
+  `;
+  const result = await db.query(query);
+  return result;
+};
+
 const getCandraByKeys = async (kode_checklist, idproses) => {
   const db = getDB();
 
@@ -74,6 +97,32 @@ const createCandra = async (data) => {
   return result.count; // ✅ Return jumlah baris yang ditambahkan
 };
 
+const createCandraFromScan = async (data) => {
+  const db = getDB();
+  const {
+    kode_checklist,
+    idproses,
+    nik,
+    qty_image,
+    nama_proses,
+    nama_karyawan,
+    tanggal,
+    mulai,
+    selesai,
+    submittedby,
+  } = data;
+
+  const query = `
+    INSERT INTO tblcandra (kode_checklist, idproses, nik, qty_image, nama_proses, nama_karyawan, tanggal, mulai, selesai, submittedby)
+    VALUES ('${kode_checklist}', '${idproses}', '${nik}', ${parseInt(
+    qty_image
+  )}, '${nama_proses}', '${nama_karyawan}', #${tanggal}#, '${mulai}', '${selesai}', '${submittedby}')
+  `;
+
+  const result = await db.query(query);
+  return result.count; // ✅ Return jumlah baris yang ditambahkan
+};
+
 const updateCandra = async (kode_checklist, idproses, data) => {
   const db = getDB();
   const {
@@ -95,6 +144,20 @@ const updateCandra = async (kode_checklist, idproses, data) => {
     SET nik = '${nik}', qty_image = ${qty_image}, nama_proses = '${nama_proses}', 
         nama_karyawan = '${nama_karyawan}', tanggal = '${tanggal}', mulai = '${mulai}', 
         selesai = '${selesai}', editby = '${editby}'
+    WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
+  `;
+
+  const result = await db.query(query);
+  return result.count; // ✅ Return jumlah baris yang diperbarui
+};
+
+const finishedProses = async (kode_checklist, idproses, data) => {
+  const db = getDB();
+  const { selesai_formatted } = data;
+
+  const query = `
+    UPDATE tblcandra
+    SET selesai = '${selesai_formatted}'
     WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
   `;
 
@@ -131,4 +194,7 @@ module.exports = {
   deleteCandra,
   dataExisting,
   updateCandraByMR,
+  createCandraFromScan,
+  finishedProses,
+  getAllByDateNow,
 };

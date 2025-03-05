@@ -8,10 +8,16 @@ const getAllProses = async () => {
 
 const getProsesById = async (idproses) => {
   const db = getDB();
-  const result = await db.query(
-    `SELECT * FROM tblproses WHERE idproses = ${idproses}`
-  );
-  return result.length > 0 ? result[0] : null;
+  const query = `SELECT * FROM tblproses WHERE idproses = '${idproses}'`;
+  const result = await db.query(query);
+  return result[0];
+};
+
+const getProsesByUrutan = async (urutan) => {
+  const db = getDB();
+  const query = `SELECT * FROM tblproses WHERE urutan = '${urutan}'`;
+  const result = await db.query(query);
+  return result;
 };
 
 const createProses = async (data) => {
@@ -57,4 +63,5 @@ module.exports = {
   createProses,
   updateProses,
   deleteProses,
+  getProsesByUrutan,
 };

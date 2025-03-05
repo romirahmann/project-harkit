@@ -8,8 +8,14 @@ const getAllKaryawan = async () => {
 
 const getKaryawanById = async (id) => {
   const db = getDB();
-  const result = await db.query("SELECT * FROM tblkaryawan WHERE id = " + id);
+  const result = await db.query("SELECT * FROM tblkaryawan WHERE id = ", id);
   return result.length > 0 ? result[0] : null;
+};
+const getKaryawanByNIK = async (nik) => {
+  const db = getDB();
+  const query = `SELECT * FROM tblkaryawan WHERE nik ='${nik}'`;
+  const result = await db.query(query);
+  return result[0];
 };
 
 const createKaryawan = async (data) => {
@@ -68,4 +74,5 @@ module.exports = {
   createKaryawan,
   updateKaryawan,
   deleteKaryawan,
+  getKaryawanByNIK,
 };

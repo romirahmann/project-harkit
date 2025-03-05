@@ -30,6 +30,11 @@
     "controller": "EmployeeController.getEmployeeById"
   },
   {
+    "path": "/employee-by-nik/:nik",
+    "method": "get",
+    "controller": "EmployeeController.getEmployeeByNIK"
+  },
+  {
     "path": "/employee",
     "method": "post",
     "controller": "EmployeeController.createEmployee"
@@ -130,6 +135,11 @@
     "controller": "CandraController.getAllCandra"
   },
   {
+    "path": "/candra-now",
+    "method": "get",
+    "controller": "CandraController.getAllCandraDayNow"
+  },
+  {
     "path": "/candra/:kode_checklist/:idproses",
     "method": "get",
     "controller": "CandraController.getCandraByKeys"
@@ -140,9 +150,19 @@
     "controller": "CandraController.createCandra"
   },
   {
+    "path": "/add-scan",
+    "method": "post",
+    "controller": "CandraController.addScanCandra"
+  },
+  {
     "path": "/candra/:kode_checklist/:idproses",
     "method": "put",
     "controller": "CandraController.updateCandra"
+  },
+  {
+    "path": "/finish-proses/:kode_checklist/:idproses",
+    "method": "put",
+    "controller": "CandraController.finishedProses"
   },
   {
     "path": "/candra/:id",

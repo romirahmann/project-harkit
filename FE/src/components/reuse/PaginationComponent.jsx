@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Pagination } from "flowbite-react";
 import { useEffect, useMemo } from "react";
 
@@ -6,8 +7,9 @@ export const PaginationComponent = ({
   currentPage,
   setCurrentPage,
   data,
+  itemShow,
 }) => {
-  const itemsPerPage = 10;
+  const itemsPerPage = itemShow || 10;
   const totalPages = useMemo(
     () => Math.ceil((data?.length || 0) / itemsPerPage),
     [data]
