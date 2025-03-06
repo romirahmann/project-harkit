@@ -186,6 +186,31 @@ const finishedProses = async (req, res) => {
   }
 };
 
+const finishedProsesScan = async (req, res) => {
+  let { kode_checklist, idproses } = req.params;
+  const data = req.body;
+
+  kode_checklist = kode_checklist.replace(/'/g, "''");
+  idproses = idproses.replace(/'/g, "''");
+
+  if (!kode_checklist || !idproses)
+    return api.error(res, "kode_checklist and idproses are required", 400);
+  // Menambahkan properti jam
+  data.selesai_formatted = moment().format("HH:mm:ss"); // Format timestamp
+
+  try {
+    const updated = await model.finishedProsesScan(
+      kode_checklist,
+      idproses,
+      data
+    );
+    if (!updated) return api.error(res, "Candra not found or no changes", 404);
+    return api.ok(res, "Proses Scan selesai");
+  } catch (error) {
+    return api.error(res, "Failed to update proses scan", 500);
+  }
+};
+
 const deleteCandra = async (req, res) => {
   let { id } = req.params;
 
@@ -252,4 +277,5 @@ module.exports = {
   addScanCandra,
   finishedProses,
   getAllCandraDayNow,
+  finishedProsesScan,
 };

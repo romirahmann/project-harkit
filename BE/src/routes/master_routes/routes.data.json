@@ -165,6 +165,11 @@
     "controller": "CandraController.finishedProses"
   },
   {
+    "path": "/finish-proses-scan/:kode_checklist/:idproses",
+    "method": "put",
+    "controller": "CandraController.finishedProsesScan"
+  },
+  {
     "path": "/candra/:id",
     "method": "delete",
     "controller": "CandraController.deleteCandra"

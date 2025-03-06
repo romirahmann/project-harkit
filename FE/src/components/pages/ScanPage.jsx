@@ -7,6 +7,7 @@ import moment from "moment";
 import dayjs from "dayjs";
 import { PaginationComponent } from "../reuse/PaginationComponent";
 import { SearchComponent } from "../reuse/SearchComponent";
+import { FinishedScan } from "../../components/reuse/modals/FinishedScan";
 
 export function ScanPage() {
   const baseUrl = useContext(ApiUrl);
@@ -21,6 +22,10 @@ export function ScanPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [totalItemShow, setTotalItemShow] = useState(10);
+  const [proses, setProses] = useState([]);
+  const [showModalScan, setShowModalScan] = useState(false);
+  const [selectedData, setSelectedData] = useState([]);
+  const [filterIdProses, setFilterIdProses] = useState("All");
 
   const [formData, setFormData] = useState({
     kode_checklist: "",
@@ -42,6 +47,7 @@ export function ScanPage() {
 
   useEffect(() => {
     fetchDataCandra();
+    fetchDataProses();
   }, []);
 
   useEffect(() => {
@@ -80,6 +86,7 @@ export function ScanPage() {
     // Update pagination data saat totalItemShow berubah
     setCurrentPage(1); // Reset ke halaman pertama
   }, [totalItemShow]);
+
   const fetchDataCandra = async () => {
     try {
       const response = await axios.get(`${baseUrl}/master/candra-now`);
@@ -87,6 +94,15 @@ export function ScanPage() {
       setFilteredData(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchDataProses = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/master/prosess`);
+      setProses(res.data.data);
+    } catch (err) {
+      console.log("Error Fecthing Data Proses");
     }
   };
 
@@ -181,12 +197,31 @@ export function ScanPage() {
       }, 1500);
     }
   };
+
+  const handleShowModalScan = (scan) => {
+    setShowModalScan(true);
+    setSelectedData(scan);
+  };
+
+  const handleFilterChange = (e) => {
+    const selectedId = e.target.value;
+    setFilterIdProses(selectedId);
+
+    if (selectedId === "All") {
+      setFilteredData(dataCandra);
+    } else {
+      setFilteredData(
+        dataCandra.filter((item) => item.idproses === selectedId)
+      );
+    }
+  };
+
   return (
     <div className="container-fluid">
       {/* Pesan Sukses */}
       {successMessage && (
         <div
-          className="p-4 text-sm text-green-800 rounded-lg bg-green-50"
+          className="p-4 z-40 text-sm text-green-800 rounded-lg bg-green-50"
           role="alert"
         >
           <span className="font-medium">{successMessage}</span>
@@ -196,20 +231,20 @@ export function ScanPage() {
       {/* Pesan Error */}
       {errorMessage && (
         <div
-          className="p-4 text-sm text-red-800 rounded-lg bg-red-50"
+          className="p-4 z-40 text-sm text-red-800 rounded-lg bg-red-50"
           role="alert"
         >
           <span className="font-medium">{errorMessage}</span>
         </div>
       )}
-      <div className="titlePage flex my-5 items-center">
+      <div className="titlePage p-3 flex my-5 items-center">
         <MdDocumentScanner className="text-4xl text-gray-700" />
         <h1 className="text-3xl ms-2 font-bold text-gray-700">
           SCANNING PROSES RS "HARAPAN KITA"
         </h1>
       </div>
       <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="p-4 col-1 border rounded-lg shadow-md">
+        <div className="p-4 col-1 border rounded-lg shadow-md bg-gray-50">
           <form onSubmit={handleSubmit} className="space-y-3 p-4">
             <h2 className="text-2xl text-center font-semibold mb-4">
               SCAN MULAI
@@ -280,7 +315,7 @@ export function ScanPage() {
             </button>
           </form>
         </div>
-        <div className="col-span-3 border rounded-lg shadow-md overflow-auto p-5">
+        <div className="col-span-3 border rounded-lg shadow-md overflow-auto p-5 bg-gray-50">
           <h2 className="text-2xl text-center font-semibold mb-4">
             SCAN SELESAI
           </h2>
@@ -305,7 +340,25 @@ export function ScanPage() {
               </select>
             </div>
             {/* Input Search */}
-            <div className="mb-4 ms-auto">
+            <div className="mb-4 flex items-center ms-auto">
+              <div className="showItem mx-3">
+                <label htmlFor="itemShow" className="text-gray-600 me-2">
+                  ID Proses:
+                </label>
+                <select
+                  id="itemShow"
+                  className="px-2 py-1 border border-gray-300 rounded"
+                  defaultValue="All"
+                  onChange={handleFilterChange}
+                >
+                  <option value="All">All</option>
+                  {proses.map((value) => (
+                    <option key={value.idproses} value={value.idproses}>
+                      {value.idproses}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <SearchComponent result={setFilteredData} data={dataCandra} />
             </div>
           </div>
@@ -324,7 +377,7 @@ export function ScanPage() {
             </thead>
             <tbody>
               {paginatedData.length > 0 ? (
-                filteredData.map((scan, index) => (
+                paginatedData.map((scan, index) => (
                   <tr key={index} className="text-center">
                     <td className="border p-2">{index + 1}</td>
                     <td className="border p-2">{scan.kode_checklist}</td>
@@ -336,22 +389,29 @@ export function ScanPage() {
                       {scan.selesai_formatted !== "00:00:00" ? (
                         scan.selesai_formatted
                       ) : (
-                        <button
-                          onClick={() => handleSelesai(scan)}
-                          className="p-2 px-3 text-white bg-blue-700 hover:bg-blue-800 rounded-lg"
-                        >
-                          Selesai
-                        </button>
+                        <div className="button">
+                          {scan.idproses == "1003" && scan.qty_image === 0 ? (
+                            <button
+                              onClick={() => handleShowModalScan(scan)}
+                              className="p-2 text-white px-3 bg-blue-700 hover:bg-blue-800 rounded-lg"
+                            >
+                              Selesai
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleSelesai(scan)}
+                              className="p-2 px-3 text-white bg-blue-700 hover:bg-blue-800 rounded-lg"
+                            >
+                              Selesai
+                            </button>
+                          )}
+                        </div>
                       )}
                     </td>
                     <td className="border p-2">
-                      {scan.idproses == "1003" && scan.qty_image === 0 ? (
-                        <button className="p-2 px-3 bg-blue-700 hover:bg-blue-800 rounded-lg">
-                          Selesai
-                        </button>
-                      ) : (
-                        scan.qty_image
-                      )}
+                      {scan.idproses == "1003" && scan.qty_image === 0
+                        ? 0
+                        : scan.qty_image}
                     </td>
                   </tr>
                 ))
@@ -374,6 +434,12 @@ export function ScanPage() {
           />
         </div>
       </div>
+      <FinishedScan
+        isOpen={showModalScan}
+        onClose={() => setShowModalScan(false)}
+        selectedData={selectedData}
+        onUpdate={() => fetchDataCandra()}
+      />
     </div>
   );
 }

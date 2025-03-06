@@ -164,6 +164,19 @@ const finishedProses = async (kode_checklist, idproses, data) => {
   const result = await db.query(query);
   return result.count; // ✅ Return jumlah baris yang diperbarui
 };
+const finishedProsesScan = async (kode_checklist, idproses, data) => {
+  const db = getDB();
+  const { selesai_formatted, qty_image } = data;
+
+  const query = `
+    UPDATE tblcandra
+    SET selesai = '${selesai_formatted}', qty_image = ${qty_image}
+    WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
+  `;
+
+  const result = await db.query(query);
+  return result.count; // ✅ Return jumlah baris yang diperbarui
+};
 
 const updateCandraByMR = async (data) => {
   const db = getDB();
@@ -197,4 +210,5 @@ module.exports = {
   createCandraFromScan,
   finishedProses,
   getAllByDateNow,
+  finishedProsesScan,
 };
