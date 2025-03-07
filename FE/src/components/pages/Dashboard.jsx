@@ -1,18 +1,15 @@
 /* eslint-disable no-unused-vars */
-import { useContext, useEffect, useState } from "react";
-import { ApiUrl } from "../../context/Urlapi";
 
 import { FaTachometerAlt } from "react-icons/fa";
 
-import ChartComponent from "../charts/GrafikUtama";
+import ChartComponent from "../dashboard/GrafikUtama";
 
-import { TargetChart } from "../charts/TargetChart";
-import { SummaryDashboard } from "../charts/SummaryDashboard";
-import { StatistikDashboard } from "../charts/StatistikDashboard";
+import { TargetChart } from "../dashboard/TargetChart";
+import { SummaryDashboard } from "../dashboard/SummaryDashboard";
+import { StatistikDashboard } from "../dashboard/StatistikDashboard";
+import { TableRealTime } from "../dashboard/TableRealTime";
 
 export function Dashboard() {
-  const baseUrl = useContext(ApiUrl);
-
   return (
     <>
       <div className="container-fluid p-4">
@@ -44,7 +41,7 @@ export function Dashboard() {
               <SummaryDashboard />
             </div>
             <div className="tblRealTime col-span-3 bg-white p-3 rounded-md">
-              <h1>table real time</h1>
+              <TableRealTime />
             </div>
           </div>
         </div>

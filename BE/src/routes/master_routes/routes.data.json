@@ -184,5 +184,30 @@
     "method": "post",
     "controller": "UploadController.uploadFile",
     "middleware": "upload.single"
+  },
+  {
+    "path": "/data-statistik/:date",
+    "method": "get",
+    "controller": "DashboardController.getTotalStatistik"
+  },
+  {
+    "path": "/data-summary",
+    "method": "get",
+    "controller": "DashboardController.getSummaryData"
+  },
+  {
+    "path": "/data-pie",
+    "method": "get",
+    "controller": "DashboardController.getDataPieChart"
+  },
+  {
+    "path": "/realtime-proses",
+    "method": "get",
+    "controller": "DashboardController.getChecklistCompletion"
+  },
+  {
+    "path": "/proses-onprogres/:kode_checklist",
+    "method": "get",
+    "controller": "DashboardController.getDataProses"
   }
 ]
