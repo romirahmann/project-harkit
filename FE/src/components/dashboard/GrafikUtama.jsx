@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,6 +13,9 @@ import {
 } from "chart.js";
 
 import { FaChartLine } from "react-icons/fa";
+import { ApiUrl } from "../../context/Urlapi";
+import axios from "axios";
+import moment from "moment";
 
 ChartJS.register(
   CategoryScale,
@@ -26,12 +29,36 @@ ChartJS.register(
 
 const ChartComponent = () => {
   const [datasetVisibility, setDatasetVisibility] = useState({});
+  const [chartData, setChartData] = useState({});
+  const [selectionDate, setSelectionDate] = useState(
+    moment().format("YYYY-MM")
+  );
+  const [targets, setTarget] = useState();
+  const baseUrl = useContext(ApiUrl);
 
-  const labels = ["2025-03-01", "2025-03-02", "2025-03-03", "2025-03-04"];
-  const values1 = [10, 15, null, 25];
-  const values2 = [5, 20, 30, null];
-  const target_lembar_scan = 50;
-  const target_qty_image = 40;
+  useEffect(() => {
+    fecthDataChart();
+  }, []);
+
+  const fecthDataChart = async () => {
+    try {
+      let res = await axios.get(
+        `${baseUrl}/master/primary-chart/${selectionDate}`
+      );
+      let data = res.data.data;
+
+      setChartData(data);
+      setTarget(data.targets);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const labels = chartData?.dates || [];
+  const values1 = chartData?.values1 || [];
+  const values2 = chartData?.values2 || [];
+  const target_lembar_scan = targets?.[1]?.nilai ?? 0;
+  const target_qty_image = targets?.[0]?.nilai ?? 0;
 
   const filledValues1 = values1.map((val) =>
     val !== null && val !== 0 ? val : null
@@ -53,7 +80,7 @@ const ChartComponent = () => {
       },
       {
         label: "Target Qty Image",
-        data: Array(labels.length).fill(target_qty_image),
+        data: Array(labels?.length).fill(target_qty_image),
         borderColor: "red",
         type: "line",
         fill: false,
@@ -71,7 +98,7 @@ const ChartComponent = () => {
       },
       {
         label: "Target Lembar Scan",
-        data: Array(labels.length).fill(target_lembar_scan),
+        data: Array(labels?.length).fill(target_lembar_scan),
         borderColor: "#800000",
         type: "line",
         fill: false,

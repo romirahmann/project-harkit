@@ -84,7 +84,7 @@ const createCandra = async (req, res) => {
 
 const addScanCandra = async (req, res) => {
   const data = req.body;
-
+  // console.log(data);
   try {
     // Cek apakah proses ini sudah ada di tblcandra
     const existingCandra = await model.dataExisting(

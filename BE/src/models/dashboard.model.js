@@ -80,6 +80,12 @@ const allImage1001 = async () => {
   const result = await db.query(query);
   return result[0].total_1001;
 };
+const getAllTarget = async () => {
+  const db = await getDB();
+  const query = `SELECT * FROM tbltarget`;
+  const result = await db.query(query);
+  return result;
+};
 const totalDates = async () => {
   const db = await getDB();
   const query = `SELECT COUNT(*) AS total_dates 
@@ -109,27 +115,37 @@ const getAllProses = async () => {
   return result;
 };
 
-const getDataRealTime = async (dataProses) => {
+// Ambil data dari tblcandra
+const getCandraData = async () => {
   const db = await getDB();
-  const query = `
-        SELECT t.kode_checklist, 
-               SUM(IIF(t.idproses IN (${dataProses}) 
-                    AND t.selesai <> #00:00:00#, 1, 0)) AS total_idproses
-        FROM tblcandra AS t
-        GROUP BY t.kode_checklist
-        ORDER BY MIN(t.selesai) ASC
-      `;
+  const query =
+    "SELECT kode_checklist, idproses, selesai FROM tblcandra ORDER BY kode_checklist";
+  return db.query(query);
+};
+
+// Ambil data dari tblproses
+const getProsesData = async () => {
+  const db = await getDB();
+  const query = "SELECT idproses, nama_proses FROM tblproses ORDER BY urutan";
+  return db.query(query);
+};
+
+const getQtyImage = async (idproses, tanggal) => {
+  const db = await getDB();
+  const query = `SELECT tanggal, SUM(qty_image) AS total_qty
+      FROM tblcandra
+      WHERE idproses = '${idproses}'
+      GROUP BY tanggal`;
   const result = await db.query(query);
+
   return result;
 };
 
-const getOnProgresProses = async (kode_checklist) => {
-  const db = await getDB();
-  const query = `
-      SELECT idproses FROM tblcandra WHERE kode_checklist = '${kode_checklist}' AND TIMEVALUE(selesai) <> #00:00:00#
-  `;
-  const result = await db.query(query);
-  return result;
+const qtyDate = () => {
+  const db = getDB();
+};
+const qtyLembar = () => {
+  const db = getDB();
 };
 
 module.exports = {
@@ -145,6 +161,8 @@ module.exports = {
   targetImage,
   targetHarian,
   getAllProses,
-  getDataRealTime,
-  getOnProgresProses,
+  getCandraData,
+  getProsesData,
+  getAllTarget,
+  getQtyImage,
 };

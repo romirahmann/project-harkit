@@ -203,11 +203,16 @@
   {
     "path": "/realtime-proses",
     "method": "get",
-    "controller": "DashboardController.getChecklistCompletion"
+    "controller": "DashboardController.getDataRealTime"
   },
   {
     "path": "/proses-onprogres/:kode_checklist",
     "method": "get",
     "controller": "DashboardController.getDataProses"
+  },
+  {
+    "path": "/primary-chart/:monthSelected",
+    "method": "get",
+    "controller": "DashboardController.getDataPrimaryChart"
   }
 ]

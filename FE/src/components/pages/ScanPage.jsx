@@ -8,11 +8,12 @@ import dayjs from "dayjs";
 import { PaginationComponent } from "../reuse/PaginationComponent";
 import { SearchComponent } from "../reuse/SearchComponent";
 import { FinishedScan } from "../../components/reuse/modals/FinishedScan";
+import { useRef } from "react";
 
 export function ScanPage() {
   const baseUrl = useContext(ApiUrl);
   const [dataCandra, setDataCandra] = useState([]);
-
+  const kodeChecklistRef = useRef(null);
   const [step, setStep] = useState(1);
   const [isLocked, setIsLocked] = useState(false);
   const [userLogin, setUserLogin] = useState(null);
@@ -87,6 +88,12 @@ export function ScanPage() {
     setCurrentPage(1); // Reset ke halaman pertama
   }, [totalItemShow]);
 
+  useEffect(() => {
+    if (kodeChecklistRef.current) {
+      kodeChecklistRef.current.focus();
+    }
+  }, []);
+
   const fetchDataCandra = async () => {
     try {
       const response = await axios.get(`${baseUrl}/master/candra-now`);
@@ -107,6 +114,7 @@ export function ScanPage() {
   };
 
   const handleChange = (e) => {
+    setErrorMessage("");
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -138,12 +146,14 @@ export function ScanPage() {
         fetchDataCandra();
         setTimeout(() => {
           setSuccessMessage("");
+          kodeChecklistRef.current.focus();
         }, 2000);
       })
       .catch((err) => {
         setErrorMessage(err.response.data.data.message);
         setTimeout(() => {
           setErrorMessage("");
+          kodeChecklistRef.current.focus();
         }, 2000);
       });
 
@@ -162,6 +172,7 @@ export function ScanPage() {
       });
     }
     setStep(1);
+    kodeChecklistRef.current.focus();
   };
 
   const handleSelesai = (scan) => {
@@ -185,6 +196,7 @@ export function ScanPage() {
           fetchDataCandra();
           setTimeout(() => {
             setSuccessMessage("");
+            kodeChecklistRef.current.focus();
           }, 2000);
         })
         .catch((err) => {
@@ -194,6 +206,7 @@ export function ScanPage() {
       setErrorMessage("Data Not Found!");
       setTimeout(() => {
         setErrorMessage("");
+        kodeChecklistRef.current.focus();
       }, 1500);
     }
   };
@@ -213,6 +226,34 @@ export function ScanPage() {
       setFilteredData(
         dataCandra.filter((item) => item.idproses === selectedId)
       );
+    }
+  };
+
+  const handleEnter = (e) => {
+    console.log(e);
+    if (!isLocked) {
+      setStep((prev) => prev + 1);
+      if (e.key === "Enter") {
+        e.preventDefault(); // Mencegah form submit default
+
+        const form = e.target.form;
+        const index = Array.from(form.elements).indexOf(e.target);
+        const nextElement = form.elements[index + 1];
+
+        if (form.elements[index].form.value === "") {
+          setErrorMessage("Isi Inputan dengan benar");
+        }
+
+        if (nextElement) {
+          if (nextElement.disabled) {
+            // Jika elemen berikutnya disable, submit form
+            form.submit();
+          } else {
+            // Jika tidak, fokus ke elemen berikutnya
+            nextElement.focus();
+          }
+        }
+      }
     }
   };
 
@@ -245,7 +286,7 @@ export function ScanPage() {
       </div>
       <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="p-4 col-1 border rounded-lg shadow-md bg-gray-50">
-          <form onSubmit={handleSubmit} className="space-y-3 p-4">
+          <form className="space-y-3 p-4">
             <h2 className="text-2xl text-center font-semibold mb-4">
               SCAN MULAI
             </h2>
@@ -256,6 +297,8 @@ export function ScanPage() {
               value={formData.kode_checklist || ""}
               onChange={handleChange}
               onBlur={() => handleNextStep("kode_checklist")}
+              onKeyDown={(e) => handleEnter(e)}
+              ref={kodeChecklistRef}
               className="w-full p-2 border border-gray-200 rounded"
               required
             />
@@ -266,7 +309,10 @@ export function ScanPage() {
               value={formData.idproses || ""}
               onChange={handleChange}
               onBlur={() => handleNextStep("idproses")}
-              className="w-full p-2 border border-gray-200 rounded"
+              onKeyDown={(e) => handleEnter(e)}
+              className={`w-full p-2 border border-gray-200 rounded ${
+                isLocked ? "bg-gray-300" : ""
+              }`}
               required
               disabled={step < 2 || isLocked}
             />
@@ -277,8 +323,11 @@ export function ScanPage() {
               placeholder="NIK"
               value={formData.nik || ""}
               onChange={handleChange}
+              onKeyDown={(e) => handleEnter(e)}
               onBlur={() => handleNextStep("nik")}
-              className="w-full p-2 border border-gray-200 rounded"
+              className={`w-full p-2 border border-gray-200 rounded ${
+                isLocked ? "bg-gray-300" : ""
+              }`}
               required
               disabled={step < 3 || isLocked}
             />
@@ -287,16 +336,16 @@ export function ScanPage() {
               name="nama_proses"
               placeholder="Nama Proses"
               value={formData.nama_proses || ""}
-              readOnly
-              className="w-full p-2 border border-gray-200 rounded bg-gray-100"
+              disabled
+              className="w-full p-2 border border-gray-200 rounded bg-gray-300"
             />
             <input
               type="text"
               name="nama_karyawan"
               placeholder="Nama Karyawan"
               value={formData.nama_karyawan || ""}
-              readOnly
-              className="w-full p-2 border border-gray-200 rounded bg-gray-100"
+              disabled
+              className="w-full p-2 border border-gray-200 rounded bg-gray-300"
             />
             <div className="flex items-center gap-2">
               <input
@@ -309,6 +358,7 @@ export function ScanPage() {
             </div>
             <button
               type="submit"
+              onClick={handleSubmit}
               className="w-full hover:bg-blue-800 cursor-pointer bg-blue-600 text-white p-2 rounded"
             >
               Submit

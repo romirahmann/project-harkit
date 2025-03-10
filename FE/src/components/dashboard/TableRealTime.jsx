@@ -21,13 +21,10 @@ export function TableRealTime() {
     try {
       let res = await axios.get(`${baseUrl}/master/realtime-proses`);
 
-      // Filter hanya data dengan total_idproses < 6
-      const filteredChecklist = res.data.data.filter(
-        (item) => item.total_idproses < 6
-      );
+      let data = res.data.data;
 
-      setChecklist(filteredChecklist);
-      setFilteredData(filteredChecklist);
+      setChecklist(data);
+      setFilteredData(data);
     } catch (err) {
       console.log("Error fetching checklist:", err);
     }
@@ -35,12 +32,11 @@ export function TableRealTime() {
 
   return (
     <div className="container-fluid p-5">
-      <div className="flex items-center text-2xl mb-4">
-        <FcProcess />
-        <span className="font-bold ms-3 uppercase">Real Time Proses</span>
-      </div>
-
       <div className="filter flex my-2">
+        <div className="flex items-center text-2xl mb-4">
+          <FcProcess />
+          <span className="font-bold ms-3 uppercase">Real Time Proses</span>
+        </div>
         <div className="searchComponent ms-auto">
           <SearchComponent result={setFilteredData} data={checklist} />
         </div>
@@ -50,7 +46,7 @@ export function TableRealTime() {
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="text-xs font-bold text-gray-300 bg-[#043A70]">
             <tr>
-              <th className="px-6 py-3">NO</th>
+              <th className="px-6 py-3">No</th>
               <th className="px-6 py-3">Kode Checklist</th>
               <th className="px-6 py-3">On Progress</th>
               <th className="px-6 py-3">Finished</th>
@@ -60,15 +56,23 @@ export function TableRealTime() {
             {paginatedData.length > 0 ? (
               paginatedData.map((data, index) => (
                 <tr key={index} className="border-b">
-                  <td className="px-6 py-4">{index + 1}</td>
-                  <td className="px-6 py-4">{data.kode_checklist}</td>
-                  <td className="px-6 py-4">{data.total_idproses}</td>
-                  <td className="px-6 py-4">0</td>
+                  <td className="px-6 py-4 text-wrap">{index + 1}</td>
+                  <td className="px-6 py-4 text-wrap">{data.kode_checklist}</td>
+                  <td className="px-6 py-4 text-wrap">
+                    {data.belum_dijalankan
+                      .map((item) => item.nama_proses)
+                      .join(", ")}
+                  </td>
+                  <td className="px-6 py-4 text-wrap">
+                    {data.idproses_array
+                      .map((item) => item.nama_proses)
+                      .join(", ")}
+                  </td>
                 </tr>
               ))
             ) : (
               <tr className="text-center border-b">
-                <td colSpan={3} className="px-6 py-4">
+                <td colSpan={4} className="px-6 py-4">
                   Data not found!
                 </td>
               </tr>
