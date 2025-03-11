@@ -101,12 +101,14 @@ export function TargetChart() {
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-6 ">
+    <div className="flex md:flex-wrap justify-center gap-6 ">
       {/* Pie Chart Target Scan */}
-      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[18em]">
-        <span className="text-lg text-center text-red-800 flex items-center mb-4">
+      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[10em] lg:w-[18em]">
+        <span className=" text-md md:text-lg text-center text-red-800 flex items-center mb-4">
           <TbTargetArrow />
-          <h3 className=" text-gray-500 font-semibold ms-2">Target Image</h3>
+          <h3 className=" text-gray-500 font-semibold ms-1 md:ms-2">
+            Target Image
+          </h3>
         </span>
 
         <div className="relative w-full">
@@ -118,8 +120,8 @@ export function TargetChart() {
       </div>
 
       {/* Pie Chart Target Harian */}
-      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[18em]">
-        <span className="text-lg text-center text-red-800 flex items-center mb-4">
+      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[10em] lg:w-[18em]">
+        <span className="text-md md:text-lg text-center text-red-800 flex items-center mb-4">
           <TbTargetArrow />
           <h3 className=" font-semibold text-gray-500 ms-2 ">Target Harian</h3>
         </span>

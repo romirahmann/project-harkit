@@ -165,8 +165,6 @@ const getDataPrimaryChart = async (req, res) => {
     const values1 = dates.map((date) => data1Map[date] ?? null);
     const values2 = dates.map((date) => data2Map[date] ?? null);
 
-    console.log(values1, values2); // Debugging output
-
     return api.ok(res, { targets, dates, values1, values2 });
   } catch (err) {
     return api.error(res, err, 500);

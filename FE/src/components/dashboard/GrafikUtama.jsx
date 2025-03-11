@@ -38,7 +38,7 @@ const ChartComponent = () => {
 
   useEffect(() => {
     fecthDataChart();
-  }, []);
+  }, [chartData]);
 
   const fecthDataChart = async () => {
     try {
@@ -46,7 +46,6 @@ const ChartComponent = () => {
         `${baseUrl}/master/primary-chart/${selectionDate}`
       );
       let data = res.data.data;
-
       setChartData(data);
       setTarget(data.targets);
     } catch (err) {
@@ -132,18 +131,23 @@ const ChartComponent = () => {
     },
   };
 
+  const handleSelectionMonth = (e) => {
+    setSelectionDate(e.target.value);
+  };
+
   return (
     <div className="p-6 bg-white shadow rounded-md">
       <div className="headerChart flex items-center mb-10">
-        <span className="flex items-center text-2xl ">
+        <span className="flex items-center text-xl sm:me-2  lg:text-2xl ">
           <FaChartLine className="text-blue-800" />
-          <h2 className=" text-center font-bold ms-3 text-gray-500 ">
+          <h2 className=" font-bold text-wrap ms-3 text-gray-500 ">
             GRAFIK JUMLAH IMAGE
           </h2>
         </span>
         <div className="ms-auto">
           <input
             type="month"
+            onChange={(e) => handleSelectionMonth(e)}
             className="w-full p-2 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-gray-700 bg-white "
           />
         </div>

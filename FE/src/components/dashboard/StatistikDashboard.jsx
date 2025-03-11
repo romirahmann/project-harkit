@@ -40,12 +40,12 @@ export function StatistikDashboard() {
   return (
     <>
       <div className="countContent bg-gradient-to-r from-cyan-500 to-blue-500 p-10 rounded-xl">
-        <div className="headerChart flex items-center">
+        <div className="headerChart lg:flex items-center">
           <h1 className="text-2xl font-bold text-white uppercase">
             Statistik Proses Padaprima RS Harapan Kita
           </h1>
-          <div className="flex flex-col space-y-1 ms-auto">
-            <div className="relative">
+          <div className="flex flex-col mt-5 lg:mt-0 space-y-1 ms-auto">
+            <div className="relative ">
               <input
                 type="date"
                 onChange={(e) => handleChange(e)}
@@ -55,7 +55,7 @@ export function StatistikDashboard() {
             </div>
           </div>
         </div>
-        <div className="dashboard-1 grid grid-cols-5 mt-10 gap-3">
+        <div className="dashboard-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mt-10 gap-3">
           {/* Kode Checklist */}
           <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <GoChecklist className="text-2xl mb-3 text-gray-600" />

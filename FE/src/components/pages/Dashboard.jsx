@@ -25,18 +25,18 @@ export function Dashboard() {
         </div>
 
         <div className="content-2">
-          <div className="dashboard-2 grid grid-cols-4 mt-10 gap-3">
+          <div className="dashboard-2 grid sm:grid-cols-1 lg:grid-cols-4 lg:mt-10 gap-3">
             <div className="firstChart col-span-3">
               <ChartComponent />
             </div>
-            <div className="pieChart col-span-1">
+            <div className="pieChart col-span- ">
               <TargetChart />
             </div>
           </div>
         </div>
 
         <div className="content-3">
-          <div className="dashboard-3 grid grid-cols-4 mt-10 gap-3">
+          <div className="dashboard-3 grid grid-cols-1 lg:grid-cols-4 mt-10 gap-3">
             <div className="summary ">
               <SummaryDashboard />
             </div>
