@@ -51,7 +51,7 @@ const createTarget = async (req, res) => {
 const updateTarget = async (req, res) => {
   const { id } = req.params;
   const { nama, nilai } = req.body;
-
+  console.log(id, nama, nilai);
   if (!id) {
     return api.error(res, "ID is required", 400);
   }

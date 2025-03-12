@@ -26,8 +26,8 @@ const updateTarget = async (id, data) => {
   const db = getDB();
   const { nama, nilai } = data;
 
-  const query = `UPDATE tbltarget SET nama = ?, nilai = ? WHERE id = ?`;
-  const result = await db.query(query, [nama, nilai, id]);
+  const query = `UPDATE tbltarget SET nama = '${nama}', nilai = ${nilai} WHERE id = ${id}`;
+  const result = await db.query(query);
 
   return result.count; // ✅ Mengembalikan jumlah baris yang diperbarui
 };

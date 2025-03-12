@@ -17,6 +17,7 @@ export function TargetsPage() {
   const [paginatedData, setPaginatedData] = useState();
   const [selectedTarget, setSelectedTarget] = useState(null);
   const [showModalRemove, setShowModalRemove] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
   // STATUS
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -28,21 +29,28 @@ export function TargetsPage() {
 
   const fecthTarget = async () => {
     let res = await axios.get(`${baseUrl}/master/targets`);
-    // console.log(res.data.data);
+
     let data = res.data.data;
     setTarget(data);
     setFilteredData(data);
   };
 
-  const handleEdit = () => {};
+  const handleEdit = (target) => {
+    setShowModalEdit(true);
+    setSelectedTarget(target);
+  };
   const handleModalRemove = (target) => {
     setShowModalRemove(true);
     setSelectedTarget(target);
   };
 
   const handleRemove = async (id) => {
-    console.log(id);
     setShowModalRemove(false);
+  };
+
+  const handleUpdate = async () => {
+    fecthTarget();
+    setShowModalEdit(false);
   };
 
   return (
@@ -150,7 +158,12 @@ export function TargetsPage() {
             />
           </div>
         </div>
-        <EditTarget />
+        <EditTarget
+          isOpen={showModalEdit}
+          data={selectedTarget}
+          onClose={() => setShowModalEdit(false)}
+          onEdit={() => handleUpdate()}
+        />
         <RemoveModal
           isOpen={showModalRemove}
           onClose={() => setShowModalRemove(false)}
