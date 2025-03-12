@@ -16,10 +16,10 @@ const createTarget = async (data) => {
   const db = getDB();
   const { nama, nilai } = data;
 
-  const query = `INSERT INTO tbltarget (nama, nilai) VALUES (?, ?)`;
-  const result = await db.query(query, [nama, nilai]);
+  const query = `INSERT INTO tbltarget (nama, nilai) VALUES ('${nama}', ${nilai})`;
+  const result = await db.query(query);
 
-  return result.count; // ✅ Mengembalikan jumlah baris yang terpengaruh
+  return result;
 };
 
 const updateTarget = async (id, data) => {
@@ -29,15 +29,15 @@ const updateTarget = async (id, data) => {
   const query = `UPDATE tbltarget SET nama = '${nama}', nilai = ${nilai} WHERE id = ${id}`;
   const result = await db.query(query);
 
-  return result.count; // ✅ Mengembalikan jumlah baris yang diperbarui
+  return result;
 };
 
 const deleteTarget = async (id) => {
   const db = getDB();
-  const query = `DELETE FROM tbltarget WHERE id = ?`;
-  const result = await db.query(query, [id]);
+  const query = `DELETE FROM tbltarget WHERE id = ${id}`;
+  const result = await db.query(query);
 
-  return result.count; // ✅ Mengembalikan jumlah baris yang dihapus
+  return result;
 };
 
 module.exports = {

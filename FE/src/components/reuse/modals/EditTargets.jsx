@@ -28,7 +28,7 @@ export function EditTarget({ isOpen, onClose, data, onEdit }) {
         `${baseUrl}/master/target/${data?.id}`,
         formData
       );
-      // console.log(res);
+      console.log(res);
       setSuccessMessage("Data Berhasil Di Update!");
       setTimeout(() => {
         setSuccessMessage("");

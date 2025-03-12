@@ -38,10 +38,7 @@ const createTarget = async (req, res) => {
 
   try {
     const result = await model.createTarget({ nama, nilai });
-    if (result > 0) {
-      return api.ok(res, "Target successfully added");
-    }
-    return api.error(res, "Failed to add target", 500);
+    return api.ok(res, "Target successfully added");
   } catch (error) {
     console.error("❌ Error creating target:", error);
     return api.error(res, "Failed to add target", 500);
@@ -61,10 +58,7 @@ const updateTarget = async (req, res) => {
 
   try {
     const result = await model.updateTarget(id, { nama, nilai });
-    if (result > 0) {
-      return api.ok(res, "Target successfully updated");
-    }
-    return api.error(res, "Failed to update target", 500);
+    return api.ok(res, "Target successfully updated");
   } catch (error) {
     console.error("❌ Error updating target:", error);
     return api.error(res, "Failed to update target", 500);
@@ -80,10 +74,7 @@ const deleteTarget = async (req, res) => {
 
   try {
     const result = await model.deleteTarget(id);
-    if (result > 0) {
-      return api.ok(res, "Target successfully deleted");
-    }
-    return api.error(res, "Failed to delete target", 500);
+    return api.ok(res, "Target successfully deleted");
   } catch (error) {
     console.error("❌ Error deleting target:", error);
     return api.error(res, "Failed to delete target", 500);

@@ -3,11 +3,12 @@ import { ApiUrl } from "../../context/Urlapi";
 import axios from "axios";
 import { SearchComponent } from "../reuse/SearchComponent";
 import { RemoveModal } from "../reuse/RemoveModal";
-import { FaTrash } from "react-icons/fa6";
+import { FaCirclePlus, FaTrash } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
 import { TbTargetArrow } from "react-icons/tb";
 import { PaginationComponent } from "../reuse/PaginationComponent";
 import { EditTarget } from "../reuse/modals/EditTargets";
+import { AddTarget } from "../reuse/modals/AddTarget";
 
 /* eslint-disable no-unused-vars */
 export function TargetsPage() {
@@ -18,6 +19,7 @@ export function TargetsPage() {
   const [selectedTarget, setSelectedTarget] = useState(null);
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
+  const [showModalAdd, setShowModalAdd] = useState(false);
   // STATUS
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -46,6 +48,22 @@ export function TargetsPage() {
 
   const handleRemove = async (id) => {
     setShowModalRemove(false);
+    try {
+      let res = await axios.delete(`${baseUrl}/master/target/${id}`);
+      console.log(res.data.data);
+      fecthTarget();
+      setSuccessMessage(`Data target ${id} berhasil dihapus!`);
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 1500);
+    } catch (err) {
+      console.log(err);
+      fecthTarget();
+      setErrorMessage(`Gagal menghapus target dengan id ${id}`);
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 1500);
+    }
   };
 
   const handleUpdate = async () => {
@@ -59,7 +77,7 @@ export function TargetsPage() {
         {/* Pesan Sukses */}
         {successMessage && (
           <div
-            className="p-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+            className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
             role="alert"
           >
             <span className="font-medium">{successMessage}</span>
@@ -68,7 +86,7 @@ export function TargetsPage() {
         {/* Pesan Error */}
         {errorMessage && (
           <div
-            className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
             role="alert"
           >
             <span className="font-medium">{errorMessage}</span>
@@ -81,6 +99,14 @@ export function TargetsPage() {
           </h1>
         </div>
         <div className="searchBar items-center flex my-2 mt-10">
+          <div className="btnAdd">
+            <button
+              onClick={() => setShowModalAdd(true)}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center"
+            >
+              <FaCirclePlus /> <span className="ms-2">Add</span>
+            </button>
+          </div>
           <div className=" dark:bg-gray-900 ms-auto">
             <SearchComponent result={setFilteredData} data={targets} />
           </div>
@@ -158,6 +184,11 @@ export function TargetsPage() {
             />
           </div>
         </div>
+        <AddTarget
+          isOpen={showModalAdd}
+          onClose={() => setShowModalAdd(false)}
+          onAdd={() => fecthTarget()}
+        />
         <EditTarget
           isOpen={showModalEdit}
           data={selectedTarget}

@@ -25,10 +25,10 @@ export function AddUser({ isOpen, onClose, addUser }) {
   };
 
   // Handle submit form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      axios.post(`${baseUrl}/master/register`, formData);
+      await axios.post(`${baseUrl}/master/register`, formData);
       setSuccessMessage(`User berhasil ditambahkan!.`);
       // console.log(res.data.data);
       setTimeout(() => {
