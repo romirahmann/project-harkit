@@ -14,6 +14,7 @@ import { CandraPage } from "../pages/CandraPage";
 import { MrPage } from "../pages/MrPage";
 import { UpdatePage } from "../pages/UpdatePage";
 import { ScanPage } from "../pages/ScanPage";
+import { TargetsPage } from "../pages/Targets";
 
 const rootRoute = createRootRoute();
 
@@ -102,6 +103,16 @@ const scanPage = createRoute({
   ),
 });
 
+const targetPage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/targets",
+  component: () => (
+    <ProtectedRoute>
+      <TargetsPage />
+    </ProtectedRoute>
+  ),
+});
+
 const routeTree = rootRoute.addChildren([
   layoutRoute.addChildren([
     dashboardPage,
@@ -112,6 +123,7 @@ const routeTree = rootRoute.addChildren([
     mrPage,
     updatePage,
     scanPage,
+    targetPage,
   ]),
   loginRoute,
 ]);

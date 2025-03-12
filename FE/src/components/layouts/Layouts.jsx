@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import { MdDocumentScanner } from "react-icons/md";
 import { IoDocumentsSharp } from "react-icons/io5";
-import { TbLogout } from "react-icons/tb";
+import { TbLogout, TbTargetArrow } from "react-icons/tb";
 
 export function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -124,6 +124,14 @@ export function Layout() {
                   <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
                     <FaTasks size={16} />
                     {isSidebarOpen && <span className="ml-3">Data Proses</span>}
+                  </li>
+                </Link>
+                <Link to={"/targets"}>
+                  <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
+                    <TbTargetArrow size={16} />
+                    {isSidebarOpen && (
+                      <span className="ml-3">Data Targets</span>
+                    )}
                   </li>
                 </Link>
                 <Link to={"/data-users"}>
