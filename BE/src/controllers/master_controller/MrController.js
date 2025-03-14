@@ -3,6 +3,10 @@ const api = require("../../tools/common");
 const { Parser } = require("json2csv");
 const fs = require("fs");
 const path = require("path");
+const bwipJs = require("bwip-js");
+const PdfPrinter = require("pdfmake");
+const { table } = require("console");
+const moment = require("moment");
 
 const getAllDataMR = async (req, res) => {
   try {
@@ -171,6 +175,396 @@ const exportCsv = async (req, res) => {
   }
 };
 
+// MRT 3
+const getAllDataMRt3 = async (req, res) => {
+  try {
+    const data = await model.getAllMRt3();
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting DataMR:", error);
+    return api.error(res, "Failed to get DataMR", 500);
+  }
+};
+
+const generateFinishinCheecksheet = async (req, res) => {
+  try {
+    const { kode_checklist } = req.params;
+    if (!kode_checklist)
+      return res.status(400).json({ message: "Kode checklist diperlukan!" });
+
+    // 🔍 Ambil data dari database
+    let data = await model.getMRt3ByKodeChecklist(kode_checklist);
+    if (!data || data.length === 0)
+      return res.status(404).json({ message: "Data tidak ditemukan!" });
+
+    // 🖋️ Definisi font yang benar
+    const fonts = {
+      Roboto: {
+        normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
+        bold: path.resolve("src/fonts/Roboto-Bold.ttf"),
+        italics: path.resolve("src/fonts/Roboto-Italic.ttf"),
+        bolditalics: path.resolve("src/fonts/Roboto-BoldItalic.ttf"),
+      },
+    };
+
+    // 🖨️ Inisialisasi PdfPrinter
+    const printer = new PdfPrinter(fonts);
+
+    // 🏷️ Generate Barcode
+    let barcodeBase64 = null;
+    try {
+      const barcodeBuffer = await bwipJs.toBuffer({
+        bcid: "code39",
+        text: kode_checklist,
+        scale: 3,
+        height: 20,
+        includetext: true,
+        textxalign: "center",
+      });
+
+      barcodeBase64 = `data:image/png;base64,${barcodeBuffer.toString(
+        "base64"
+      )}`;
+    } catch (err) {
+      console.error("⚠️ Gagal membuat barcode:", err);
+    }
+
+    // Pastikan barcode valid, jika tidak, tampilkan teks alternatif
+    const barcodeImage = barcodeBase64
+      ? { image: barcodeBase64, width: 150, alignment: "right" }
+      : {
+          text: "Barcode tidak tersedia",
+          style: "subheader",
+          alignment: "right",
+        };
+
+    const docDefinition = {
+      pageSize: "A4",
+      pageMargins: [20, 40, 20, 40],
+      content: [
+        { text: "FINISHING CHECK SHEET", style: "header" },
+
+        {
+          table: {
+            widths: ["70%", "30%"],
+            body: [
+              [
+                {
+                  text: `Kode Checklist: ${kode_checklist}`,
+                  style: "table",
+                  alignment: "left",
+                },
+              ],
+            ],
+          },
+          layout: "noBorders",
+          margin: [0, 10, 0, 0],
+        },
+
+        {
+          table: {
+            widths: ["45%", "15%", "40%"],
+            body: [
+              [
+                {
+                  table: {
+                    widths: ["*", "*", "*", "*", "*"],
+                    body: [
+                      [
+                        {
+                          text: "Proses",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                        {
+                          text: "Nama",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                        {
+                          text: "Tanggal",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                        {
+                          text: "Mulai",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                        {
+                          text: "Selesai",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                      ],
+                      [{ text: "QC Image", fontSize: 9 }, "", "", "", ""],
+                    ],
+                    alignment: "left",
+                    style: "table",
+                  },
+                },
+                "",
+                barcodeImage,
+              ],
+            ],
+          },
+          layout: "noBorders",
+        },
+
+        // 📌 Table Utama (Data)
+        {
+          table: {
+            widths: ["10%", "12%", "20%", "10%", "15%", "18%", "12%"],
+            body: [
+              [
+                { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
+                { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
+                { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
+                { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
+                { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
+                { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
+                { text: "Cek Finishing", bold: true, fillColor: "#D3D3D3" },
+              ],
+              ...data.map((item) => [
+                item.NoUrut || "-",
+                item.NoMR || "-",
+                item.NamaPasien || "-",
+                item.Layanan || "-",
+                moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+                item.namadokumen || "-",
+                "",
+              ]),
+            ],
+          },
+          margin: [0, 10, 0, 0], //
+          style: "table",
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 20,
+          bold: true,
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+
+        table: {
+          fontSize: 9,
+        },
+      },
+    };
+
+    // 📄 Generate PDF dan kirim langsung ke response
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="Finishing_Checklist_${kode_checklist}.pdf"`
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    pdfDoc.pipe(res);
+    pdfDoc.end();
+  } catch (err) {
+    console.error("❌ Error generate Finishing Checksheet:", err);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
+const generateQcChecksheet = async (req, res) => {
+  try {
+    const { kode_checklist } = req.params;
+    if (!kode_checklist)
+      return res.status(400).json({ message: "Kode checklist diperlukan!" });
+
+    // 🔍 Ambil data dari database
+    let data = await model.getMRt3ByKodeChecklist(kode_checklist);
+    if (!data || data.length === 0)
+      return res.status(404).json({ message: "Data tidak ditemukan!" });
+
+    // 🖋️ Definisi font yang benar
+    const fonts = {
+      Roboto: {
+        normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
+        bold: path.resolve("src/fonts/Roboto-Bold.ttf"),
+        italics: path.resolve("src/fonts/Roboto-Italic.ttf"),
+        bolditalics: path.resolve("src/fonts/Roboto-BoldItalic.ttf"),
+      },
+    };
+
+    // 🖨️ Inisialisasi PdfPrinter
+    const printer = new PdfPrinter(fonts);
+
+    // 🏷️ Generate Barcode
+    let barcodeBase64 = null;
+    try {
+      const barcodeBuffer = await bwipJs.toBuffer({
+        bcid: "code39",
+        text: kode_checklist,
+        scale: 3,
+        height: 20,
+        includetext: true,
+        textxalign: "center",
+      });
+
+      barcodeBase64 = `data:image/png;base64,${barcodeBuffer.toString(
+        "base64"
+      )}`;
+    } catch (err) {
+      console.error("⚠️ Gagal membuat barcode:", err);
+    }
+
+    // Pastikan barcode valid, jika tidak, tampilkan teks alternatif
+    const barcodeImage = barcodeBase64
+      ? { image: barcodeBase64, width: 150, alignment: "right" }
+      : {
+          text: "Barcode tidak tersedia",
+          style: "subheader",
+          alignment: "right",
+        };
+
+    const docDefinition = {
+      pageSize: "A4",
+      pageMargins: [20, 40, 20, 40],
+      content: [
+        { text: "QC CHECK SHEET", style: "header" },
+
+        {
+          table: {
+            widths: ["70%", "30%"],
+            body: [
+              [
+                {
+                  text: `Kode Checklist: ${kode_checklist}`,
+                  style: "table",
+                  alignment: "left",
+                },
+              ],
+            ],
+          },
+          layout: "noBorders",
+          margin: [0, 10, 0, 0],
+        },
+
+        {
+          table: {
+            widths: ["45%", "15%", "40%"],
+            body: [
+              [
+                {
+                  table: {
+                    widths: ["*", "*", "*", "*", "*"],
+                    body: [
+                      [
+                        {
+                          text: "Proses",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                        {
+                          text: "Nama",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                        {
+                          text: "Tanggal",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                        {
+                          text: "Mulai",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                        {
+                          text: "Selesai",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 9,
+                        },
+                      ],
+                      [{ text: "Output", fontSize: 9 }, "", "", "", ""],
+                      [{ text: "QC", fontSize: 9 }, "", "", "", ""],
+                    ],
+                    alignment: "left",
+                    style: "table",
+                  },
+                },
+                "",
+                barcodeImage,
+              ],
+            ],
+          },
+          layout: "noBorders",
+        },
+
+        // 📌 Table Utama (Data)
+        {
+          table: {
+            widths: ["10%", "12%", "20%", "10%", "10%", "18%", "10%", "10%"],
+            body: [
+              [
+                { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
+                { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
+                { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
+                { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
+                { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
+                { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
+                { text: "Cek Ouput", bold: true, fillColor: "#D3D3D3" },
+                { text: "Cek QC", bold: true, fillColor: "#D3D3D3" },
+              ],
+              ...data.map((item) => [
+                item.NoUrut || "-",
+                item.NoMR || "-",
+                item.NamaPasien || "-",
+                item.Layanan || "-",
+                moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+                item.namadokumen || "-",
+                "",
+                "",
+              ]),
+            ],
+          },
+          margin: [0, 10, 0, 0], //
+          style: "table",
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 20,
+          bold: true,
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+
+        table: {
+          fontSize: 9,
+        },
+      },
+    };
+
+    // 📄 Generate PDF dan kirim langsung ke response
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="Finishing_Checklist_${kode_checklist}.pdf"`
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    pdfDoc.pipe(res);
+    pdfDoc.end();
+  } catch (err) {
+    console.error("❌ Error generate Finishing Checksheet:", err);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
 module.exports = {
   getAllDataMR,
   getDataMRByKeys,
@@ -178,4 +572,7 @@ module.exports = {
   updateDataMR,
   deleteDataMR,
   exportCsv,
+  getAllDataMRt3,
+  generateFinishinCheecksheet,
+  generateQcChecksheet,
 };

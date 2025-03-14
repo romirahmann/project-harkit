@@ -214,5 +214,20 @@
     "path": "/primary-chart/:monthSelected",
     "method": "get",
     "controller": "DashboardController.getDataPrimaryChart"
+  },
+  {
+    "path": "/datMRt3",
+    "method": "get",
+    "controller": "MrController.getAllDataMRt3"
+  },
+  {
+    "path": "/finishing-checksheet/:kode_checklist",
+    "method": "get",
+    "controller": "MrController.generateFinishinCheecksheet"
+  },
+  {
+    "path": "/qc-checksheet/:kode_checklist",
+    "method": "get",
+    "controller": "MrController.generateQcChecksheet"
   }
 ]

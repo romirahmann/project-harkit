@@ -97,6 +97,45 @@ const getQtyByMR = async () => {
   return result;
 };
 
+const updateDataMR = async (NoUrut, Kode_Checklist, data) => {
+  const db = getDB();
+  const { NoMR, NamaPasien, Tanggal, nobox } = data;
+
+  const query = `
+  UPDATE tblDataMR 
+  SET NoMR = '${NoMR}', 
+      NamaPasien = '${NamaPasien}', 
+      Tanggal = '${Tanggal}', 
+      nobox = '${nobox}'
+  WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'
+`;
+
+  const result = await db.query(query);
+  return result.count;
+};
+
+const deleteDataMR = async (NoUrut, Kode_Checklist) => {
+  const db = getDB();
+  const result = await db.query(
+    "DELETE FROM tblDataMR WHERE NoUrut = ? AND Kode_Checklist = ?",
+    [NoUrut, Kode_Checklist]
+  );
+  return result.count;
+};
+
+// MR T3
+const getAllMRt3 = async () => {
+  const db = getDB();
+  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen FROM tblDataMRt3 `;
+  const result = await db.query(query);
+  return result;
+};
+const getMRt3ByKodeChecklist = async (kode_checklist) => {
+  const db = getDB();
+  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen FROM tblDataMRt3 WHERE Kode_Checklist = '${kode_checklist}'`;
+  const result = await db.query(query);
+  return result;
+};
 const createDataMRt3 = async (data) => {
   const db = getDB();
   const {
@@ -136,32 +175,6 @@ const dataExistingT3 = async (NoUrut, Kode_Checklist) => {
   return result[0].total_count > 0;
 };
 
-const updateDataMR = async (NoUrut, Kode_Checklist, data) => {
-  const db = getDB();
-  const { NoMR, NamaPasien, Tanggal, nobox } = data;
-
-  const query = `
-  UPDATE tblDataMR 
-  SET NoMR = '${NoMR}', 
-      NamaPasien = '${NamaPasien}', 
-      Tanggal = '${Tanggal}', 
-      nobox = '${nobox}'
-  WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'
-`;
-
-  const result = await db.query(query);
-  return result.count;
-};
-
-const deleteDataMR = async (NoUrut, Kode_Checklist) => {
-  const db = getDB();
-  const result = await db.query(
-    "DELETE FROM tblDataMR WHERE NoUrut = ? AND Kode_Checklist = ?",
-    [NoUrut, Kode_Checklist]
-  );
-  return result.count;
-};
-
 module.exports = {
   getAllDataMR,
   getDataMRByKeys,
@@ -174,4 +187,6 @@ module.exports = {
   dataExistingByMR,
   updateQtyMR,
   getQtyByMR,
+  getAllMRt3,
+  getMRt3ByKodeChecklist,
 };

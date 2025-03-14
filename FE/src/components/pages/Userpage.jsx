@@ -117,19 +117,19 @@ export function Userpage() {
             <table className="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-500 ">
               <thead className="text-xs font-bold text-gray-300 uppercase bg-[#043A70] dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-6 py-3 col-1">
+                  <th scope="col" className="px-4 py-2">
                     No
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2">
                     Username
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2">
                     Email
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2">
                     Jabatan
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2">
                     Action
                   </th>
                 </tr>
@@ -143,14 +143,14 @@ export function Userpage() {
                     >
                       <th
                         scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
                         {index + 1}
                       </th>
-                      <td className="px-6 py-4">{user.username}</td>
-                      <td className="px-6 py-4">{user.email}</td>
-                      <td className="px-6 py-4">{user.jabatan}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-2">{user.username}</td>
+                      <td className="px-4 py-2">{user.email}</td>
+                      <td className="px-4 py-2">{user.jabatan}</td>
+                      <td className="px-4 py-2">
                         <button
                           onClick={() => handleEdit(user)}
                           className="text-green-500 hover:bg-green-600 hover:text-white text-center font-medium px-1 py-1  rounded-md"
@@ -170,7 +170,7 @@ export function Userpage() {
                   <tr className=" border-b dark:bg-gray-800 dark:border-gray-900 border-gray-300">
                     <td
                       scope="row"
-                      className="col-span-5 px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      className="col-span-5 px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                     >
                       <p>Users not found !</p>
                     </td>

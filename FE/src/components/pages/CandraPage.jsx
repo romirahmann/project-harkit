@@ -126,36 +126,36 @@ export function CandraPage() {
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="text-xs font-bold text-gray-300 bg-[#043A70]">
             <tr>
-              <th className="px-6 py-3">N</th>
-              <th className="px-6 py-3">Kode Checklist</th>
-              <th className="px-6 py-3">ID Proses</th>
-              <th className="px-6 py-3">NIK</th>
-              <th className="px-6 py-3">Qty Image</th>
-              <th className="px-6 py-3">Nama Proses</th>
-              <th className="px-6 py-3">Nama Karyawan</th>
-              <th className="px-6 py-3">Tanggal</th>
-              <th className="px-6 py-3">Mulai</th>
-              <th className="px-6 py-3">Selesai</th>
-              <th className="px-6 py-3">Action</th>
+              <th className="px-4 py-2">N</th>
+              <th className="px-4 py-2">Kode Checklist</th>
+              <th className="px-4 py-2">ID Proses</th>
+              <th className="px-4 py-2">NIK</th>
+              <th className="px-4 py-2">Qty Image</th>
+              <th className="px-4 py-2">Nama Proses</th>
+              <th className="px-4 py-2">Nama Karyawan</th>
+              <th className="px-4 py-2">Tanggal</th>
+              <th className="px-4 py-2">Mulai</th>
+              <th className="px-4 py-2">Selesai</th>
+              <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
           <tbody className="bg-white">
             {paginatedData?.length > 0 ? (
               paginatedData.map((data, index) => (
                 <tr key={data.id} className="border-b">
-                  <td className="px-6 py-4">{index + 1}</td>
-                  <td className="px-6 py-4">{data.kode_checklist}</td>
-                  <td className="px-6 py-4">{data.idproses}</td>
-                  <td className="px-6 py-4">{data.nik}</td>
-                  <td className="px-6 py-4">{data.qty_image}</td>
-                  <td className="px-6 py-4">{data.nama_proses}</td>
-                  <td className="px-6 py-4">{data.nama_karyawan}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-2">{index + 1}</td>
+                  <td className="px-4 py-2">{data.kode_checklist}</td>
+                  <td className="px-4 py-2">{data.idproses}</td>
+                  <td className="px-4 py-2">{data.nik}</td>
+                  <td className="px-4 py-2">{data.qty_image}</td>
+                  <td className="px-4 py-2">{data.nama_proses}</td>
+                  <td className="px-4 py-2">{data.nama_karyawan}</td>
+                  <td className="px-4 py-2">
                     {moment(data.tanggal).format("DD-MM-YYYY")}
                   </td>
-                  <td className="px-6 py-4">{data.mulai_formatted}</td>
-                  <td className="px-6 py-4">{data.selesai_formatted}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-2">{data.mulai_formatted}</td>
+                  <td className="px-4 py-2">{data.selesai_formatted}</td>
+                  <td className="px-4 py-2">
                     <button
                       onClick={() => handleEdit(data)}
                       className="text-green-500 px-1 py-1 rounded-md"

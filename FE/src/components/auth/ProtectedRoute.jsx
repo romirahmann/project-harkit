@@ -4,12 +4,13 @@ import { useEffect } from "react";
 export function ProtectedRoute({ children }) {
   const navigate = useNavigate();
   const isAuthenticated = localStorage.getItem("token") !== null;
+  const expiresAt = localStorage.getItem("expiresAt");
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || (expiresAt && Date.now() > Number(expiresAt))) {
       navigate({ to: "/login" });
     }
-  }, [isAuthenticated, navigate]);
+  }, [navigate]);
 
   return isAuthenticated ? children : null;
 }

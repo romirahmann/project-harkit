@@ -116,17 +116,17 @@ export function TargetsPage() {
             <table className="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-500 ">
               <thead className="text-xs font-bold text-gray-300 uppercase bg-[#043A70] dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-6 py-3 col-1">
+                  <th scope="col" className="px-4 py-2">
                     No
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2 ">
                     Rincian Target
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2 ">
                     Nilai
                   </th>
 
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2 ">
                     Action
                   </th>
                 </tr>
@@ -144,10 +144,12 @@ export function TargetsPage() {
                       >
                         {index + 1}
                       </th>
-                      <td className="px-6 py-4">{target.nama}</td>
-                      <td className="px-6 py-4">{target.nilai}</td>
+                      <td className="px-4 py-2">{target.nama}</td>
+                      <td className="px-4 py-2">
+                        {target.nilai.toLocaleString("id-ID")}
+                      </td>
 
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-2">
                         <button
                           onClick={() => handleEdit(target)}
                           className="text-green-500 hover:bg-green-600 hover:text-white text-center font-medium px-1 py-1  rounded-md"

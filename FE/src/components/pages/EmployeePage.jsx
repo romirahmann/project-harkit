@@ -101,24 +101,24 @@ export function EmployeePage() {
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="text-xs font-bold text-gray-300 bg-[#043A70]">
             <tr>
-              <th className="px-6 py-3">No</th>
-              <th className="px-6 py-3">NIK</th>
-              <th className="px-6 py-3">Nama Karyawan</th>
-              <th className="px-6 py-3">Submitted By</th>
+              <th className="px-4 py-2">No</th>
+              <th className="px-4 py-2">NIK</th>
+              <th className="px-4 py-2">Nama Karyawan</th>
+              <th className="px-4 py-2">Submitted By</th>
 
-              <th className="px-6 py-3">Action</th>
+              <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
           <tbody className="bg-white">
             {paginatedData?.length > 0 ? (
               paginatedData.map((karyawan, index) => (
                 <tr key={karyawan.id} className="border-b">
-                  <th className="px-6 py-4">{index + 1}</th>
-                  <td className="px-6 py-4">{karyawan.nik}</td>
-                  <td className="px-6 py-4">{karyawan.nama_karyawan}</td>
-                  <td className="px-6 py-4">{karyawan.submittedby}</td>
+                  <th className="px-4 py-2">{index + 1}</th>
+                  <td className="px-4 py-2">{karyawan.nik}</td>
+                  <td className="px-4 py-2">{karyawan.nama_karyawan}</td>
+                  <td className="px-4 py-2">{karyawan.submittedby}</td>
 
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-2">
                     <button
                       onClick={() => handleEdit(karyawan)}
                       className="text-green-500 px-1 py-1 rounded-md"

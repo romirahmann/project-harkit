@@ -114,19 +114,19 @@ export function Proses() {
             <table className="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-500 ">
               <thead className="text-xs font-bold text-gray-300 uppercase bg-[#043A70] dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-6 py-3 col-1">
+                  <th scope="col" className="px-4 py-2">
                     No
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2">
                     ID Proses
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2">
                     Nama Proses
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2">
                     Urutan
                   </th>
-                  <th scope="col" className="px-6 py-3 col-2">
+                  <th scope="col" className="px-4 py-2">
                     Action
                   </th>
                 </tr>
@@ -144,10 +144,10 @@ export function Proses() {
                       >
                         {index + 1}
                       </th>
-                      <td className="px-6 py-4">{proses.idproses}</td>
-                      <td className="px-6 py-4">{proses.nama_proses}</td>
-                      <td className="px-6 py-4">{proses.urutan}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-2">{proses.idproses}</td>
+                      <td className="px-4 py-2">{proses.nama_proses}</td>
+                      <td className="px-4 py-2">{proses.urutan}</td>
+                      <td className="px-4 py-2">
                         <button
                           onClick={() => handleEdit(proses)}
                           className="text-green-500 hover:bg-green-600 hover:text-white text-center font-medium px-1 py-1  rounded-md"

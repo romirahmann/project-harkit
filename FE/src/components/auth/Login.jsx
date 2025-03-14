@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useContext, useState } from "react";
 import { ApiUrl } from "../../context/Urlapi";
 import axios from "axios";
@@ -29,7 +30,10 @@ export function Login() {
         .post(`${baseUrl}/auth/login`, formLogin)
         .then((res) => {
           // console.log(res.data.data);
+          const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
+
           localStorage.setItem("token", res.data.data.token);
+          localStorage.setItem("expiresAt", expiresAt);
           localStorage.setItem("userData", JSON.stringify(res.data.data.user));
           setAllert(true);
           setTimeout(() => {

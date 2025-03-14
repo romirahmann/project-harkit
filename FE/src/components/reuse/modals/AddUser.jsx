@@ -133,6 +133,7 @@ export function AddUser({ isOpen, onClose, addUser }) {
                 <option value="">Choose a role</option>
                 <option value="Admin">Admin</option>
                 <option value="User">User</option>
+                <option value="Leader">Leader</option>
               </select>
             </div>
             <div>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Outlet, Link, useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -12,20 +13,46 @@ import {
   FaUsersCog,
   FaUserCog,
 } from "react-icons/fa";
+import { MdOutlineLibraryAddCheck, MdOutlineFactCheck } from "react-icons/md";
 import { MdDocumentScanner } from "react-icons/md";
-import { IoDocumentsSharp } from "react-icons/io5";
+import { IoDocumentsSharp, IoShieldCheckmarkOutline } from "react-icons/io5";
 import { TbLogout, TbTargetArrow } from "react-icons/tb";
+import { BsClipboardData } from "react-icons/bs";
 
 export function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
   const [isKelolaDataOpen, setIsKelolaDataOpen] = useState(false);
+  const [isChecksheetOpen, setIsChecksheet] = useState(false);
   const [userLogin, setUserLogin] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("userData"));
     setUserLogin(user);
+
+    // Timer logout otomatis setelah 30 menit tidak ada aktivitas
+    let inactivityTimer;
+
+    const resetTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(handleLogout, 24 * 60 * 60 * 1000);
+    };
+
+    // Event listener untuk deteksi aktivitas
+    window.addEventListener("mousemove", resetTimer);
+    window.addEventListener("keydown", resetTimer);
+    window.addEventListener("click", resetTimer);
+
+    // Atur ulang timer saat pertama kali komponen di-mount
+    resetTimer();
+
+    return () => {
+      clearTimeout(inactivityTimer);
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("keydown", resetTimer);
+      window.removeEventListener("click", resetTimer);
+    };
   }, []);
 
   const handleLogout = () => {
@@ -65,8 +92,16 @@ export function Layout() {
               </li>
             </Link>
 
-            {userLogin?.jabatan === "Admin" ? (
+            {userLogin?.jabatan !== "User" ? (
               <div className="admin">
+                {/* Cheecksheet */}
+                <Link to={"/checksheet"}>
+                  <li className="flex items-center p-4 text-white hover:bg-blue-600 cursor-pointer">
+                    <MdOutlineLibraryAddCheck size={20} />
+                    {isSidebarOpen && <span className="ml-3">Checksheet</span>}
+                  </li>
+                </Link>
+
                 {/* Update Data */}
                 <Link to={"/update-database"}>
                   <li className="flex items-center p-4 text-white hover:bg-blue-600 cursor-pointer">
@@ -112,6 +147,12 @@ export function Layout() {
                     {isSidebarOpen && <span className="ml-3">Data Candra</span>}
                   </li>
                 </Link>
+                <Link to={"/data-kcp"}>
+                  <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
+                    <BsClipboardData size={16} />
+                    {isSidebarOpen && <span className="ml-3">Data KCP</span>}
+                  </li>
+                </Link>
                 <Link to={"/data-karyawan"}>
                   <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
                     <FaUsers size={16} />
@@ -134,12 +175,16 @@ export function Layout() {
                     )}
                   </li>
                 </Link>
-                <Link to={"/data-users"}>
-                  <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
-                    <FaUserCog size={16} />
-                    {isSidebarOpen && <span className="ml-3">Data Users</span>}
-                  </li>
-                </Link>
+                {userLogin?.jabatan === "Admin" && (
+                  <Link to={"/data-users"}>
+                    <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
+                      <FaUserCog size={16} />
+                      {isSidebarOpen && (
+                        <span className="ml-3">Data Users</span>
+                      )}
+                    </li>
+                  </Link>
+                )}
               </ul>
             )}
           </ul>

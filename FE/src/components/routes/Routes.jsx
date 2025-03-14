@@ -15,6 +15,7 @@ import { MrPage } from "../pages/MrPage";
 import { UpdatePage } from "../pages/UpdatePage";
 import { ScanPage } from "../pages/ScanPage";
 import { TargetsPage } from "../pages/Targets";
+import { CheecksheetPage } from "../pages/CheecksheetPage";
 
 const rootRoute = createRootRoute();
 
@@ -112,6 +113,15 @@ const targetPage = createRoute({
     </ProtectedRoute>
   ),
 });
+const checkPage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/checksheet",
+  component: () => (
+    <ProtectedRoute>
+      <CheecksheetPage />
+    </ProtectedRoute>
+  ),
+});
 
 const routeTree = rootRoute.addChildren([
   layoutRoute.addChildren([
@@ -124,6 +134,7 @@ const routeTree = rootRoute.addChildren([
     updatePage,
     scanPage,
     targetPage,
+    checkPage,
   ]),
   loginRoute,
 ]);
