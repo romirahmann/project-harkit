@@ -131,8 +131,17 @@ const deleteDataMR = async (req, res) => {
 };
 
 const exportCsv = async (req, res) => {
+  const { Kode_Checklist } = req.params;
   try {
-    const data = await model.getAllDataMR();
+    console.log(Kode_Checklist);
+    let data;
+    if (Kode_Checklist !== null) {
+      data = await model.getDataMRByChecklist(Kode_Checklist);
+      // console.log(data);
+    } else {
+      data = await model.getAllMRt3();
+      // console.log(data);
+    }
     if (data.length === 0) {
       return api.error(res, "Data Not Found!", 400);
     }
@@ -565,6 +574,83 @@ const generateQcChecksheet = async (req, res) => {
   }
 };
 
+const updateMRt3 = async (req, res) => {
+  const data = req.body;
+  try {
+    console.log(data);
+    let result = await model.updateDataMRt3(data);
+    return api.ok(res, result);
+  } catch (error) {
+    console.log(error);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
+const removeMRt3 = async (req, res) => {
+  const { NoUrut, Kode_Checklist } = req.params;
+  console.log(NoUrut, Kode_Checklist);
+  try {
+    let result = await model.deleteMRt3({ NoUrut, Kode_Checklist });
+    return api.ok(res, "Delete Successfully!");
+  } catch (err) {
+    console.log(err);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
+const exportCSVMRt3 = async (req, res) => {
+  const { Kode_Checklist } = req.params;
+  try {
+    let data;
+    if (Kode_Checklist !== null) {
+      data = await model.getMRt3ByKodeChecklist(Kode_Checklist);
+    } else {
+      data = await model.getAllMRt3();
+    }
+
+    if (data.length === 0) {
+      return api.error(res, "Data Not Found!", 400);
+    }
+
+    // Definisikan kolom yang akan diekspor
+    const fields = [
+      "NoUrut",
+      "NoMR",
+      "Kode_Checklist",
+      "NamaPasien",
+      "Tanggal",
+      "Qty_Image",
+      "Urut",
+      "Mulai",
+      "Selesai",
+      "Layanan",
+      "Mulai",
+      "Selesai",
+      "namadokumen",
+    ];
+    // Konversi data ke CSV
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(data);
+    // Simpan CSV ke file sementara
+    const filePath = path.join(__dirname, "../../exports/MRt3.csv");
+    fs.writeFileSync(filePath, csv);
+
+    // Kirim file CSV ke client
+    res.download(filePath, "data_MRt3.csv", (err) => {
+      if (err) {
+        console.error("Error saat mengirim file:", err);
+        res.status(500).json({ message: "Gagal mengunduh file" });
+      }
+
+      // Hapus file setelah dikirim (opsional)
+      fs.unlinkSync(filePath);
+    });
+  } catch (error) {
+    console.error("❌ Error exporting CSV:", error);
+    return api.error(res, "Failed to export CSV", 500);
+  }
+};
+
 module.exports = {
   getAllDataMR,
   getDataMRByKeys,
@@ -575,4 +661,7 @@ module.exports = {
   getAllDataMRt3,
   generateFinishinCheecksheet,
   generateQcChecksheet,
+  updateMRt3,
+  removeMRt3,
+  exportCSVMRt3,
 };

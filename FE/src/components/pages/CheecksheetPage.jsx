@@ -137,7 +137,6 @@ export function CheecksheetPage() {
                 <th className="px-4 py-2">Kode Checklist</th>
                 <th className="px-4 py-2">No MR</th>
                 <th className="px-4 py-2">Layanan</th>
-                {/* <th className="px-6 py-3">No Box</th> */}
                 <th className="px-4 py-2">Nama Pasien</th>
                 <th className="px-4 py-2">Tanggal</th>
                 <th className="px-4 py-2">Qty Image</th>

@@ -20,7 +20,7 @@ export const RemoveModal = ({ isOpen, onClose, data, deleted }) => {
         </Modal.Body>
         <Modal.Footer>
           <button
-            onClick={() => deleted(data?.id)}
+            onClick={() => deleted(data)}
             className="bg-red-500 px-3 py-2 rounded-md ms-auto font-bold text-white hover:bg-red-600"
           >
             Delete

@@ -1,4 +1,5 @@
 const { getDB } = require("../database/db.config");
+const moment = require("moment");
 
 const getAllDataMR = async () => {
   const db = getDB();
@@ -31,6 +32,20 @@ const getDataMRByKeys = async (NoUrut, Kode_Checklist) => {
 
   const result = await db.query(query);
   return result.length > 0 ? result[0] : null;
+};
+
+const getDataMRByChecklist = async (Kode_Checklist) => {
+  const db = getDB();
+
+  // Buat query secara langsung tanpa parameterized query
+  const query = `
+      SELECT NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, Selesai, rumahsakit, nobox, FilePath
+      FROM tblDataMR
+      WHERE Kode_Checklist = '${Kode_Checklist}'
+    `;
+
+  const result = await db.query(query);
+  return result;
 };
 
 const createDataMR = async (data) => {
@@ -175,6 +190,46 @@ const dataExistingT3 = async (NoUrut, Kode_Checklist) => {
   return result[0].total_count > 0;
 };
 
+const updateDataMRt3 = async (data) => {
+  const db = getDB();
+  const {
+    NoUrut,
+    NoMR,
+    NamaPasien,
+    Tanggal,
+    Layanan,
+    Qty_Image,
+    Kode_Checklist,
+    Mulai,
+    Selesai,
+    namadokumen,
+  } = data;
+
+  const formDateToString = moment(Tanggal, "YYYY-MM-DD").format("DDMMYYYY");
+
+  const query = `UPDATE tblDataMRt3 
+  SET NoUrut = '${NoUrut}',
+      NoMR = '${NoMR}', 
+      NamaPasien = '${NamaPasien}', 
+      Tanggal = '${formDateToString}', 
+      Layanan = '${Layanan}',
+      Qty_Image = '${Qty_Image}' ,
+      Mulai = '${Mulai}',
+      Selesai = '${Selesai}',
+      namadokumen = '${namadokumen}'
+  WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'`;
+  const result = await db.query(query);
+  return result;
+};
+
+const deleteMRt3 = async (data) => {
+  const db = getDB();
+  const { NoUrut, Kode_Checklist } = data;
+  const query = `DELETE FROM tblDataMRt3 WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}' `;
+  const result = await db.query(query);
+  return result;
+};
+
 module.exports = {
   getAllDataMR,
   getDataMRByKeys,
@@ -189,4 +244,7 @@ module.exports = {
   getQtyByMR,
   getAllMRt3,
   getMRt3ByKodeChecklist,
+  deleteMRt3,
+  updateDataMRt3,
+  getDataMRByChecklist,
 };

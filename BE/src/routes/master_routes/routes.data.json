@@ -125,7 +125,7 @@
     "controller": "MrController.deleteDataMR"
   },
   {
-    "path": "/export-datamr",
+    "path": "/export-datamr/:Kode_Checklist",
     "method": "get",
     "controller": "MrController.exportCsv"
   },
@@ -175,7 +175,7 @@
     "controller": "CandraController.deleteCandra"
   },
   {
-    "path": "/export-candra",
+    "path": "/export-candra/:Kode_Checklist",
     "method": "get",
     "controller": "CandraController.exportCsv"
   },
@@ -229,5 +229,20 @@
     "path": "/qc-checksheet/:kode_checklist",
     "method": "get",
     "controller": "MrController.generateQcChecksheet"
+  },
+  {
+    "path": "/dataMRt3",
+    "method": "put",
+    "controller": "MrController.updateMRt3"
+  },
+  {
+    "path": "/dataMRt3/:NoUrut/:Kode_Checklist",
+    "method": "delete",
+    "controller": "MrController.removeMRt3"
+  },
+  {
+    "path": "/export-mrt3/:Kode_Checklist",
+    "method": "get",
+    "controller": "MrController.exportCSVMRt3"
   }
 ]

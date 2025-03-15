@@ -22,6 +22,7 @@ export function CandraPage() {
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const baseUrl = useContext(ApiUrl);
+  const [query, setQuery] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -51,6 +52,9 @@ export function CandraPage() {
     setShowModalEdit(true);
     setSelectedData(data);
   };
+  const handleQuery = (query) => {
+    setQuery(query);
+  };
 
   const handleApiDeleted = async (id) => {
     await axios
@@ -73,9 +77,12 @@ export function CandraPage() {
   const handleExportCsv = () => {
     const exportCsv = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/master/export-candra`, {
-          responseType: "blob",
-        });
+        const response = await axios.get(
+          `${baseUrl}/master/export-candra/${query}`,
+          {
+            responseType: "blob",
+          }
+        );
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
 
@@ -118,7 +125,11 @@ export function CandraPage() {
           <FaFileExport /> <span className="ms-2">Export CSV</span>
         </button>
         <div className="ms-auto">
-          <SearchComponent result={setFilteredData} data={datacandra} />
+          <SearchComponent
+            result={setFilteredData}
+            data={datacandra}
+            queryInput={(query) => handleQuery(query)}
+          />
         </div>
       </div>
 

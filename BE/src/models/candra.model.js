@@ -22,6 +22,28 @@ const getAllCandra = async () => {
   return result;
 };
 
+const getCandraByChecklist = async (Kode_Checklist) => {
+  const db = getDB();
+  const query = `
+    SELECT 
+      id,
+      kode_checklist, 
+      idproses, 
+      nik, 
+      qty_image, 
+      nama_proses, 
+      nama_karyawan, 
+      tanggal, 
+      FORMAT(mulai, 'HH:nn:ss') AS mulai_formatted, 
+      FORMAT(selesai, 'HH:nn:ss') AS selesai_formatted, 
+      submittedby,
+      editBy
+    FROM tblcandra WHERE kode_checklist = ${Kode_Checklist}
+  `;
+  const result = await db.query(query);
+  return result;
+};
+
 const dataExisting = async (kode_checklist, idproses) => {
   const db = getDB();
 
@@ -211,4 +233,5 @@ module.exports = {
   finishedProses,
   getAllByDateNow,
   finishedProsesScan,
+  getCandraByChecklist,
 };

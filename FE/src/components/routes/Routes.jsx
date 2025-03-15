@@ -16,6 +16,7 @@ import { UpdatePage } from "../pages/UpdatePage";
 import { ScanPage } from "../pages/ScanPage";
 import { TargetsPage } from "../pages/Targets";
 import { CheecksheetPage } from "../pages/CheecksheetPage";
+import { KcpPage } from "../pages/KcpPage";
 
 const rootRoute = createRootRoute();
 
@@ -123,6 +124,16 @@ const checkPage = createRoute({
   ),
 });
 
+const kcpPage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/data-kcp",
+  component: () => (
+    <ProtectedRoute>
+      <KcpPage />
+    </ProtectedRoute>
+  ),
+});
+
 const routeTree = rootRoute.addChildren([
   layoutRoute.addChildren([
     dashboardPage,
@@ -135,6 +146,7 @@ const routeTree = rootRoute.addChildren([
     scanPage,
     targetPage,
     checkPage,
+    kcpPage,
   ]),
   loginRoute,
 ]);

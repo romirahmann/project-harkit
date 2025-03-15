@@ -225,9 +225,17 @@ const deleteCandra = async (req, res) => {
 };
 
 const exportCsv = async (req, res) => {
+  const { Kode_Checklist } = req.params;
   try {
-    const data = await model.getAllCandra();
-    if (data.length === 0) {
+    let data;
+    if (Kode_Checklist !== "") {
+      data = await model.getCandraByChecklist(Kode_Checklist);
+      console.log("kode", Kode_Checklist);
+    } else {
+      data = await model.getAllCandra();
+    }
+
+    if (!data || data.length === 0) {
       return api.error(res, "Data Not Found!", 400);
     }
 

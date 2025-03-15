@@ -17,6 +17,9 @@ export function MrPage() {
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
+  const [query, setQuery] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const baseUrl = useContext(ApiUrl);
 
   useEffect(() => {
@@ -43,12 +46,19 @@ export function MrPage() {
     setSelectedData(data);
   };
 
+  const handleQuery = (query) => {
+    setQuery(query);
+  };
+
   const handleExportCsv = () => {
     const exportCsv = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/master/export-datamr`, {
-          responseType: "blob",
-        });
+        const response = await axios.get(
+          `${baseUrl}/master/export-datamr/${query}`,
+          {
+            responseType: "blob",
+          }
+        );
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
 
@@ -60,6 +70,10 @@ export function MrPage() {
         document.body.removeChild(link);
       } catch (error) {
         console.error("❌ Error saat mendownload CSV:", error);
+        setErrorMessage("Gagal Export CSV");
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 1500);
       }
     };
     exportCsv();
@@ -67,6 +81,16 @@ export function MrPage() {
 
   return (
     <div className="container-fluid p-4">
+      {successMessage && (
+        <div className="p-4 mt-4 text-sm text-green-800 bg-green-50">
+          {successMessage}
+        </div>
+      )}
+      {errorMessage && (
+        <div className="p-4 mt-4 text-sm text-red-800 bg-red-50">
+          {errorMessage}
+        </div>
+      )}
       <div className="titlePage flex mb-3 items-center">
         <FaClipboardList className="text-3xl text-gray-700" />
         <h1 className="text-3xl ms-3 font-bold text-gray-700">Data MR</h1>
@@ -80,7 +104,11 @@ export function MrPage() {
           <FaFileExport /> <span className="ms-2">Export CSV</span>
         </button>
         <div className="ms-auto">
-          <SearchComponent result={setFilteredData} data={dataMr} />
+          <SearchComponent
+            result={setFilteredData}
+            data={dataMr}
+            queryInput={(query) => handleQuery(query)}
+          />
         </div>
       </div>
 
