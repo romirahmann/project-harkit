@@ -1,5 +1,6 @@
 const model = require("../../models/employees.model");
 const api = require("../../tools/common");
+const moment = require("moment");
 
 const getAllEmployee = async (req, res) => {
   try {
@@ -50,7 +51,9 @@ const createEmployee = async (req, res) => {
   const { trn_date, nik, nama_karyawan, submittedby } = req.body;
 
   try {
-    const result = await model.createKaryawan({
+    const dateNow = moment().format("YYYY/MM/DD HH:mm:ss");
+    // console.log(dateNow);
+    const result = await model.createKaryawan(dateNow, {
       trn_date,
       nik,
       nama_karyawan,

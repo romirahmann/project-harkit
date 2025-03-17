@@ -56,17 +56,18 @@ export function CandraPage() {
     setQuery(query);
   };
 
-  const handleApiDeleted = async (id) => {
+  const handleApiDeleted = async (data) => {
+    // console.log(data.id);
     await axios
-      .delete(`${baseUrl}/master/candra/${id}`)
+      .delete(`${baseUrl}/master/candra/${data.id}`)
       .then(() => {
-        setSuccessMessage(`Data dengan ID ${id} berhasil dihapus!`);
+        setSuccessMessage(`Data dengan ID ${data.id} berhasil dihapus!`);
         setShowModalRemove(false);
         getDatacandra();
         setTimeout(() => setSuccessMessage(""), 1500);
       })
       .catch((err) => {
-        setErrorMessage(`Data dengan ID ${id} gagal dihapus!`);
+        setErrorMessage(`Data dengan ID ${data.id} gagal dihapus!`);
         setShowModalRemove(false);
         getDatacandra();
         setTimeout(() => setErrorMessage(""), 1500);
@@ -162,7 +163,7 @@ export function CandraPage() {
                   <td className="px-4 py-2">{data.nama_proses}</td>
                   <td className="px-4 py-2">{data.nama_karyawan}</td>
                   <td className="px-4 py-2">
-                    {moment(data.tanggal).format("DD-MM-YYYY")}
+                    {moment(data.tanggal, "YYYY-MM-DD").format("DD-MM-YYYY")}
                   </td>
                   <td className="px-4 py-2">{data.mulai_formatted}</td>
                   <td className="px-4 py-2">{data.selesai_formatted}</td>

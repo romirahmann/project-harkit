@@ -47,18 +47,18 @@ export function Userpage() {
     setModalEdit(true);
   };
 
-  const handleApiDeleted = async (id) => {
+  const handleApiDeleted = async (data) => {
     try {
       // console.log(id);
-      await axios.delete(`${baseUrl}/master/user/${id}`);
-      setSuccessMessage(`User ID ${id} berhasil dihapus!`);
+      await axios.delete(`${baseUrl}/master/user/${data.id}`);
+      setSuccessMessage(`User ID ${data.id} berhasil dihapus!`);
       setShowModalRemove(false);
       getUsers();
       setTimeout(() => {
         setSuccessMessage("");
       }, 1500);
     } catch (err) {
-      setErrorMessage(`User ID ${id} berhasil dihapus!`);
+      setErrorMessage(`User ID ${data.id} berhasil dihapus!`);
       setShowModalRemove(false);
       getUsers();
       setTimeout(() => {

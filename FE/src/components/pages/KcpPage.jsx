@@ -137,9 +137,7 @@ export function KcpPage() {
                 <th className="px-4 py-2">Layanan</th>
                 <th className="px-4 py-2">Nama Pasien</th>
                 <th className="px-4 py-2">Tanggal</th>
-                <th className="px-4 py-2">Qty Image</th>
-                <th className="px-4 py-2">Mulai</th>
-                <th className="px-4 py-2">Selesai</th>
+
                 <th className="px-4 py-2">Nama Dokumen</th>
                 <th className="px-4 py-2">Action</th>
               </tr>
@@ -158,10 +156,6 @@ export function KcpPage() {
                         ? moment(data.Tanggal, "DDMMYYYY").format("DD-MM-YYYY")
                         : ""}
                     </td>
-                    <td className="px-4 py-2">{data.Qty_Image}</td>
-
-                    <td className="px-4 py-2">{data.Mulai}</td>
-                    <td className="px-4 py-2">{data.Selesai}</td>
 
                     <td className="px-4 py-2">{data.namadokumen}</td>
                     <td className="px-4 py-2">

@@ -147,24 +147,13 @@ const createCandraFromScan = async (data) => {
 
 const updateCandra = async (kode_checklist, idproses, data) => {
   const db = getDB();
-  const {
-    nik,
-    qty_image,
-    nama_proses,
-    nama_karyawan,
-    tanggal,
-    mulai,
-    selesai,
-    editby,
-  } = data;
-
-  if (qty_image === null) {
-    qty_image = 0;
-  }
+  const { nik, nama_proses, nama_karyawan, tanggal, mulai, selesai, editby } =
+    data;
+  const formattedTanggal = tanggal ? `#${tanggal}#` : "NULL";
   const query = `
     UPDATE tblcandra
-    SET nik = '${nik}', qty_image = ${qty_image}, nama_proses = '${nama_proses}', 
-        nama_karyawan = '${nama_karyawan}', tanggal = '${tanggal}', mulai = '${mulai}', 
+    SET nik = '${nik}', nama_proses = '${nama_proses}', 
+        nama_karyawan = '${nama_karyawan}', tanggal = ${formattedTanggal}, mulai = '${mulai}', 
         selesai = '${selesai}', editby = '${editby}'
     WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
   `;

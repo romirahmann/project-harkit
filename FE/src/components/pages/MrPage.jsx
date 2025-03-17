@@ -4,10 +4,12 @@ import { useContext, useEffect, useState } from "react";
 import { PaginationComponent } from "../reuse/PaginationComponent";
 import { SearchComponent } from "../reuse/SearchComponent";
 import { FaClipboardList, FaEdit, FaTrash, FaFileExport } from "react-icons/fa";
+import { AiOutlineStop } from "react-icons/ai";
 import moment from "moment";
 import { ApiUrl } from "../../context/Urlapi";
 import { EditMr } from "../reuse/modals/EditMr";
 import { RemoveModal } from "../reuse/RemoveModal";
+import { NonaktifModal } from "../reuse/NonaktifComponent";
 
 export function MrPage() {
   const [dataMr, setDataMr] = useState([]);
@@ -16,6 +18,7 @@ export function MrPage() {
   const [paginatedData, setPaginatedData] = useState();
   const [showModalRemove, setShowModalRemove] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
+  const [showModalNonaktif, setShowModalNonaktif] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [query, setQuery] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
@@ -43,6 +46,10 @@ export function MrPage() {
 
   const handleEdit = (data) => {
     setShowModalEdit(true);
+    setSelectedData(data);
+  };
+  const handleModalNonaktif = (data) => {
+    setShowModalNonaktif(true);
     setSelectedData(data);
   };
 
@@ -77,6 +84,29 @@ export function MrPage() {
       }
     };
     exportCsv();
+  };
+
+  const handleDelete = (data) => {
+    const deleteData = async () => {
+      await axios
+        .delete(
+          `${baseUrl}/master/datamr/${data.NoUrut}/${data.Kode_Checklist}`
+        )
+        .then(() => {
+          setSuccessMessage(`Data dengan No MR ${data.NoMR} berhasil dihapus!`);
+          setShowModalRemove(false);
+          getDataMr();
+          setTimeout(() => setSuccessMessage(""), 1500);
+        })
+        .catch((err) => {
+          setErrorMessage(`Data dengan No MR ${data.NoMR} gagal dihapus!`);
+          setShowModalRemove(false);
+          getDataMr();
+          setTimeout(() => setErrorMessage(""), 1500);
+          console.log(err);
+        });
+    };
+    deleteData();
   };
 
   return (
@@ -116,45 +146,51 @@ export function MrPage() {
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="text-xs font-bold text-gray-300 bg-[#043A70]">
             <tr>
-              <th className="px-4 py-2">No Urut</th>
-              <th className="px-4 py-2">Kode Checklist</th>
-              <th className="px-4 py-2">No MR</th>
+              <th className="px-4 py-2 w-4">No Urut</th>
+              <th className="px-4 py-2 w-4">Kode Checklist</th>
+              <th className="px-4 py-2 w-4">No MR</th>
               {/* <th className="px-6 py-3">No Box</th> */}
-              <th className="px-4 py-2">Nama Pasien</th>
-              <th className="px-4 py-2">Tanggal</th>
-              <th className="px-4 py-2">Qty Image</th>
-              <th className="px-4 py-2">Mulai</th>
-              <th className="px-4 py-2">Selesai</th>
-              <th className="px-4 py-2">File Path</th>
-              <th className="px-4 py-2">Action</th>
+              <th className="px-4 py-2 w-4">Nama Pasien</th>
+              <th className="px-4 py-2 w-4">Tanggal</th>
+              <th className="px-4 py-2 w-4">Qty Image</th>
+              <th className="px-4 py-2 w-4">Mulai</th>
+              <th className="px-4 py-2 w-4">Selesai</th>
+              <th className="px-4 py-2 w-2">File Path</th>
+              <th className="px-4 py-2 w-4">Action</th>
             </tr>
           </thead>
           <tbody className="bg-white">
             {paginatedData?.length > 0 ? (
               paginatedData.map((data, index) => (
                 <tr key={index} className="border-b">
-                  <td className="px-4 py-2">{data.NoUrut}</td>
-                  <td className="px-4 py-2">{data.Kode_Checklist}</td>
-                  <td className="px-4 py-2">{data.NoMR}</td>
+                  <td className="px-4 py-2 w-4">{data.NoUrut}</td>
+                  <td className="px-4 py-2 w-4">{data.Kode_Checklist}</td>
+                  <td className="px-4 py-2 w-4">{data.NoMR}</td>
                   {/* <td className="px-6 py-4">{data.nobox}</td> */}
-                  <td className="px-4 py-2">{data.NamaPasien}</td>
-                  <td className="px-4 py-2">
+                  <td className="px-4 py-2 w-4">{data.NamaPasien}</td>
+                  <td className="px-4 py-2 w-4">
                     {data.Tanggal
                       ? moment(data.Tanggal).format("DD/MM/YYYY")
                       : ""}
                   </td>
-                  <td className="px-4 py-2">{data.Qty_Image}</td>
+                  <td className="px-4 py- w-4">{data.Qty_Image}</td>
 
-                  <td className="px-4 py-2">{data.Mulai}</td>
-                  <td className="px-4 py-2">{data.Selesai}</td>
+                  <td className="px-4 py-2 w-4">{data.Mulai}</td>
+                  <td className="px-4 py-2 w-4">{data.Selesai}</td>
 
-                  <td className="px-4 py-2">{data.FilePath}</td>
-                  <td className="px-4 py-2">
+                  <td className="px-4 py-2 w-2 break-words">{data.FilePath}</td>
+                  <td className="px-4 py-2 w-4">
                     <button
                       onClick={() => handleEdit(data)}
                       className="text-green-500 px-1 py-1 rounded-md"
                     >
                       <FaEdit size={20} />
+                    </button>
+                    <button
+                      onClick={() => handleModalNonaktif(data)}
+                      className="text-red-600 px-1 py-1 rounded-md"
+                    >
+                      <AiOutlineStop size={18} />
                     </button>
                     <button
                       onClick={() => handleRemove(data)}
@@ -182,6 +218,13 @@ export function MrPage() {
         />
       </div>
 
+      <NonaktifModal
+        isOpen={showModalNonaktif}
+        onClose={() => setShowModalNonaktif(false)}
+        data={selectedData}
+        nonAktif={() => getDataMr()}
+      />
+
       <EditMr
         isOpen={showModalEdit}
         onClose={() => setShowModalEdit(false)}
@@ -192,7 +235,7 @@ export function MrPage() {
         isOpen={showModalRemove}
         onClose={() => setShowModalRemove(false)}
         data={selectedData}
-        deleted={() => getDataMr()}
+        deleted={(data) => handleDelete(data)}
       />
     </div>
   );

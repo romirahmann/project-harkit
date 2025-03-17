@@ -31,7 +31,8 @@ export function EditCandra({ isOpen, onClose, candraData, updateCandra }) {
         nik: candraData.nik || "",
         qty_image: candraData.qty_image || "",
         nama_karyawan: candraData.nama_karyawan || "",
-        tanggal: candraData.tanggal || "",
+        tanggal:
+          moment(candraData.tanggal, "YYYY-MM-DD").format("yyyy-MM-DD") || "",
         mulai: candraData.mulai_formatted || "",
         selesai: candraData.selesai_formatted || "",
       });
@@ -133,18 +134,6 @@ export function EditCandra({ isOpen, onClose, candraData, updateCandra }) {
               type="text"
               name="nik"
               value={formData.nik}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-lg"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium">Qty Image</label>
-            <input
-              type="number"
-              name="qty_image"
-              value={formData.qty_image}
               onChange={handleChange}
               className="w-full p-2 border rounded-lg"
               required

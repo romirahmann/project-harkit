@@ -49,11 +49,11 @@ export function Proses() {
     setShowModalEdit(true);
     setSelectedProses(proses);
   };
-  const handleApiDeleted = async (id) => {
+  const handleApiDeleted = async (data) => {
     await axios
-      .delete(`${baseUrl}/master/proses/${id}`)
+      .delete(`${baseUrl}/master/proses/${data.id}`)
       .then((res) => {
-        setSuccessMessage(`Proses ID ${id} berhasil dihapus!`);
+        setSuccessMessage(`Proses ID ${data.id} berhasil dihapus!`);
         setShowModalRemove(false);
         getProses();
         setTimeout(() => {
@@ -61,7 +61,7 @@ export function Proses() {
         }, 1500);
       })
       .catch((err) => {
-        setErrorMessage(`Proses ID ${id} gagal dihapus!`);
+        setErrorMessage(`Proses ID ${data.id} gagal dihapus!`);
         setShowModalRemove(false);
         getProses();
         setTimeout(() => {
@@ -92,7 +92,7 @@ export function Proses() {
             <span className="font-medium">{errorMessage}</span>
           </div>
         )}
-        <div className="titlePage flex mb-3 items-center">
+        <div className="titlePage mt-2 flex mb-3 items-center">
           <FaTasks className="text-3xl text-gray-700" />
           <h1 className="text-3xl ms-3 font-bold text-gray-700 dark:text-white">
             Data Proses

@@ -46,20 +46,20 @@ export function TargetsPage() {
     setSelectedTarget(target);
   };
 
-  const handleRemove = async (id) => {
+  const handleRemove = async (data) => {
     setShowModalRemove(false);
     try {
-      let res = await axios.delete(`${baseUrl}/master/target/${id}`);
+      let res = await axios.delete(`${baseUrl}/master/target/${data.id}`);
       console.log(res.data.data);
       fecthTarget();
-      setSuccessMessage(`Data target ${id} berhasil dihapus!`);
+      setSuccessMessage(`Data target ${data.id} berhasil dihapus!`);
       setTimeout(() => {
         setSuccessMessage("");
       }, 1500);
     } catch (err) {
       console.log(err);
       fecthTarget();
-      setErrorMessage(`Gagal menghapus target dengan id ${id}`);
+      setErrorMessage(`Gagal menghapus target dengan id ${data.id}`);
       setTimeout(() => {
         setErrorMessage("");
       }, 1500);

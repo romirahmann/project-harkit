@@ -194,57 +194,7 @@ export function ModalEditKCP({ isOpen, onClose, data, onUpdate }) {
                 required
               />
             </div>
-            <div>
-              <label
-                htmlFor="Mulai"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Mulai
-              </label>
-              <input
-                type="time"
-                name="Mulai"
-                id="Mulai"
-                value={formData.Mulai}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="Selesai"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Selesai
-              </label>
-              <input
-                type="time"
-                name="Selesai"
-                id="Selesai"
-                value={formData.Selesai}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="Qty_Image"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Qty Image
-              </label>
-              <input
-                type="text"
-                name="Qty_Image"
-                id="Qty_Image"
-                value={formData.Qty_Image}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
+
             <div>
               <label
                 htmlFor="namadokumen"

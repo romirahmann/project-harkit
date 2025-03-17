@@ -5,14 +5,13 @@ import {
   FaBars,
   FaUser,
   FaTachometerAlt,
-  FaSearch,
   FaDatabase,
   FaCaretDown,
   FaUsers,
   FaTasks,
-  FaUsersCog,
   FaUserCog,
 } from "react-icons/fa";
+import { AiFillStop } from "react-icons/ai";
 import { MdOutlineLibraryAddCheck, MdOutlineFactCheck } from "react-icons/md";
 import { MdDocumentScanner } from "react-icons/md";
 import { IoDocumentsSharp, IoShieldCheckmarkOutline } from "react-icons/io5";
@@ -139,6 +138,14 @@ export function Layout() {
                   <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
                     <IoDocumentsSharp size={16} />
                     {isSidebarOpen && <span className="ml-3">DATA MR</span>}
+                  </li>
+                </Link>
+                <Link to={"/nonaktifMR"}>
+                  <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
+                    <AiFillStop size={16} />
+                    {isSidebarOpen && (
+                      <span className="ml-3">DATA NONAKTIF</span>
+                    )}
                   </li>
                 </Link>
                 <Link to={"/data-candra"}>

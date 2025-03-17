@@ -51,17 +51,18 @@ export function EmployeePage() {
     setSelectedKaryawan(karyawan);
   };
 
-  const handleApiDeleted = async (id) => {
+  const handleApiDeleted = async (data) => {
+    // console.log(data.id);
     await axios
-      .delete(`${baseUrl}/master/employee/${id}`)
+      .delete(`${baseUrl}/master/employee/${data.id}`)
       .then(() => {
-        setSuccessMessage(`Karyawan ID ${id} berhasil dihapus!`);
+        setSuccessMessage(`Karyawan ID ${data.id} berhasil dihapus!`);
         setShowModalRemove(false);
         getKaryawan();
         setTimeout(() => setSuccessMessage(""), 1500);
       })
       .catch((err) => {
-        setErrorMessage(`Karyawan ID ${id} gagal dihapus!`);
+        setErrorMessage(`Karyawan ID ${data.id} gagal dihapus!`);
         setShowModalRemove(false);
         getKaryawan();
         setTimeout(() => setErrorMessage(""), 1500);

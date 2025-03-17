@@ -8,6 +8,13 @@ const getAllDataMR = async () => {
   );
 };
 
+const getAllNonaktifMR = async () => {
+  const db = getDB();
+  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, Selesai, rumahsakit, nobox, FilePath FROM tblDataMR_Doubel`;
+  const result = await db.query(query);
+  return result;
+};
+
 const dataExisting = async (NoUrut, Kode_Checklist) => {
   const db = getDB();
 
@@ -76,6 +83,34 @@ const createDataMR = async (data) => {
   return result;
 };
 
+const createDataMR_Double = async (data) => {
+  const db = getDB();
+  const {
+    NoUrut,
+    NoMR,
+    NamaPasien,
+    Tanggal,
+    Qty_Image,
+    Kode_Checklist,
+    Urut,
+    Mulai,
+    Selesai,
+    rumahsakit,
+    nobox,
+    FilePath,
+  } = data;
+  // Konversi tanggal ke format Access atau NULL
+  const formattedTanggal = Tanggal ? `#${Tanggal}#` : "NULL";
+  const query = `
+    INSERT INTO tblDataMR_Doubel 
+    (NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, 
+     Selesai, rumahsakit, nobox, filePath) 
+    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', ${formattedTanggal} , ${Qty_Image}, '${Kode_Checklist}', '${Urut}', '${Mulai}', '${Selesai}', '${rumahsakit}', '${nobox}', '${FilePath}')`;
+
+  const result = await db.query(query);
+  return result;
+};
+
 const dataExistingByMR = async (NoMR) => {
   const db = getDB();
 
@@ -131,11 +166,16 @@ const updateDataMR = async (NoUrut, Kode_Checklist, data) => {
 
 const deleteDataMR = async (NoUrut, Kode_Checklist) => {
   const db = getDB();
-  const result = await db.query(
-    "DELETE FROM tblDataMR WHERE NoUrut = ? AND Kode_Checklist = ?",
-    [NoUrut, Kode_Checklist]
-  );
-  return result.count;
+  const query = `DELETE FROM tblDataMR WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'`;
+  const result = await db.query(query);
+  return result;
+};
+
+const deleteMRDouble = async (NoUrut, Kode_Checklist) => {
+  const db = getDB();
+  const query = `DELETE FROM tblDataMR_Doubel WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'`;
+  const result = await db.query(query);
+  return result;
 };
 
 // MR T3
@@ -247,4 +287,7 @@ module.exports = {
   deleteMRt3,
   updateDataMRt3,
   getDataMRByChecklist,
+  getAllNonaktifMR,
+  createDataMR_Double,
+  deleteMRDouble,
 };

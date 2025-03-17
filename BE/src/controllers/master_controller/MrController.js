@@ -17,7 +17,15 @@ const getAllDataMR = async (req, res) => {
     return api.error(res, "Failed to get DataMR", 500);
   }
 };
-
+const getAllNonaktifMR = async (req, res) => {
+  try {
+    const data = await model.getAllNonaktifMR();
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting DataMR:", error);
+    return api.error(res, "Failed to get DataMR", 500);
+  }
+};
 const getDataMRByKeys = async (req, res) => {
   let { nourut, kode_checklist } = req.params;
 
@@ -122,8 +130,7 @@ const deleteDataMR = async (req, res) => {
 
   try {
     const result = await model.deleteDataMR(nourut, kode_checklist);
-    if (result > 0) return api.ok(res, "DataMR successfully deleted");
-    return api.error(res, "Failed to delete DataMR", 500);
+    return api.ok(res, "DataMR successfully deleted");
   } catch (error) {
     console.error("❌ Error deleting DataMR:", error);
     return api.error(res, "Failed to delete DataMR", 500);
@@ -181,6 +188,46 @@ const exportCsv = async (req, res) => {
   } catch (error) {
     console.error("❌ Error exporting CSV:", error);
     return api.error(res, "Failed to export CSV", 500);
+  }
+};
+
+const nonaktifMR = async (req, res) => {
+  const data = req.body;
+  try {
+    if (!data) {
+      return api.error(res, "Data Not Found!", 400);
+    }
+
+    // CREATE TO TABLE MR_DOUBLE
+    const [resultCreate, deleteMR] = await Promise.all([
+      model.createDataMR_Double(data),
+      model.deleteDataMR(data.NoUrut, data.Kode_Checklist),
+    ]);
+
+    return api.ok(res, { resultCreate, deleteMR });
+  } catch (err) {
+    console.error("Error nonaktifMR:", err);
+    return api.error(res, "Failed to nonaktifMR", 500);
+  }
+};
+
+const aktifkanMR = async (req, res) => {
+  const data = req.body;
+
+  try {
+    if (!data) {
+      return api.error(res, "Data Not Found!", 400);
+    }
+
+    const [resultCreate, deleteMR] = await Promise.all([
+      model.createDataMR(data),
+      model.deleteMRDouble(data.NoUrut, data.Kode_Checklist),
+    ]);
+
+    return api.ok(res, { resultCreate, deleteMR });
+  } catch (err) {
+    console.error("Error nonaktifMR:", err);
+    return api.error(res, "Failed to nonaktifMR", 500);
   }
 };
 
@@ -664,4 +711,7 @@ module.exports = {
   updateMRt3,
   removeMRt3,
   exportCSVMRt3,
+  getAllNonaktifMR,
+  nonaktifMR,
+  aktifkanMR,
 };

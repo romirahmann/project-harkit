@@ -105,6 +105,21 @@
     "controller": "MrController.getAllDataMR"
   },
   {
+    "path": "/nonaktif-mr",
+    "method": "get",
+    "controller": "MrController.getAllNonaktifMR"
+  },
+  {
+    "path": "/aktif-mr",
+    "method": "post",
+    "controller": "MrController.aktifkanMR"
+  },
+  {
+    "path": "/nonaktif-mr",
+    "method": "post",
+    "controller": "MrController.nonaktifMR"
+  },
+  {
     "path": "/datamr/:nourut/:kode_checklist",
     "method": "get",
     "controller": "MrController.getDataMRByKeys"
