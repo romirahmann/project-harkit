@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { ApiUrl } from "../../../context/Urlapi";
 import { Modal, Button } from "flowbite-react";
+import { AddLog } from "../../../context/Log";
 
 export function EditProses({ isOpen, onClose, prosesData, updateProses }) {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ export function EditProses({ isOpen, onClose, prosesData, updateProses }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
 
   useEffect(() => {
     if (prosesData) {
@@ -40,12 +42,19 @@ export function EditProses({ isOpen, onClose, prosesData, updateProses }) {
       setSuccessMessage(
         `Proses dengan ID ${prosesData.id} berhasil diperbarui.`
       );
+      AddLog(
+        `${userData.username} edit data Proses dengan ID ${prosesData.idproses}`
+      );
       setTimeout(() => {
         updateProses();
         setSuccessMessage("");
         onClose();
       }, 1500);
     } catch (error) {
+      AddLog(
+        `${userData.username} edit data Proses dengan ID ${prosesData.idproses}`,
+        "FAILED"
+      );
       setErrorMessage(
         error.response?.data?.message ||
           "Terjadi kesalahan saat memperbarui proses."

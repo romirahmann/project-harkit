@@ -259,5 +259,10 @@
     "path": "/export-mrt3/:Kode_Checklist",
     "method": "get",
     "controller": "MrController.exportCSVMRt3"
+  },
+  {
+    "path": "/log",
+    "method": "post",
+    "controller": "LogController.addLog"
   }
 ]

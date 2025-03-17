@@ -3,6 +3,7 @@ import axios from "axios";
 import { Button, Modal } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
 import { ApiUrl } from "../../../context/Urlapi";
+import { AddLog } from "../../../context/Log";
 
 export function AddTarget({ isOpen, onClose, onAdd }) {
   const [formData, setFormData] = useState({
@@ -12,12 +13,15 @@ export function AddTarget({ isOpen, onClose, onAdd }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
   const baseUrl = useContext(ApiUrl);
+
   const handleSubmit = async () => {
     try {
       let res = await axios.post(`${baseUrl}/master/target`, formData);
       console.log(res.data.data);
       setSuccessMessage("Data Berhasil Ditambahkan");
+      AddLog(`${userData.username} menambahkan data target baru!`);
       setTimeout(() => {
         setSuccessMessage("");
         onAdd();
@@ -26,6 +30,7 @@ export function AddTarget({ isOpen, onClose, onAdd }) {
     } catch (err) {
       console.log(err);
       setErrorMessage("Data target gagal ditambahkan");
+      AddLog(`${userData.username} menambahkan data target baru!`, "FAILED");
       setTimeout(() => {
         setErrorMessage("");
         setFormData({

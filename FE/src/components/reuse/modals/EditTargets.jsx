@@ -3,6 +3,7 @@ import axios from "axios";
 import { Button, Modal } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
 import { ApiUrl } from "../../../context/Urlapi";
+import { AddLog } from "../../../context/Log";
 
 export function EditTarget({ isOpen, onClose, data, onEdit }) {
   const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ export function EditTarget({ isOpen, onClose, data, onEdit }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const baseUrl = useContext(ApiUrl);
-
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
   useEffect(() => {
     if (data) {
       setFormData({
@@ -28,13 +29,18 @@ export function EditTarget({ isOpen, onClose, data, onEdit }) {
         `${baseUrl}/master/target/${data?.id}`,
         formData
       );
-      console.log(res);
+      // console.log(res);
+      AddLog(`${userData.username} edit data Target dengan ID ${data.id}`);
       setSuccessMessage("Data Berhasil Di Update!");
       setTimeout(() => {
         setSuccessMessage("");
         onEdit();
       }, 1500);
     } catch (error) {
+      AddLog(
+        `${userData.username} edit data Target dengan ID ${data.id}`,
+        "FAILED"
+      );
       setErrorMessage("Data Gagal di Update!");
       setTimeout(() => {
         setErrorMessage("");

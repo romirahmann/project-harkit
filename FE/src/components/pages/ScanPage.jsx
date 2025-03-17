@@ -9,6 +9,7 @@ import { PaginationComponent } from "../reuse/PaginationComponent";
 import { SearchComponent } from "../reuse/SearchComponent";
 import { FinishedScan } from "../../components/reuse/modals/FinishedScan";
 import { useRef } from "react";
+import { AddLog } from "../../context/Log";
 
 export function ScanPage() {
   const baseUrl = useContext(ApiUrl);
@@ -144,6 +145,9 @@ export function ScanPage() {
       .then((res) => {
         setSuccessMessage(res.data.data);
         fetchDataCandra();
+        AddLog(
+          `Proses dengan Kode Checklist: ${newFormData.kode_checklist} dan ID Proses ${newFormData.idproses} telah ditambahkan oleh ${userLogin?.username}`
+        );
         setTimeout(() => {
           setSuccessMessage("");
           kodeChecklistRef.current.focus();
@@ -151,6 +155,10 @@ export function ScanPage() {
       })
       .catch((err) => {
         setErrorMessage(err.response.data.data.message);
+        AddLog(
+          `Proses dengan Kode Checklist: ${newFormData.kode_checklist} dan ID Proses ${newFormData.idproses} telah ditambahkan oleh ${userLogin?.username}`,
+          "FAILED"
+        );
         setTimeout(() => {
           setErrorMessage("");
           kodeChecklistRef.current.focus();
@@ -182,7 +190,6 @@ export function ScanPage() {
       ...scan,
       selesai_formatted: timestamp,
     };
-
     if (newData) {
       axios
         .put(
@@ -190,6 +197,9 @@ export function ScanPage() {
           newData
         )
         .then((res) => {
+          AddLog(
+            `Proses dengan Kode Checklist: ${newData.kode_checklist} dan ID Proses ${newData.idproses} telah diselesaikan oleh ${userLogin?.username}`
+          );
           setSuccessMessage(
             `Proses dengan ID ${newData.idproses} dan kode checklist ${newData.kode_checklist} telah selesai`
           );
@@ -200,6 +210,10 @@ export function ScanPage() {
           }, 2000);
         })
         .catch((err) => {
+          AddLog(
+            `Proses dengan Kode Checklist: ${newData.kode_checklist} dan ID Proses ${newData.idproses} telah diselesaikan oleh ${userLogin?.username}`,
+            "FAILED"
+          );
           setErrorMessage(`Silahkan ulangi klik tombol selesai`);
         });
     } else {

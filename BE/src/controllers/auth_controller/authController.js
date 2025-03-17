@@ -2,6 +2,7 @@ const argon2 = require("argon2");
 const model = require("../../models/auth.model");
 const api = require("../../tools/common");
 const { generateToken } = require("../../services/auth.service");
+const logService = require("../../services/log.service");
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -22,7 +23,7 @@ const login = async (req, res) => {
       return api.error(res, "Incorrect Password!", 400);
     }
 
-    console.log(passwordIsMatch);
+    // console.log(passwordIsMatch);
 
     const payload = {
       id: user.id,
@@ -30,7 +31,7 @@ const login = async (req, res) => {
       jabatan: user.jabatan,
     };
     const token = generateToken(payload);
-
+    logService.log(`${payload.username} Berhasil Login`, "BERHASIL");
     return api.ok(res, { token, user: payload });
   } catch (error) {
     console.error("❌ Error logging in:", error);

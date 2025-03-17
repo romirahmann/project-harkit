@@ -12,8 +12,8 @@ const getAllCandra = async () => {
       nama_proses, 
       nama_karyawan, 
       tanggal, 
-      FORMAT(mulai, 'HH:nn:ss') AS mulai_formatted, 
-      FORMAT(selesai, 'HH:nn:ss') AS selesai_formatted, 
+      FORMAT(mulai, 'HH:mm:ss') AS mulai_formatted, 
+      FORMAT(selesai, 'HH:mm:ss') AS selesai_formatted, 
       submittedby,
       editBy
     FROM tblcandra
@@ -34,8 +34,8 @@ const getCandraByChecklist = async (Kode_Checklist) => {
       nama_proses, 
       nama_karyawan, 
       tanggal, 
-      FORMAT(mulai, 'HH:nn:ss') AS mulai_formatted, 
-      FORMAT(selesai, 'HH:nn:ss') AS selesai_formatted, 
+      FORMAT(mulai, 'HH:mm:ss') AS mulai_formatted, 
+      FORMAT(selesai, 'HH:mm:ss') AS selesai_formatted, 
       submittedby,
       editBy
     FROM tblcandra WHERE kode_checklist = ${Kode_Checklist}

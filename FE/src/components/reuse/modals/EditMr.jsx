@@ -4,6 +4,7 @@ import axios from "axios";
 import { ApiUrl } from "../../../context/Urlapi";
 import { Modal, Button } from "flowbite-react";
 import moment from "moment";
+import { AddLog } from "../../../context/Log";
 
 export function EditMr({ isOpen, onClose, mrData, updateMR }) {
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ export function EditMr({ isOpen, onClose, mrData, updateMR }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
 
   useEffect(() => {
     if (mrData) {
@@ -25,7 +27,8 @@ export function EditMr({ isOpen, onClose, mrData, updateMR }) {
         NoUrut: mrData.NoUrut || "",
         NoMR: mrData.NoMR || "",
         NamaPasien: mrData.NamaPasien || "",
-        Tanggal: moment(mrData.Tanggal).format("dd/mm/yyyy") || "",
+        Tanggal:
+          moment(mrData.Tanggal, "YYYY-MM-DD").format("yyyy-MM-DD") || "",
         Kode_Checklist: mrData.Kode_Checklist || "",
         nobox: mrData.nobox || "",
       });
@@ -41,11 +44,14 @@ export function EditMr({ isOpen, onClose, mrData, updateMR }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(formData);
+    // console.log(formData);
     try {
       await axios.put(
         `${baseUrl}/master/datamr/${mrData.NoUrut}/${mrData.Kode_Checklist}`,
         formData
+      );
+      AddLog(
+        `${userData.username} edit data MR dengan Kode Checklist ${formData.Kode_Checklist} dan No Urut ${formData.NoUrut}`
       );
       setSuccessMessage(`Data MR ${mrData.NoMR} berhasil diperbarui.`);
       setTimeout(() => {
@@ -54,6 +60,10 @@ export function EditMr({ isOpen, onClose, mrData, updateMR }) {
         onClose();
       }, 1500);
     } catch (error) {
+      AddLog(
+        `${userData.username} edit data MR dengan Kode Checklist ${formData.Kode_Checklist} dan No Urut ${formData.NoUrut}`,
+        "FAILED"
+      );
       setErrorMessage(
         error.response?.data?.message ||
           "Terjadi kesalahan saat memperbarui data MR."
@@ -108,7 +118,22 @@ export function EditMr({ isOpen, onClose, mrData, updateMR }) {
               className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
-
+          <div>
+            <label
+              htmlFor="Kode_Checklist"
+              className="block text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Kode_Checklist
+            </label>
+            <input
+              type="text"
+              name="Kode_Checklist"
+              id="Kode_Checklist"
+              value={formData.Kode_Checklist}
+              disabled
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+          </div>
           <div>
             <label
               htmlFor="NoMR"
@@ -160,23 +185,6 @@ export function EditMr({ isOpen, onClose, mrData, updateMR }) {
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               required
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="Kode_Checklist"
-              className="block text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Kode_Checklist
-            </label>
-            <input
-              type="text"
-              name="Kode_Checklist"
-              id="Kode_Checklist"
-              value={formData.Kode_Checklist}
-              disabled
-              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
 

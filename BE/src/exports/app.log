@@ -1,0 +1,28 @@
+[BERHASIL]-[2025-03-17T02:24:09.761Z]  Fetching data from database...
+[BERHASIL]-[2025-03-17T02:24:09.753Z]  Fetching data from database...
+[SUCCESSFULY]-[17-03-2025 09:37:45]  Proses dengan Kode Checklist: 250317-0001 dan ID Proses: 1001
+[SUCCESSFULY]-[17-03-2025 09:39:26]  Add proses dengan urutan 2 scan
+[BERHASIL]-[17-03-2025 09:40:29]  romirahman Berhasil Login
+[SUCCESSFULY]-[17-03-2025 10:00:01]  Proses dengan Kode Checklist: 250317-0001 dan ID Proses: 1002
+[SUCCESSFULY]-[17-03-2025 10:00:24]  Add proses dengan urutan 3 scan
+[BERHASIL]-[17-03-2025 10:09:15]  romirahman Berhasil Login
+[BERHASIL]-[17-03-2025 11:29:39]  []
+[BERHASIL]-[17-03-2025 11:30:29]  Testing
+[SUCCESSFULY]-[17-03-2025 11:32:48]  Proses dengan Kode Checklist: 250317-0001 dan ID Proses: 1008
+[BERHASIL]-[17-03-2025 11:32:48]  Proses dengan Kode Checklist: 250317-0001 dan ID Proses 1008 telah diselesaikan oleh romirahman
+[SUCCESSFULY]-[17-03-2025 11:34:31]  Add proses dengan urutan 4 scan
+[BERHASIL]-[17-03-2025 11:34:31]  Proses dengan Kode Checklist: 250317-0001 dan ID Proses 1003 telah ditambahkan oleh romirahman
+[INFO]-[17-03-2025 11:39:57]  User undefined telah logout
+[BERHASIL]-[17-03-2025 11:40:11]  romirahman Berhasil Login
+[INFO]-[17-03-2025 11:40:55]  User romirahman telah logout
+[BERHASIL]-[17-03-2025 13:13:22]  romirahman Berhasil Login
+[SUCCESSFULLY]-[17-03-2025 13:16:56]  User romirahman Export Finishing Checksheet
+[SUCCESSFULLY]-[17-03-2025 13:25:41]  romirahman Delete Data CANDRA
+[Failed]-[17-03-2025 13:32:30]  romirahman Export CSV
+[Failed]-[17-03-2025 13:59:13]  romirahman Export CSV
+[Failed]-[17-03-2025 13:59:50]  romirahman Export CSV
+[Failed]-[17-03-2025 14:00:01]  romirahman Export CSV
+[Failed]-[17-03-2025 14:00:50]  romirahman Export CSV
+[Failed]-[17-03-2025 14:01:56]  romirahman Export CSV
+[SUCCESSFULLY]-[17-03-2025 14:02:38]  romirahman Export CSV
+[SUCCESSFULLY]-[17-03-2025 14:23:52]  romirahman edit data MRt3 dengan Kode Checklist 240722-0001 dan No Urut PBL-1-1

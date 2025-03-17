@@ -10,6 +10,8 @@ import { RemoveModal } from "../reuse/RemoveModal";
 import { FaEdit, FaClipboardList, FaFileExport } from "react-icons/fa";
 import moment from "moment";
 import { EditCandra } from "../reuse/modals/EditCandra";
+import { AddLog } from "../../context/Log";
+
 // import { AddDatacandra } from "../reuse/modals/AddDatacandra";
 // import { EditDatacandra } from "../reuse/modals/EditDatacandra";
 
@@ -23,11 +25,13 @@ export function CandraPage() {
   const [selectedData, setSelectedData] = useState(null);
   const baseUrl = useContext(ApiUrl);
   const [query, setQuery] = useState("");
-
+  const [userLogin, setUserLogin] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userData"));
+    setUserLogin(user);
     getDatacandra();
   }, []);
 
@@ -64,12 +68,19 @@ export function CandraPage() {
         setSuccessMessage(`Data dengan ID ${data.id} berhasil dihapus!`);
         setShowModalRemove(false);
         getDatacandra();
+        AddLog(
+          `${userLogin.username} Delete Data CANDRA dengan Kode Checklist ${data.kode_checklist}`
+        );
         setTimeout(() => setSuccessMessage(""), 1500);
       })
       .catch((err) => {
         setErrorMessage(`Data dengan ID ${data.id} gagal dihapus!`);
         setShowModalRemove(false);
         getDatacandra();
+        AddLog(
+          `${userLogin.username} Delete Data CANDRA dengan Kode Checklist ${data.kode_checklist}`,
+          "Failed"
+        );
         setTimeout(() => setErrorMessage(""), 1500);
         console.log(err);
       });
@@ -93,7 +104,9 @@ export function CandraPage() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        AddLog(`${userLogin.username} Export CSV`);
       } catch (error) {
+        AddLog(`${userLogin.username} Export CSV`, "Failed");
         console.error("❌ Error saat mendownload CSV:", error);
       }
     };

@@ -4,6 +4,7 @@ import axios from "axios";
 import { ApiUrl } from "../../../context/Urlapi";
 import { Modal, Button } from "flowbite-react";
 import moment from "moment";
+import { AddLog } from "../../../context/Log";
 
 export function EditCandra({ isOpen, onClose, candraData, updateCandra }) {
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ export function EditCandra({ isOpen, onClose, candraData, updateCandra }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
 
   useEffect(() => {
     if (candraData) {
@@ -55,6 +57,9 @@ export function EditCandra({ isOpen, onClose, candraData, updateCandra }) {
       )
       .then((res) => {
         setSuccessMessage(`Data Candra berhasil diperbarui.`);
+        AddLog(
+          `${userData.username} edit data candra dengan kode checklist ${candraData.kode_checklist} dan id proses ${candraData.idproses}`
+        );
         setTimeout(() => {
           updateCandra();
           setSuccessMessage("");
@@ -62,6 +67,10 @@ export function EditCandra({ isOpen, onClose, candraData, updateCandra }) {
         }, 1500);
       })
       .catch((err) => {
+        AddLog(
+          `${userData.username} edit data candra dengan kode checklist ${candraData.kode_checklist} dan id proses ${candraData.idproses}`,
+          "FAILED"
+        );
         setErrorMessage(
           err.response?.data?.message ||
             "Terjadi kesalahan saat memperbarui data."

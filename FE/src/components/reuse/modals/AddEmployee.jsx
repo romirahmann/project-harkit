@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { Modal, Button } from "flowbite-react";
 import { ApiUrl } from "../../../context/Urlapi";
 import axios from "axios";
+import { AddLog } from "../../../context/Log";
 
 export function AddEmployee({ isOpen, onClose, addEmployee }) {
   const baseUrl = useContext(ApiUrl);
@@ -33,6 +34,7 @@ export function AddEmployee({ isOpen, onClose, addEmployee }) {
     try {
       await axios.post(`${baseUrl}/master/employee`, formData);
       setSuccessMessage("Karyawan berhasil ditambahkan!");
+      AddLog(`${userData.username} menambahkan karyawan baru`);
       setTimeout(() => {
         addEmployee();
         setSuccessMessage("");
@@ -48,9 +50,9 @@ export function AddEmployee({ isOpen, onClose, addEmployee }) {
       setFormData({
         nik: "",
         nama_karyawan: "",
-
         submittedby: userData.username || "Unknown",
       });
+      AddLog(`${userData.username} menambahkan karyawan baru`, "FAILED");
       setErrorMessage("Karyawan gagal ditambahkan!");
       setTimeout(() => {
         setErrorMessage("");

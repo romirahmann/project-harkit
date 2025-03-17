@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Modal } from "flowbite-react";
 import { ApiUrl } from "../../../context/Urlapi";
 import axios from "axios";
+import { AddLog } from "../../../context/Log";
 
 export function EditUser({ isOpen, onClose, userData, updateUser }) {
   const baseUrl = useContext(ApiUrl);
@@ -46,12 +47,17 @@ export function EditUser({ isOpen, onClose, userData, updateUser }) {
     try {
       await axios.put(`${baseUrl}/master/user/${userData.id}`, formData);
       setSuccessMessage(`User dengan ID ${formData.id} berhasil diperbarui.`);
+      AddLog(`${userData.username} edit data User dengan ID ${userData.id}`);
       setTimeout(() => {
         updateUser();
         setSuccessMessage("");
         onClose();
       }, 1500);
     } catch (error) {
+      AddLog(
+        `${userData.username} edit data Target dengan ID ${userData.id}`,
+        "FAILED"
+      );
       setErrorMessage(
         error.response?.data?.message ||
           "Terjadi kesalahan saat memperbarui user."

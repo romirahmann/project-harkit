@@ -5,6 +5,7 @@ const { Parser } = require("json2csv");
 const fs = require("fs");
 const path = require("path");
 const moment = require("moment");
+const logService = require("../../services/log.service");
 
 const getAllCandra = async (req, res) => {
   try {
@@ -75,8 +76,10 @@ const createCandra = async (req, res) => {
 
   try {
     const inserted = await model.createCandra(req.body);
+
     return api.ok(res, { inserted }, "Candra created successfully");
   } catch (error) {
+    logService.log("Created Data Candra!", "Failed");
     console.error("❌ Error creating Candra:", error);
     return api.error(res, "Failed to create Candra", 500);
   }
@@ -106,6 +109,7 @@ const addScanCandra = async (req, res) => {
     // Jika proses ini urutan pertama, langsung tambahkan
     if (urutanProses === 1) {
       await model.createCandraFromScan(data);
+
       return api.ok(res, "Candra created successfully");
     }
 
@@ -140,8 +144,10 @@ const addScanCandra = async (req, res) => {
 
     // Semua proses sebelumnya sudah selesai, tambahkan proses baru
     await model.createCandraFromScan(data);
+
     return api.ok(res, "Candra created successfully");
   } catch (error) {
+    logService.log("Add proses scan", "FAILED");
     console.error("❌ Error creating Candra:", error);
     return api.error(res, "Failed to create Candra", 500);
   }
@@ -160,8 +166,10 @@ const updateCandra = async (req, res) => {
   try {
     const updated = await model.updateCandra(kode_checklist, idproses, data);
     if (!updated) return api.error(res, "Candra not found or no changes", 404);
+
     return api.ok(res, "Candra updated successfully");
   } catch (error) {
+    logService.log("Created Data Candra!", "FAILED");
     console.error("❌ Error updating Candra:", error);
     return api.error(res, "Failed to update Candra", 500);
   }
@@ -179,8 +187,13 @@ const finishedProses = async (req, res) => {
   try {
     const updated = await model.finishedProses(kode_checklist, idproses, data);
     if (!updated) return api.error(res, "Candra not found or no changes", 404);
+
     return api.ok(res, "Candra updated successfully");
   } catch (error) {
+    logService.log(
+      `Proses dengan Kode Checklist: ${kode_checklist} dan ID Proses: ${idproses}`,
+      "Failed"
+    );
     console.error("❌ Error updating Candra:", error);
     return api.error(res, "Failed to update Candra", 500);
   }
@@ -217,6 +230,7 @@ const deleteCandra = async (req, res) => {
   try {
     const deleted = await model.deleteCandra(id);
     if (!deleted) return api.error(res, "Candra not found", 404);
+
     return api.ok(res, { deleted }, "Candra deleted successfully");
   } catch (error) {
     console.error("❌ Error deleting Candra:", error);
@@ -231,13 +245,14 @@ const exportCsv = async (req, res) => {
     if (Kode_Checklist !== "") {
       data = await model.getCandraByChecklist(Kode_Checklist);
       console.log("kode", Kode_Checklist);
-    } else {
-      data = await model.getAllCandra();
     }
+    data = await model.getAllCandra();
 
     if (!data || data.length === 0) {
       return api.error(res, "Data Not Found!", 400);
     }
+
+    console.log("data: ", data);
 
     // Definisikan kolom yang akan diekspor
     const fields = [

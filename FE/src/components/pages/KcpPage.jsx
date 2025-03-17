@@ -113,7 +113,7 @@ export function KcpPage() {
         <div className="searchBar flex my-2 mt-10">
           <button
             onClick={() => handleExport()}
-            className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-lg flex items-center"
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center"
           >
             <FaFileExport size={25} /> <span className="ms-2">Export CSV</span>
           </button>
@@ -137,6 +137,7 @@ export function KcpPage() {
                 <th className="px-4 py-2">Layanan</th>
                 <th className="px-4 py-2">Nama Pasien</th>
                 <th className="px-4 py-2">Tanggal</th>
+                <th className="px-4 py-2">Periode Ranap</th>
 
                 <th className="px-4 py-2">Nama Dokumen</th>
                 <th className="px-4 py-2">Action</th>
@@ -157,6 +158,7 @@ export function KcpPage() {
                         : ""}
                     </td>
 
+                    <td className="px-4 py-2">{data.Periode_Ranap}</td>
                     <td className="px-4 py-2">{data.namadokumen}</td>
                     <td className="px-4 py-2">
                       <button

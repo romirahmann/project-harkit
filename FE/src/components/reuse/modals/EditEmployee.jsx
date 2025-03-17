@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { ApiUrl } from "../../../context/Urlapi";
 import { Modal, Button } from "flowbite-react";
+import { AddLog } from "../../../context/Log";
 
 export function EditEmployee({
   isOpen,
@@ -20,6 +21,7 @@ export function EditEmployee({
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
 
   useEffect(() => {
     if (employeeData) {
@@ -46,6 +48,9 @@ export function EditEmployee({
         `${baseUrl}/master/employee/${employeeData.id}`,
         formData
       );
+      AddLog(
+        `${userData.username} edit data karyawan dengan id ${employeeData.id}`
+      );
       setSuccessMessage(
         `Karyawan dengan NIK ${employeeData.nik} berhasil diperbarui.`
       );
@@ -55,6 +60,10 @@ export function EditEmployee({
         onClose();
       }, 1500);
     } catch (error) {
+      AddLog(
+        `${userData.username} edit data karyawan dengan id ${employeeData.id}`,
+        "FAILED"
+      );
       setErrorMessage(
         error.response?.data?.message ||
           "Terjadi kesalahan saat memperbarui karyawan."

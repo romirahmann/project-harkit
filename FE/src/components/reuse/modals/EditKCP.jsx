@@ -4,6 +4,7 @@ import axios from "axios";
 import { ApiUrl } from "../../../context/Urlapi";
 import { Modal, Button } from "flowbite-react";
 import moment from "moment";
+import { AddLog } from "../../../context/Log";
 export function ModalEditKCP({ isOpen, onClose, data, onUpdate }) {
   const [formData, setFormData] = useState({
     NoUrut: "",
@@ -16,11 +17,13 @@ export function ModalEditKCP({ isOpen, onClose, data, onUpdate }) {
     Mulai: "",
     Selesai: "",
     namadokumen: "",
+    Periode_Ranap: "",
   });
   const baseUrl = useContext(ApiUrl);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
 
   useEffect(() => {
     if (data) {
@@ -35,6 +38,7 @@ export function ModalEditKCP({ isOpen, onClose, data, onUpdate }) {
         Mulai: data.Mulai || "00:00:00",
         Selesai: data.Selesai || "00:00:00",
         namadokumen: data.namadokumen || "",
+        Periode_Ranap: data.Periode_Ranap || "",
       });
     }
   }, [data]);
@@ -43,14 +47,21 @@ export function ModalEditKCP({ isOpen, onClose, data, onUpdate }) {
     e.preventDefault();
     try {
       let result = await axios.put(`${baseUrl}/master/dataMRt3`, formData);
-      console.log(result.data.data);
+      // console.log(result.data.data);
       onUpdate();
+      AddLog(
+        `${userData.username} edit data MRt3 dengan Kode Checklist ${formData.Kode_Checklist} dan No Urut ${formData.NoUrut}`
+      );
       setSuccessMessage("Data Berhasil Diupdate");
       setTimeout(() => {
         setSuccessMessage("");
         onClose();
       }, 1500);
     } catch (err) {
+      AddLog(
+        `${userData.username} edit data MRt3 dengan Kode Checklist ${formData.Kode_Checklist} dan No Urut ${formData.NoUrut}`,
+        "FAILED"
+      );
       setErrorMessage("Data Gagal di Update!");
       setTimeout(() => {
         setErrorMessage("");
@@ -176,7 +187,23 @@ export function ModalEditKCP({ isOpen, onClose, data, onUpdate }) {
                 required
               />
             </div>
-
+            <div>
+              <label
+                htmlFor="Periode_Ranap"
+                className="block text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Periode Ranap
+              </label>
+              <input
+                type="text"
+                name="Periode_Ranap"
+                id="Periode_Ranap"
+                value={formData.Periode_Ranap}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                required
+              />
+            </div>
             <div>
               <label
                 htmlFor="Layanan"

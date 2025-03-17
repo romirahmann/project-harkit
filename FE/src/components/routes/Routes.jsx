@@ -18,6 +18,7 @@ import { TargetsPage } from "../pages/Targets";
 import { CheecksheetPage } from "../pages/CheecksheetPage";
 import { KcpPage } from "../pages/KcpPage";
 import { NonaktifPage } from "../pages/NonaktifPage";
+import { LogPage } from "../pages/LogPage";
 
 const rootRoute = createRootRoute();
 
@@ -78,6 +79,7 @@ const candraPage = createRoute({
     </ProtectedRoute>
   ),
 });
+
 const mrPage = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/data-mr",
@@ -144,6 +146,15 @@ const nonaktifPage = createRoute({
     </ProtectedRoute>
   ),
 });
+const logPage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/logpage",
+  component: () => (
+    <ProtectedRoute>
+      <LogPage />
+    </ProtectedRoute>
+  ),
+});
 
 const routeTree = rootRoute.addChildren([
   layoutRoute.addChildren([
@@ -159,6 +170,7 @@ const routeTree = rootRoute.addChildren([
     checkPage,
     kcpPage,
     nonaktifPage,
+    logPage,
   ]),
   loginRoute,
 ]);

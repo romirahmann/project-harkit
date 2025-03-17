@@ -3,10 +3,11 @@ import { useContext, useState, useEffect } from "react";
 import { Modal, Button } from "flowbite-react";
 import { ApiUrl } from "../../../context/Urlapi";
 import axios from "axios";
+import { AddLog } from "../../../context/Log";
 
 export function AddProses({ isOpen, onClose, addProses }) {
   const baseUrl = useContext(ApiUrl);
-
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
   // Fungsi untuk mendapatkan tanggal hari ini dalam format YYYY-MM-DD
   const getTodayDate = () => {
     const today = new Date();
@@ -51,6 +52,7 @@ export function AddProses({ isOpen, onClose, addProses }) {
     try {
       await axios.post(`${baseUrl}/master/proses`, formData);
       setSuccessMessage(`Proses berhasil ditambahkan!`);
+      AddLog(`${userData.username} menambahkan proses baru`);
       setTimeout(() => {
         addProses();
         setSuccessMessage("");
@@ -63,6 +65,7 @@ export function AddProses({ isOpen, onClose, addProses }) {
         onClose();
       }, 1500);
     } catch (e) {
+      AddLog(`${userData.username} menambahkan proses baru`, "FAILED");
       setErrorMessage("Proses gagal ditambahkan!");
     }
   };

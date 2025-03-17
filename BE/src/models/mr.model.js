@@ -181,7 +181,7 @@ const deleteMRDouble = async (NoUrut, Kode_Checklist) => {
 // MR T3
 const getAllMRt3 = async () => {
   const db = getDB();
-  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen FROM tblDataMRt3 `;
+  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3 `;
   const result = await db.query(query);
   return result;
 };

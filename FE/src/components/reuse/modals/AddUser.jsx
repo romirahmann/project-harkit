@@ -3,9 +3,11 @@ import { useContext, useState } from "react";
 import { Modal, Button } from "flowbite-react";
 import { ApiUrl } from "../../../context/Urlapi";
 import axios from "axios";
+import { AddLog } from "../../../context/Log";
 
 export function AddUser({ isOpen, onClose, addUser }) {
   const baseUrl = useContext(ApiUrl);
+  const userData = JSON.parse(localStorage.getItem("userData")) || {};
   // State untuk menyimpan input form
   const [formData, setFormData] = useState({
     username: "",
@@ -30,6 +32,7 @@ export function AddUser({ isOpen, onClose, addUser }) {
     try {
       await axios.post(`${baseUrl}/master/register`, formData);
       setSuccessMessage(`User berhasil ditambahkan!.`);
+      AddLog(`${userData.username} menambahkan user ${formData.username} !`);
       // console.log(res.data.data);
       setTimeout(() => {
         addUser();
@@ -43,6 +46,10 @@ export function AddUser({ isOpen, onClose, addUser }) {
         onClose();
       }, 1500);
     } catch (e) {
+      AddLog(
+        `${userData.username} menambahkan user ${formData.username} `,
+        "FAILED"
+      );
       setErrorMessage("User gagal ditambahkan!");
     }
   };

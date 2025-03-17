@@ -39,7 +39,7 @@ export function Login() {
           setTimeout(() => {
             setAllert(false);
             navigate({ to: "/" });
-          }, 2000);
+          }, 1500);
         })
         .catch((res) => {
           console.log(res);

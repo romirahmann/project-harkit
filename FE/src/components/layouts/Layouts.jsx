@@ -17,6 +17,8 @@ import { MdDocumentScanner } from "react-icons/md";
 import { IoDocumentsSharp, IoShieldCheckmarkOutline } from "react-icons/io5";
 import { TbLogout, TbTargetArrow } from "react-icons/tb";
 import { BsClipboardData } from "react-icons/bs";
+import { RxActivityLog } from "react-icons/rx";
+import { AddLog } from "../../context/Log";
 
 export function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -55,6 +57,7 @@ export function Layout() {
   }, []);
 
   const handleLogout = () => {
+    AddLog(`User ${userLogin.username} telah logout`, "SUCCESSFULLY");
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
     navigate({ to: "/login" });
@@ -183,14 +186,24 @@ export function Layout() {
                   </li>
                 </Link>
                 {userLogin?.jabatan === "Admin" && (
-                  <Link to={"/data-users"}>
-                    <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
-                      <FaUserCog size={16} />
-                      {isSidebarOpen && (
-                        <span className="ml-3">Data Users</span>
-                      )}
-                    </li>
-                  </Link>
+                  <div>
+                    <Link to={"/data-users"}>
+                      <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
+                        <FaUserCog size={16} />
+                        {isSidebarOpen && (
+                          <span className="ml-3">Data Users</span>
+                        )}
+                      </li>
+                    </Link>
+                    {/* <Link to={"/logpage"}>
+                      <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
+                        <RxActivityLog size={16} />
+                        {isSidebarOpen && (
+                          <span className="ml-3">Log Activity</span>
+                        )}
+                      </li>
+                    </Link> */}
+                  </div>
                 )}
               </ul>
             )}
