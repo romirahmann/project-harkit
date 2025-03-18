@@ -2,6 +2,40 @@ const api = require("../../tools/common");
 const modelUpdate = require("../../models/update.model");
 const modelCandra = require("../../models/candra.model");
 const modelMR = require("../../models/mr.model");
+const moment = require("moment");
+const fs = require("fs");
+const path = require("path");
+
+// Fungsi backup file MDB
+const backupMDB = (sourceFile) => {
+  try {
+    const backupDir = path.join(__dirname, "../../database/backupDB");
+    if (!fs.existsSync(sourceFile)) {
+      throw new Error(`File sumber tidak ditemukan: ${sourceFile}`);
+    }
+
+    // Buat folder backup jika belum ada
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+    }
+
+    // Nama file backup dengan timestamp + random 4 char
+    const timestamp = moment().format("YYYYMMDD");
+    const randomChar = Math.random().toString(36).substring(2, 6);
+    const backupFileName = `Backup_${path.basename(
+      sourceFile,
+      ".mdb"
+    )}_${timestamp}_${randomChar}.mdb`;
+    const backupFilePath = path.join(backupDir, backupFileName);
+
+    // Salin file MDB ke folder backup
+    fs.copyFileSync(sourceFile, backupFilePath);
+    console.log(`✅ Database berhasil dibackup ke: ${backupFilePath}`);
+  } catch (err) {
+    console.error("❌ Gagal membackup database:", err.message);
+    throw new Error(`Gagal membackup database: ${err.message}`);
+  }
+};
 
 const uploadFile = async (req, res) => {
   try {
@@ -10,6 +44,11 @@ const uploadFile = async (req, res) => {
     }
 
     const filename = req.file.originalname;
+    const mdbFilePath = path.join(__dirname, "../../database", filename);
+    console.log(mdbFilePath);
+
+    // Lakukan backup sebelum update
+    backupMDB(mdbFilePath);
 
     if (filename === "dbData.mdb") {
       let newDataCandra = await modelUpdate.getAllCandra();

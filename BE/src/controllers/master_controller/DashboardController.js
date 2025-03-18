@@ -8,7 +8,7 @@ const getTotalStatistik = async (req, res) => {
     if (!date) {
       return api.error(res, "Tanggal tidak boleh kosong");
     }
-    const formattedDate = moment(date, "DD-MM-YYYY").format("YYYY-MM-DD");
+    const formattedDate = moment(date, "YYYY-MM-DD").format("YYYY-MM-DD");
     const [total_kode_checklist, totalMR, totalNIK, totalImage, totalLembar] =
       await Promise.all([
         model.getTotalKodeChecklist(formattedDate),

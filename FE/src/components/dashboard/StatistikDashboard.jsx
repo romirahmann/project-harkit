@@ -12,7 +12,7 @@ import moment from "moment";
 export function StatistikDashboard() {
   const [statistikData, setStatistikData] = useState([]);
   const [selectionDate, setSelectionDate] = useState(
-    moment().format("DD-MM-YYYY")
+    moment().format("YYYY-MM-DD")
   );
   const baseUrl = useContext(ApiUrl);
 
@@ -34,7 +34,7 @@ export function StatistikDashboard() {
 
   const handleChange = (e) => {
     let value = e.target.value;
-    setSelectionDate(moment(value).format("DD-MM-YYYY"));
+    setSelectionDate(moment(value).format("YYYY-MM-DD"));
   };
 
   return (
@@ -48,6 +48,7 @@ export function StatistikDashboard() {
             <div className="relative ">
               <input
                 type="date"
+                value={selectionDate}
                 onChange={(e) => handleChange(e)}
                 className="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-gray-700 bg-white"
               />

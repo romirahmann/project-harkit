@@ -147,6 +147,7 @@ const ChartComponent = () => {
         <div className="ms-auto">
           <input
             type="month"
+            value={selectionDate}
             onChange={(e) => handleSelectionMonth(e)}
             className="w-full p-2 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-gray-700 bg-white "
           />
