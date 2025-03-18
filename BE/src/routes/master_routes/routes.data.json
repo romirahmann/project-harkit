@@ -140,8 +140,8 @@
     "controller": "MrController.deleteDataMR"
   },
   {
-    "path": "/export-datamr/:Kode_Checklist",
-    "method": "get",
+    "path": "/export-datamr",
+    "method": "post",
     "controller": "MrController.exportCsv"
   },
   {
@@ -190,8 +190,8 @@
     "controller": "CandraController.deleteCandra"
   },
   {
-    "path": "/export-candra/:Kode_Checklist",
-    "method": "get",
+    "path": "/export-candra",
+    "method": "post",
     "controller": "CandraController.exportCsv"
   },
   {

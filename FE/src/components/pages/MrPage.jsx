@@ -66,8 +66,9 @@ export function MrPage() {
     setLoading(true);
     const exportCsv = async () => {
       try {
-        const response = await axios.get(
-          `${baseUrl}/master/export-datamr/${query}`,
+        const response = await axios.post(
+          `${baseUrl}/master/export-datamr/`,
+          filteredData,
           {
             responseType: "blob",
           }
@@ -75,13 +76,20 @@ export function MrPage() {
 
         setLoading(false);
 
-        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const url = window.URL.createObjectURL(
+          new Blob([response.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          })
+        );
 
         AddLog(`${userLogin.username} Export Data MR`);
-
+        let dateNow = moment().format("YYYYMMDD HH:mm:ss");
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "data_MR.csv"); // Nama file
+        link.setAttribute(
+          "download",
+          `data_MR_${query !== null ? query : dateNow}.xlsx`
+        ); // Nama file
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -168,7 +176,7 @@ export function MrPage() {
           ) : (
             <FaFileExport />
           )}
-          <span className="ms-2">Export CSV</span>
+          <span className="ms-2">Export Excell</span>
         </button>
         <div className="ms-auto">
           <SearchComponent
@@ -207,7 +215,7 @@ export function MrPage() {
                   <td className="px-4 py-2 w-4">{data.NamaPasien}</td>
                   <td className="px-4 py-2 w-4">
                     {data.Tanggal
-                      ? moment(data.Tanggal, "YYYY-MM-DD").format("DD/MM/YYYY")
+                      ? moment(data.Tanggal, "DDMMYYYY").format("DD/MM/YYYY")
                       : ""}
                   </td>
                   <td className="px-4 py- w-4">{data.Qty_Image}</td>

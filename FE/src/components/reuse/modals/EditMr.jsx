@@ -27,8 +27,7 @@ export function EditMr({ isOpen, onClose, mrData, updateMR }) {
         NoUrut: mrData.NoUrut || "",
         NoMR: mrData.NoMR || "",
         NamaPasien: mrData.NamaPasien || "",
-        Tanggal:
-          moment(mrData.Tanggal, "YYYY-MM-DD").format("yyyy-MM-DD") || "",
+        Tanggal: moment(mrData.Tanggal, "DDMMYYYY").format("yyyy-MM-DD") || "",
         Kode_Checklist: mrData.Kode_Checklist || "",
         nobox: mrData.nobox || "",
       });

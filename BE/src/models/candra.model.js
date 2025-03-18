@@ -1,3 +1,4 @@
+const moment = require("moment");
 const { getDB } = require("../database/db.config");
 
 const getAllCandra = async () => {
@@ -106,17 +107,17 @@ const createCandra = async (data) => {
     submittedby,
   } = data;
 
+  const formattedTanggal = tanggal ? `#${tanggal}#` : "NULL";
+
   const query = `
     INSERT INTO tblcandra (kode_checklist, idproses, nik, qty_image, nama_proses, nama_karyawan, tanggal, mulai, selesai, submittedby)
     VALUES ('${kode_checklist}', '${idproses}', '${nik}', ${parseInt(
     qty_image
-  )}, '${nama_proses}', '${nama_karyawan}', #${
-    tanggal || ""
-  }#, '${mulai_formatted}', '${selesai_formatted}', '${submittedby}')
+  )}, '${nama_proses}', '${nama_karyawan}', ${formattedTanggal}, '${mulai_formatted}', '${selesai_formatted}', '${submittedby}')
   `;
 
   const result = await db.query(query);
-  return result.count; // ✅ Return jumlah baris yang ditambahkan
+  return result; // ✅ Return jumlah baris yang ditambahkan
 };
 
 const createCandraFromScan = async (data) => {

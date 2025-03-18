@@ -31,7 +31,7 @@ const login = async (req, res) => {
       jabatan: user.jabatan,
     };
     const token = generateToken(payload);
-    logService.log(`${payload.username} Berhasil Login`, "BERHASIL");
+    logService.log(`${payload.username} Berhasil Login`, "SUCCESSFULLY");
     return api.ok(res, { token, user: payload });
   } catch (error) {
     console.error("❌ Error logging in:", error);

@@ -71,13 +71,13 @@ const createDataMR = async (data) => {
     nobox,
     FilePath,
   } = data;
-  // Konversi tanggal ke format Access atau NULL
-  const formattedTanggal = Tanggal ? `#${Tanggal}#` : "NULL";
+  // // Konversi tanggal ke format Access atau NULL
+  // const formattedTanggal = Tanggal ? `#${Tanggal}#` : "NULL";
   const query = `
     INSERT INTO tblDataMR 
     (NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, 
      Selesai, rumahsakit, nobox, filePath) 
-    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', ${formattedTanggal} , ${Qty_Image}, '${Kode_Checklist}', '${Urut}', '${Mulai}', '${Selesai}', '${rumahsakit}', '${nobox}', '${FilePath}')`;
+    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', '${Tanggal}' , ${Qty_Image}, '${Kode_Checklist}', '${Urut}', '${Mulai}', '${Selesai}', '${rumahsakit}', '${nobox}', '${FilePath}')`;
 
   const result = await db.query(query);
   return result;
@@ -149,19 +149,19 @@ const getQtyByMR = async () => {
 
 const updateDataMR = async (NoUrut, Kode_Checklist, data) => {
   const db = getDB();
-  const { NoMR, NamaPasien, Tanggal, nobox } = data;
-
+  const { NoMR, NamaPasien, formatedTanggal, nobox } = data;
+  // console.log(NoMR, NamaPasien, formatedTanggal, nobox);
   const query = `
-  UPDATE tblDataMR 
-  SET NoMR = '${NoMR}', 
-      NamaPasien = '${NamaPasien}', 
-      Tanggal = '${Tanggal}', 
-      nobox = '${nobox}'
-  WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'
-`;
+    UPDATE tblDataMR
+    SET NoMR = '${NoMR}',
+        NamaPasien = '${NamaPasien}',
+        Tanggal = '${formatedTanggal}',
+        nobox = '${nobox}'
+    WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'
+  `;
 
   const result = await db.query(query);
-  return result.count;
+  return result;
 };
 
 const deleteDataMR = async (NoUrut, Kode_Checklist) => {
@@ -198,22 +198,21 @@ const createDataMRt3 = async (data) => {
     NoMR,
     NamaPasien,
     Tanggal,
+    layanan,
     Qty_Image,
     Kode_Checklist,
-    Urut,
     Mulai,
     Selesai,
-    Ket,
+    namadokumen,
+    Periode_Ranap,
   } = data;
-  // Konversi tanggal ke format Access atau NULL
-  const formattedTanggal = Tanggal ? `#${Tanggal}#` : "NULL";
+  // // Konversi tanggal ke format Access atau NULL
+  // const formattedTanggal = Tanggal ? `#${Tanggal}#` : "NULL";
   const query = `
-    INSERT INTO tblDataMR 
-    (NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, 
-     Selesai, ket) 
-    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', ${
-    formattedTanggal || null
-  }, ${Qty_Image}, '${Kode_Checklist}', '${Urut}', '${Mulai}', '${Selesai}', '${Ket}')`;
+    INSERT INTO tblDataMRt3 
+    (NoUrut, NoMR, NamaPasien, Tanggal, [Layanan], Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen,Periode_Ranap) 
+    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', '${Tanggal}','${layanan}', ${Qty_Image}, '${Kode_Checklist}', '${Mulai}', '${Selesai}', '${namadokumen}', '${Periode_Ranap}')`;
+  // console.log("Executing Query:", query);
   const result = db.query(query);
   return result;
 };

@@ -89,18 +89,26 @@ export function CandraPage() {
   const handleExportCsv = () => {
     const exportCsv = async () => {
       try {
-        const response = await axios.get(
-          `${baseUrl}/master/export-candra/${query}`,
+        const response = await axios.post(
+          `${baseUrl}/master/export-candra`,
+          filteredData,
           {
             responseType: "blob",
           }
         );
 
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-
+        const url = window.URL.createObjectURL(
+          new Blob([response.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          })
+        );
+        let dateNow = moment().format("YYYYMMDD HH:mm:ss");
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "data_candra.csv"); // Nama file
+        link.setAttribute(
+          "download",
+          `data_CANDRA_${query !== null ? query : dateNow}.xlsx`
+        ); // Nama file
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -136,7 +144,7 @@ export function CandraPage() {
           onClick={() => handleExportCsv()}
           className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center"
         >
-          <FaFileExport /> <span className="ms-2">Export CSV</span>
+          <FaFileExport /> <span className="ms-2">Export Excell</span>
         </button>
         <div className="ms-auto">
           <SearchComponent

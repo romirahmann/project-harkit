@@ -16,8 +16,10 @@ const uploadFile = async (req, res) => {
       let newDataMR = await modelUpdate.getAllDataMR();
       let newDataMR3 = await modelUpdate.getAllDataMR3();
 
-      // console.log(newDataMR);
-      // return api.ok(res, { newDataCandra, newDataMR, newDataMR3 });
+      // console.log("Candra: ", newDataCandra);
+      // console.log("MR: ", newDataMR);
+      // console.log("MRt3: ", newDataMR3);
+
       // UPDATE DATA CANDRA
       for (const candra of newDataCandra) {
         const existing = await modelCandra.dataExisting(
@@ -25,8 +27,14 @@ const uploadFile = async (req, res) => {
           candra.idproses
         );
 
+        // console.log(existing);
+
         if (!existing) {
-          await modelCandra.createCandra(candra);
+          try {
+            await modelCandra.createCandra(candra);
+          } catch (err) {
+            console.log(err);
+          }
         }
       }
       console.log("CANDRA UPDATE SUCCESSFULLY!");

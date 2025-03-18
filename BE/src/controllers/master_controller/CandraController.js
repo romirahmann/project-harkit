@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const moment = require("moment");
 const logService = require("../../services/log.service");
+const ExcelJS = require("exceljs");
 
 const getAllCandra = async (req, res) => {
   try {
@@ -239,54 +240,68 @@ const deleteCandra = async (req, res) => {
 };
 
 const exportCsv = async (req, res) => {
-  const { Kode_Checklist } = req.params;
+  const data = req.body;
   try {
-    let data;
-    if (Kode_Checklist !== "") {
-      data = await model.getCandraByChecklist(Kode_Checklist);
-      console.log("kode", Kode_Checklist);
-    }
-    data = await model.getAllCandra();
+    // **Buat Workbook dan Worksheet**
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Data Candra");
 
-    if (!data || data.length === 0) {
-      return api.error(res, "Data Not Found!", 400);
-    }
-
-    console.log("data: ", data);
-
-    // Definisikan kolom yang akan diekspor
-    const fields = [
-      "kode_checklist",
-      "idproses",
-      "nik",
-      "qty_image",
-      "nama_proses",
-      "nama_karyawan",
-      "tanggal",
-      "mulai_formatted",
-      "selesai_formatted",
-      "submittedby",
+    // **Definisikan Header dan Tambahkan ke Worksheet**
+    const headers = [
+      "Kode Checklist",
+      "ID Proses",
+      "NIK",
+      "Qty Image",
+      "Nama Proses",
+      "Nama Karyawan",
+      "Tanggal",
+      "Mulai",
+      "Selesai",
+      "Submitted By",
     ];
-    // Konversi data ke CSV
-    const json2csvParser = new Parser({ fields });
-    const csv = json2csvParser.parse(data);
-    // Simpan CSV ke file sementara
-    const filePath = path.join(__dirname, "../../exports/candra_export.csv");
-    fs.writeFileSync(filePath, csv);
+    worksheet.addRow(headers);
 
-    // Kirim file CSV ke client
-    res.download(filePath, "data_candra.csv", (err) => {
+    // **Tambahkan Data**
+    data.forEach((row) => {
+      worksheet.addRow([
+        row.kode_checklist,
+        row.idproses,
+        row.nik,
+        row.qty_image,
+        row.nama_proses,
+        row.nama_karyawan,
+        row.tanggal,
+        row.mulai_formatted,
+        row.selesai_formatted,
+        row.submittedby,
+      ]);
+    });
+
+    // **Format Header agar Tebal**
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center" };
+    });
+
+    // **Buat Path File Excel**
+    const filePath = path.join(__dirname, "../../exports/candra_export.xlsx");
+
+    // **Simpan File**
+    await workbook.xlsx.writeFile(filePath);
+
+    // **Kirim File Excel ke Client**
+    res.download(filePath, "data_candra.xlsx", (err) => {
       if (err) {
         console.error("Error saat mengirim file:", err);
         res.status(500).json({ message: "Gagal mengunduh file" });
       }
 
-      // Hapus file setelah dikirim (opsional)
+      // **Hapus File Setelah Dikirim (Opsional)**
       fs.unlinkSync(filePath);
     });
   } catch (error) {
-    console.error("❌ Error exporting CSV:", error);
-    return api.error(res, "Failed to export CSV", 500);
+    console.error("❌ Error exporting Excel:", error);
+    return api.error(res, "Failed to export Excel", 500);
   }
 };
 

@@ -5,8 +5,9 @@ const fs = require("fs");
 const path = require("path");
 const bwipJs = require("bwip-js");
 const PdfPrinter = require("pdfmake");
-const { table } = require("console");
+const { table, Console } = require("console");
 const moment = require("moment");
+const ExcelJS = require("exceljs");
 
 const getAllDataMR = async (req, res) => {
   try {
@@ -104,19 +105,17 @@ const updateDataMR = async (req, res) => {
     );
   }
 
+  let formatedTanggal = moment(Tanggal, "YYYY-MM-DD").format("DDMMYYYY");
+  console.log(formatedTanggal, Tanggal);
   try {
     const result = await model.updateDataMR(nourut, kode_checklist, {
       NoMR,
       NamaPasien,
-      Tanggal,
+      formatedTanggal,
       nobox,
     });
 
-    if (result > 0) {
-      return api.ok(res, "Data MR successfully updated");
-    }
-
-    return api.error(res, "Failed to update Data MR", 500);
+    return api.ok(res, "Data MR successfully updated");
   } catch (error) {
     console.error("❌ Error updating Data MR:", error);
     return api.error(res, "An error occurred while updating Data MR", 500);
@@ -138,23 +137,17 @@ const deleteDataMR = async (req, res) => {
 };
 
 const exportCsv = async (req, res) => {
-  const { Kode_Checklist } = req.params;
+  // const { Kode_Checklist } = req.params;
+  const data = req.body;
   try {
-    console.log(Kode_Checklist);
-    let data;
-    if (Kode_Checklist !== null) {
-      data = await model.getDataMRByChecklist(Kode_Checklist);
-      // console.log(data);
-    } else {
-      data = await model.getAllMRt3();
-      // console.log(data);
-    }
-    if (data.length === 0) {
-      return api.error(res, "Data Not Found!", 400);
-    }
+    // console.log(Kode_Checklist);
 
-    // Definisikan kolom yang akan diekspor
-    const fields = [
+    // **Buat Workbook dan Worksheet**
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Data MR");
+
+    // **Definisikan Header**
+    const headers = [
       "NoUrut",
       "NoMR",
       "Kode_Checklist",
@@ -164,30 +157,51 @@ const exportCsv = async (req, res) => {
       "Urut",
       "Mulai",
       "Selesai",
-      "nobox",
+
       "rumahsakit",
       "FilePath",
     ];
-    // Konversi data ke CSV
-    const json2csvParser = new Parser({ fields });
-    const csv = json2csvParser.parse(data);
-    // Simpan CSV ke file sementara
-    const filePath = path.join(__dirname, "../../exports/candra_export.csv");
-    fs.writeFileSync(filePath, csv);
 
-    // Kirim file CSV ke client
-    res.download(filePath, "data_MR.csv", (err) => {
+    // **Tambahkan Header ke Worksheet**
+    worksheet.addRow(headers);
+
+    // **Tambahkan Data**
+    data.forEach((row) => {
+      worksheet.addRow([
+        row.NoUrut,
+        row.NoMR,
+        row.Kode_Checklist,
+        row.NamaPasien,
+        row.Tanggal,
+        row.Qty_Image,
+        row.Urut,
+        row.Mulai,
+        row.Selesai,
+
+        row.rumahsakit,
+        row.FilePath,
+      ]);
+    });
+
+    // **Buat Path File Excel**
+    const filePath = path.join(__dirname, "../../exports/candra_export.xlsx");
+
+    // **Simpan File**
+    await workbook.xlsx.writeFile(filePath);
+
+    // **Kirim File Excel ke Client**
+    res.download(filePath, "data_MR.xlsx", (err) => {
       if (err) {
         console.error("Error saat mengirim file:", err);
         res.status(500).json({ message: "Gagal mengunduh file" });
       }
 
-      // Hapus file setelah dikirim (opsional)
+      // **Hapus File Setelah Dikirim (Opsional)**
       fs.unlinkSync(filePath);
     });
   } catch (error) {
-    console.error("❌ Error exporting CSV:", error);
-    return api.error(res, "Failed to export CSV", 500);
+    console.error("❌ Error exporting Excel:", error);
+    return api.error(res, "Failed to export Excel", 500);
   }
 };
 
