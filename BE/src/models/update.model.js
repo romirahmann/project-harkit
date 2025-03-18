@@ -12,20 +12,20 @@ const getAllCandra = async () => {
         nama_proses, 
         nama_karyawan, 
         tanggal, 
-        FORMAT(mulai, 'HH:nn:ss') AS mulai_formatted, 
-        FORMAT(selesai, 'HH:nn:ss') AS selesai_formatted, 
+        FORMAT(mulai, 'HH:mm:ss') AS mulai_formatted, 
+        FORMAT(selesai, 'HH:mm:ss') AS selesai_formatted, 
         submittedby,
         editBy
       FROM tblcandra
     `;
-  console.log(query);
+  // console.log(query);
   const result = await db.query(query);
   return result;
 };
 const getAllDataMR = async () => {
   const db = getDBData();
   const query = `SELECT * FROM tblDataMR`;
-  console.log(query);
+  // console.log(query);
   const result = await db.query(query);
   return result;
 };
@@ -33,7 +33,7 @@ const getAllDataMR3 = async () => {
   const db = getDBData();
   const query = `SELECT * FROM tblDataMRt3`;
 
-  console.log(query);
+  // console.log(query);
   const result = await db.query(query);
   return result;
 };

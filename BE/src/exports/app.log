@@ -83,3 +83,29 @@
 [SUCCESSFULLY]-[18-03-2025 10:35:19]  aziz Export CSV
 [SUCCESSFULLY]-[18-03-2025 10:35:52]  aziz Export CSV
 [SUCCESSFULLY]-[18-03-2025 10:45:17]  romirahman Export Data MR
+[SUCCESSFULLY]-[18-03-2025 11:19:34]  aziz Export CSV
+[SUCCESSFULLY]-[18-03-2025 11:20:05]  aziz Export CSV
+[SUCCESSFULLY]-[18-03-2025 11:21:43]  aziz Export Data MR
+[SUCCESSFULLY]-[18-03-2025 11:23:43]  aziz Delete Data MR
+[SUCCESSFULLY]-[18-03-2025 11:23:52]  aziz Delete Data MR
+[SUCCESSFULLY]-[18-03-2025 11:23:57]  aziz Delete Data MR
+[SUCCESSFULLY]-[18-03-2025 11:24:53]  User aziz update database candra !
+[FAILED]-[18-03-2025 11:34:11]  User aziz update database candra !
+[FAILED]-[18-03-2025 11:38:25]  User aziz update database candra !
+[FAILED]-[18-03-2025 11:38:39]  User aziz update database candra !
+[FAILED]-[18-03-2025 11:41:02]  User aziz update database candra !
+[FAILED]-[18-03-2025 11:41:52]  User aziz update database candra !
+[FAILED]-[18-03-2025 11:41:54]  User aziz update database candra !
+[FAILED]-[18-03-2025 11:42:21]  User romirahman update database candra !
+[FAILED]-[18-03-2025 11:43:26]  User romirahman update database candra !
+[FAILED]-[18-03-2025 11:44:02]  User romirahman update database candra !
+[SUCCESSFULLY]-[18-03-2025 11:46:14]  User romirahman update database candra !
+[SUCCESSFULLY]-[18-03-2025 11:46:47]  User aziz update database candra !
+[FAILED]-[18-03-2025 11:47:44]  User aziz update database qty !
+[FAILED]-[18-03-2025 11:48:17]  User aziz update database qty !
+[FAILED]-[18-03-2025 11:50:54]  User aziz update database qty !
+[FAILED]-[18-03-2025 11:51:07]  User aziz update database qty !
+[FAILED]-[18-03-2025 11:54:20]  User aziz update database qty !
+[FAILED]-[18-03-2025 11:56:52]  User romirahman update database qty !
+[SUCCESSFULLY]-[18-03-2025 11:57:18]  User romirahman update database qty !
+[SUCCESSFULLY]-[18-03-2025 11:58:31]  User romirahman update database qty !

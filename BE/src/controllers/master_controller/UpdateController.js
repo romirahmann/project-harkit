@@ -30,11 +30,7 @@ const uploadFile = async (req, res) => {
         // console.log(existing);
 
         if (!existing) {
-          try {
-            await modelCandra.createCandra(candra);
-          } catch (err) {
-            console.log(err);
-          }
+          await modelCandra.createCandra(candra);
         }
       }
       console.log("CANDRA UPDATE SUCCESSFULLY!");
@@ -69,11 +65,11 @@ const uploadFile = async (req, res) => {
 
     if (filename === "dbQty.mdb") {
       let newData = await modelUpdate.getQty();
+      // console.log(newData);
       for (const data of newData) {
         const existing = await modelMR.dataExistingByMR(data.NoMR);
         if (existing) {
-          console.log("UPDATE MR");
-          await modelMR.updateQtyMR(data);
+          let result = await modelMR.updateQtyMR(data);
         }
       }
       const dataQTY = await modelMR.getQtyByMR();

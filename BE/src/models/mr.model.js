@@ -131,13 +131,14 @@ const updateQtyMR = async (data) => {
   const query = `
   UPDATE tblDataMR 
   SET Qty_Image = '${totalPages}', 
-      FilePath = '${filePath}', 
+      FilePath = '${filePath}'
       
   WHERE NoMR = '${NoMR}'
 `;
+  // console.log(query);
 
   const result = await db.query(query);
-  return result.count;
+  return result;
 };
 
 const getQtyByMR = async () => {
