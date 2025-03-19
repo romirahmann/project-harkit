@@ -341,16 +341,16 @@ const generateFinishinCheecksheet = async (req, res) => {
     const tableBody = [
       [
         { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
-        { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
         { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
         { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
-        { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
         { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
+        { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
+        { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
         { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
         { text: "Cheked", bold: true, fillColor: "#D3D3D3" },
       ],
       ...data.map((item) => {
-        const key = `${item.Periode_Ranap}-${item.NamaPasien}-${item.NoMR}`;
+        const key = `${item.NamaPasien}-${item.NoMR}-${item.Tanggal}`;
 
         if (displayedEntries.has(key)) {
           return [
@@ -359,7 +359,7 @@ const generateFinishinCheecksheet = async (req, res) => {
             "",
             "",
             item.Layanan || "-",
-            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+            item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
           ];
@@ -367,11 +367,11 @@ const generateFinishinCheecksheet = async (req, res) => {
           displayedEntries.add(key);
           return [
             item.NoUrut || "-",
-            item.Periode_Ranap || "-",
             item.NoMR || "-",
             item.NamaPasien || "-",
-            item.Layanan || "-",
             moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+            item.Layanan || "-",
+            item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
           ];
@@ -459,7 +459,7 @@ const generateFinishinCheecksheet = async (req, res) => {
 
         {
           table: {
-            widths: ["10%", "10%", "8%", "16%", "8%", "8%", "35%", "6%"],
+            widths: ["7%", "7%", "15%", "7%", "7%", "8%", "42%", "6%"],
             body: tableBody,
           },
           margin: [0, 10, 0, 0],
@@ -571,18 +571,19 @@ const generateQcChecksheet = async (req, res) => {
     const tableBody = [
       [
         { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
-        { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
         { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
         { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
-        { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
         { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
+        { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
+        { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
+
         { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
         { text: "Cek Ouput", bold: true, fillColor: "#D3D3D3" },
         { text: "Cek QC", bold: true, fillColor: "#D3D3D3" },
       ],
       ...data.map((item) => {
-        const key = `${item.Periode_Ranap || "-"}-${item.NamaPasien || "-"}-${
-          item.NoMR || "-"
+        const key = `${item.NamaPasien || "-"}-${item.NoMR || "-"}-${
+          item.Tanggal || "-"
         }`;
 
         if (displayedEntries.has(key)) {
@@ -592,7 +593,7 @@ const generateQcChecksheet = async (req, res) => {
             "",
             "",
             item.Layanan || "-",
-            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+            item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
             "",
@@ -601,11 +602,11 @@ const generateQcChecksheet = async (req, res) => {
           displayedEntries.add(key);
           return [
             item.NoUrut || "-",
-            item.Periode_Ranap || "-",
             item.NoMR || "-",
             item.NamaPasien || "-",
-            item.Layanan || "-",
             moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+            item.Layanan || "-",
+            item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
             "",
@@ -696,7 +697,7 @@ const generateQcChecksheet = async (req, res) => {
         // 📌 Table Utama (Data)
         {
           table: {
-            widths: ["7%", "9%", "7%", "16%", "7%", "8%", "35%", "6%", "6%"],
+            widths: ["7%", "7%", "15%", "7%", "7%", "7%", "40%", "5%", "5%"],
             body: tableBody,
           },
           margin: [0, 10, 0, 0], //
