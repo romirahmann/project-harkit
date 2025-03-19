@@ -135,7 +135,6 @@ const updateQtyMR = async (data) => {
       
   WHERE NoMR = '${NoMR}'
 `;
-  // console.log(query);
 
   const result = await db.query(query);
   return result;
@@ -151,7 +150,7 @@ const getQtyByMR = async () => {
 const updateDataMR = async (NoUrut, Kode_Checklist, data) => {
   const db = getDB();
   const { NoMR, NamaPasien, formatedTanggal, nobox } = data;
-  // console.log(NoMR, NamaPasien, formatedTanggal, nobox);
+
   const query = `
     UPDATE tblDataMR
     SET NoMR = '${NoMR}',
@@ -213,7 +212,7 @@ const createDataMRt3 = async (data) => {
     INSERT INTO tblDataMRt3 
     (NoUrut, NoMR, NamaPasien, Tanggal, [Layanan], Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen,Periode_Ranap) 
     VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', '${Tanggal}','${layanan}', ${Qty_Image}, '${Kode_Checklist}', '${Mulai}', '${Selesai}', '${namadokumen}', '${Periode_Ranap}')`;
-  // console.log("Executing Query:", query);
+
   const result = db.query(query);
   return result;
 };

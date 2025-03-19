@@ -3,7 +3,6 @@ const logService = require("../../services/log.service");
 const addLog = async (req, res) => {
   try {
     const data = req.body;
-    console.log(data);
     logService.log(data.messege, data.level);
     return api.ok(res, "Log added successfully");
   } catch (error) {

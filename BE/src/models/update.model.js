@@ -18,14 +18,14 @@ const getAllCandra = async () => {
         editBy
       FROM tblcandra
     `;
-  // console.log(query);
+
   const result = await db.query(query);
   return result;
 };
 const getAllDataMR = async () => {
   const db = getDBData();
   const query = `SELECT * FROM tblDataMR`;
-  // console.log(query);
+
   const result = await db.query(query);
   return result;
 };
@@ -33,7 +33,6 @@ const getAllDataMR3 = async () => {
   const db = getDBData();
   const query = `SELECT * FROM tblDataMRt3`;
 
-  // console.log(query);
   const result = await db.query(query);
   return result;
 };

@@ -102,8 +102,11 @@ export function TargetChart() {
 
   return (
     <div className="flex md:flex-wrap justify-center gap-6 ">
+      <span className="bg-white px-4 py-3 rounded-md w-full text-center font-bold text-gray-500">
+        Estimasi Penyelesaian Proyek
+      </span>
       {/* Pie Chart Target Scan */}
-      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[10em] lg:w-[18em]">
+      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[8em] lg:w-[16em]">
         <span className=" text-md md:text-lg text-center text-red-800 flex items-center mb-4">
           <TbTargetArrow />
           <h3 className=" text-gray-500 font-semibold ms-1 md:ms-2">
@@ -120,7 +123,7 @@ export function TargetChart() {
       </div>
 
       {/* Pie Chart Target Harian */}
-      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[10em] lg:w-[18em]">
+      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[8em] lg:w-[16em]">
         <span className="text-md md:text-lg text-center text-red-800 flex items-center mb-4">
           <TbTargetArrow />
           <h3 className=" font-semibold text-gray-500 ms-2 ">Target Harian</h3>

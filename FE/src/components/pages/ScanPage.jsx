@@ -98,8 +98,15 @@ export function ScanPage() {
   const fetchDataCandra = async () => {
     try {
       const response = await axios.get(`${baseUrl}/master/candra-now`);
-      setDataCandra(response.data.data);
-      setFilteredData(response.data.data);
+      const newData = response.data.data;
+      setDataCandra(newData);
+
+      // Pastikan filteredData tetap sesuai dengan filter yang dipilih
+      setFilteredData(
+        filterIdProses === "All"
+          ? newData
+          : newData.filter((item) => item.idproses === filterIdProses)
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -139,31 +146,32 @@ export function ScanPage() {
       submittedby: submittedByUser,
       tanggal: dateNow,
     };
-    setFormData(newFormData);
-    await axios
-      .post(`${baseUrl}/master/add-scan`, newFormData)
-      .then((res) => {
-        setSuccessMessage(res.data.data);
-        fetchDataCandra();
-        AddLog(
-          `Proses dengan Kode Checklist: ${newFormData.kode_checklist} dan ID Proses ${newFormData.idproses} telah ditambahkan oleh ${userLogin?.username}`
-        );
-        setTimeout(() => {
-          setSuccessMessage("");
-          kodeChecklistRef.current.focus();
-        }, 2000);
-      })
-      .catch((err) => {
-        setErrorMessage(err.response.data.data.message);
-        AddLog(
-          `Proses dengan Kode Checklist: ${newFormData.kode_checklist} dan ID Proses ${newFormData.idproses} telah ditambahkan oleh ${userLogin?.username}`,
-          "FAILED"
-        );
-        setTimeout(() => {
-          setErrorMessage("");
-          kodeChecklistRef.current.focus();
-        }, 2000);
-      });
+
+    try {
+      await axios.post(`${baseUrl}/master/add-scan`, newFormData);
+      setSuccessMessage("Data berhasil ditambahkan!");
+
+      // Perbarui data dengan filter yang tetap terjaga
+      await fetchDataCandra();
+
+      AddLog(
+        `Proses dengan Kode Checklist: ${newFormData.kode_checklist} dan ID Proses ${newFormData.idproses} telah ditambahkan oleh ${userLogin?.username}`
+      );
+
+      setTimeout(() => {
+        setSuccessMessage("");
+        kodeChecklistRef.current.focus();
+      }, 1500);
+    } catch (error) {
+      setErrorMessage(error.response.data.data.message);
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 1500);
+      AddLog(
+        `Gagal menambahkan proses dengan Kode Checklist: ${newFormData.kode_checklist} dan ID Proses ${newFormData.idproses}`,
+        "FAILED"
+      );
+    }
 
     if (!isLocked) {
       setFormData({
@@ -178,7 +186,10 @@ export function ScanPage() {
         submittedby: "",
         tanggal: "",
       });
+    } else {
+      setFormData((prev) => ({ ...prev, kode_checklist: "" }));
     }
+
     setStep(1);
     kodeChecklistRef.current.focus();
   };
@@ -234,6 +245,7 @@ export function ScanPage() {
     const selectedId = e.target.value;
     setFilterIdProses(selectedId);
 
+    // Terapkan filter langsung ke data yang sudah ada
     if (selectedId === "All") {
       setFilteredData(dataCandra);
     } else {
@@ -242,6 +254,11 @@ export function ScanPage() {
       );
     }
   };
+
+  // Gunakan useEffect untuk memperbarui pagination jika filteredData berubah
+  useEffect(() => {
+    setCurrentPage(1); // Reset ke halaman pertama setiap kali data difilter
+  }, [filteredData]);
 
   const handleEnter = (e) => {
     console.log(e);
@@ -270,6 +287,8 @@ export function ScanPage() {
       }
     }
   };
+
+  const handleQuery = () => {};
 
   return (
     <div className="container-fluid">
@@ -423,7 +442,11 @@ export function ScanPage() {
                   ))}
                 </select>
               </div>
-              <SearchComponent result={setFilteredData} data={dataCandra} />
+              <SearchComponent
+                result={setFilteredData}
+                data={dataCandra}
+                queryInput={() => handleQuery()}
+              />
             </div>
           </div>
           <table className="w-full border-collapse border text-sm">

@@ -23,8 +23,6 @@ const login = async (req, res) => {
       return api.error(res, "Incorrect Password!", 400);
     }
 
-    // console.log(passwordIsMatch);
-
     const payload = {
       id: user.id,
       username: user.username,

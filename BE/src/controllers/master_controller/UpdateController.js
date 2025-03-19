@@ -30,7 +30,6 @@ const backupMDB = (sourceFile) => {
 
     // Salin file MDB ke folder backup
     fs.copyFileSync(sourceFile, backupFilePath);
-    console.log(`✅ Database berhasil dibackup ke: ${backupFilePath}`);
   } catch (err) {
     console.error("❌ Gagal membackup database:", err.message);
     throw new Error(`Gagal membackup database: ${err.message}`);
@@ -45,7 +44,6 @@ const uploadFile = async (req, res) => {
 
     const filename = req.file.originalname;
     const mdbFilePath = path.join(__dirname, "../../database", filename);
-    console.log(mdbFilePath);
 
     // Lakukan backup sebelum update
     backupMDB(mdbFilePath);
@@ -55,10 +53,6 @@ const uploadFile = async (req, res) => {
       let newDataMR = await modelUpdate.getAllDataMR();
       let newDataMR3 = await modelUpdate.getAllDataMR3();
 
-      // console.log("Candra: ", newDataCandra);
-      // console.log("MR: ", newDataMR);
-      // console.log("MRt3: ", newDataMR3);
-
       // UPDATE DATA CANDRA
       for (const candra of newDataCandra) {
         const existing = await modelCandra.dataExisting(
@@ -66,13 +60,10 @@ const uploadFile = async (req, res) => {
           candra.idproses
         );
 
-        // console.log(existing);
-
         if (!existing) {
           await modelCandra.createCandra(candra);
         }
       }
-      console.log("CANDRA UPDATE SUCCESSFULLY!");
 
       // UPDATE DATA MR
       for (const dataMR of newDataMR) {
@@ -85,7 +76,6 @@ const uploadFile = async (req, res) => {
           await modelMR.createDataMR(dataMR);
         }
       }
-      console.log("MR UPDATE SUCCESSFULLY!");
 
       // UPDATE MRT3
       for (const dataMR3 of newDataMR3) {
@@ -98,13 +88,13 @@ const uploadFile = async (req, res) => {
           await modelMR.createDataMRt3(dataMR3);
         }
       }
-      console.log("MRT3 UPDATE SUCCESSFULLY!");
+
       return api.ok(res, "Update All Data Successfully!");
     }
 
     if (filename === "dbQty.mdb") {
       let newData = await modelUpdate.getQty();
-      // console.log(newData);
+
       for (const data of newData) {
         const existing = await modelMR.dataExistingByMR(data.NoMR);
         if (existing) {

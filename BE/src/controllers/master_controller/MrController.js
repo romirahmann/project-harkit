@@ -106,7 +106,7 @@ const updateDataMR = async (req, res) => {
   }
 
   let formatedTanggal = moment(Tanggal, "YYYY-MM-DD").format("DDMMYYYY");
-  console.log(formatedTanggal, Tanggal);
+
   try {
     const result = await model.updateDataMR(nourut, kode_checklist, {
       NoMR,
@@ -137,11 +137,8 @@ const deleteDataMR = async (req, res) => {
 };
 
 const exportCsv = async (req, res) => {
-  // const { Kode_Checklist } = req.params;
   const data = req.body;
   try {
-    // console.log(Kode_Checklist);
-
     // **Buat Workbook dan Worksheet**
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Data MR");
@@ -248,7 +245,21 @@ const aktifkanMR = async (req, res) => {
 // MRT 3
 const getAllDataMRt3 = async (req, res) => {
   try {
-    const data = await model.getAllMRt3();
+    let data = await model.getAllMRt3();
+
+    // Sorting berdasarkan angka di NoUrut (PBL-1-X)
+    data.sort((a, b) => {
+      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
+
+      // Urutkan berdasarkan angka setelah "PBL-"
+      if (aParts[1] !== bParts[1]) {
+        return aParts[1] - bParts[1];
+      }
+
+      // Jika sama, urutkan berdasarkan angka terakhir setelah "PBL-X-"
+      return aParts[2] - bParts[2];
+    });
     return api.ok(res, data);
   } catch (error) {
     console.error("❌ Error getting DataMR:", error);
@@ -638,7 +649,6 @@ const generateQcChecksheet = async (req, res) => {
 const updateMRt3 = async (req, res) => {
   const data = req.body;
   try {
-    console.log(data);
     let result = await model.updateDataMRt3(data);
     return api.ok(res, result);
   } catch (error) {
@@ -649,7 +659,6 @@ const updateMRt3 = async (req, res) => {
 
 const removeMRt3 = async (req, res) => {
   const { NoUrut, Kode_Checklist } = req.params;
-  console.log(NoUrut, Kode_Checklist);
   try {
     let result = await model.deleteMRt3({ NoUrut, Kode_Checklist });
     return api.ok(res, "Delete Successfully!");

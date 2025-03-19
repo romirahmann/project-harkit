@@ -29,7 +29,7 @@ export function Dashboard() {
             <div className="firstChart col-span-3">
               <ChartComponent />
             </div>
-            <div className="pieChart col-span- ">
+            <div className="pieChart col-span-1 ">
               <TargetChart />
             </div>
           </div>

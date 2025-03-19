@@ -25,7 +25,7 @@ export function KcpPage() {
 
   useEffect(() => {
     fecthDataMRt();
-  }, []);
+  }, [dataMRt]);
 
   const fecthDataMRt = async () => {
     try {
@@ -135,11 +135,11 @@ export function KcpPage() {
                 <th className="px-4 py-2">Kode Checklist</th>
                 <th className="px-4 py-2">No MR</th>
                 <th className="px-4 py-2">Layanan</th>
-                <th className="px-4 py-2">Nama Pasien</th>
+                <th className="px-4 py-2 lg:w-[15em]">Nama Pasien</th>
                 <th className="px-4 py-2">Tanggal</th>
-                <th className="px-4 py-2">Periode Ranap</th>
+                <th className="px-4 py-2 lg:w-[15em]">Periode Ranap</th>
 
-                <th className="px-4 py-2">Nama Dokumen</th>
+                <th className="px-4 py-2 lg:w-[15em]">Nama Dokumen</th>
                 <th className="px-4 py-2">Action</th>
               </tr>
             </thead>
@@ -150,16 +150,19 @@ export function KcpPage() {
                     <td className="px-4 py-2">{data.NoUrut}</td>
                     <td className="px-4 py-2">{data.Kode_Checklist}</td>
                     <td className="px-4 py-2">{data.NoMR}</td>
-                    <td className="px-6 py-4">{data.Layanan}</td>
-                    <td className="px-4 py-2">{data.NamaPasien}</td>
+                    <td className="px-4 py-4">{data.Layanan}</td>
+                    <td className="px-4 py-2 lg:w-[15em]">{data.NamaPasien}</td>
                     <td className="px-4 py-2">
                       {data.Tanggal
                         ? moment(data.Tanggal, "DDMMYYYY").format("DD-MM-YYYY")
                         : ""}
                     </td>
-
-                    <td className="px-4 py-2">{data.Periode_Ranap}</td>
-                    <td className="px-4 py-2">{data.namadokumen}</td>
+                    <td className="px-4 py-2 lg:w-[15em]">
+                      {data.Periode_Ranap}
+                    </td>
+                    <td className="px-4 py-2 lg:w-[15em]">
+                      {data.namadokumen}
+                    </td>
                     <td className="px-4 py-2">
                       <button
                         onClick={() => handleEdit(data)}

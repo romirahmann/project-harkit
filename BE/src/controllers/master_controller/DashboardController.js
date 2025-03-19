@@ -61,23 +61,31 @@ const getDataRealTime = async (req, res) => {
     const rowsCandra = await model.getCandraData();
     const rowsProses = await model.getProsesData();
 
-    // Buat mapping idproses dari tblproses
+    // Buat mapping idproses dari tblproses (dengan urut)
     const prosesMap = new Map(
-      rowsProses.map((row) => [row.idproses, row.nama_proses])
+      rowsProses.map((row) => [
+        row.idproses,
+        { nama_proses: row.nama_proses, urut: row.urutan },
+      ])
     );
 
     // Mengelompokkan data berdasarkan kode_checklist
     const grouped = {};
 
     rowsCandra.forEach((row) => {
-      const { kode_checklist, idproses, selesai } = row;
+      let { kode_checklist, idproses, selesai } = row;
+      const prosesInfo = prosesMap.get(idproses) || {
+        nama_proses: "Tidak Diketahui",
+        urut: 9999,
+      };
+      selesai = moment(selesai).format("HH:mm:ss");
 
       if (!grouped[kode_checklist]) {
         grouped[kode_checklist] = {
           kode_checklist,
           total_idproses: 0,
           idproses_array: [],
-          belum_dijalankan: [], // Akan diisi nanti
+          belum_dijalankan: [],
         };
       }
 
@@ -86,34 +94,26 @@ const getDataRealTime = async (req, res) => {
         grouped[kode_checklist].total_idproses += 1;
         grouped[kode_checklist].idproses_array.push({
           idproses,
-          nama_proses: prosesMap.get(idproses) || "Tidak Diketahui",
+          nama_proses: prosesInfo.nama_proses,
+          urut: prosesInfo.urut, // Ambil urut dari prosesMap
         });
       } else {
         // Jika selesai = "00:00:00", masukkan ke belum_dijalankan
         grouped[kode_checklist].belum_dijalankan.push({
           idproses,
-          nama_proses: prosesMap.get(idproses) || "Tidak Diketahui",
+          nama_proses: prosesInfo.nama_proses,
+          urut: prosesInfo.urut, // Ambil urut dari prosesMap
         });
       }
     });
 
-    // Cek idproses yang belum dijalankan dari tblproses
+    // Urutkan idproses_array dan belum_dijalankan berdasarkan urut
     Object.values(grouped).forEach((group) => {
-      const idDijalankan = new Set(
-        group.idproses_array.map((item) => item.idproses)
-      );
-
-      // Tambahkan proses yang tidak ditemukan di tblcandra ke belum_dijalankan
-      const prosesBelumDijalankan = rowsProses
-        .filter((proses) => !idDijalankan.has(proses.idproses))
-        .map((proses) => ({
-          idproses: proses.idproses,
-          nama_proses: proses.nama_proses,
-        }));
-
-      group.belum_dijalankan.push(...prosesBelumDijalankan);
+      group.idproses_array.sort((a, b) => a.urut - b.urut);
+      group.belum_dijalankan.sort((a, b) => a.urut - b.urut);
     });
 
+    // Filter hasil berdasarkan total_idproses < 6
     const filteredResult = Object.values(grouped).filter(
       (group) => group.total_idproses < 6
     );

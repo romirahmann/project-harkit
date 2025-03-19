@@ -126,7 +126,8 @@ const getCandraData = async () => {
 // Ambil data dari tblproses
 const getProsesData = async () => {
   const db = await getDB();
-  const query = "SELECT idproses, nama_proses FROM tblproses ORDER BY urutan";
+  const query =
+    "SELECT idproses, nama_proses, urutan FROM tblproses ORDER BY urutan";
   return db.query(query);
 };
 

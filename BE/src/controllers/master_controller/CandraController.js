@@ -88,7 +88,7 @@ const createCandra = async (req, res) => {
 
 const addScanCandra = async (req, res) => {
   const data = req.body;
-  // console.log(data);
+
   try {
     // Cek apakah proses ini sudah ada di tblcandra
     const existingCandra = await model.dataExisting(
@@ -181,7 +181,7 @@ const finishedProses = async (req, res) => {
 
   kode_checklist = kode_checklist.replace(/'/g, "''");
   idproses = idproses.replace(/'/g, "''");
-  console.log(kode_checklist, idproses, data);
+
   if (!kode_checklist || !idproses)
     return api.error(res, "kode_checklist and idproses are required", 400);
 
@@ -209,6 +209,8 @@ const finishedProsesScan = async (req, res) => {
 
   if (!kode_checklist || !idproses)
     return api.error(res, "kode_checklist and idproses are required", 400);
+
+  if (data.qty_image === 0) return api.error(res, "Qty Image can't 0", 400);
   // Menambahkan properti jam
   data.selesai_formatted = moment().format("HH:mm:ss"); // Format timestamp
 

@@ -19,7 +19,7 @@ const createUser = async (data) => {
   const result = await db.query(
     `INSERT INTO Users (username, email, password, jabatan, trn_date) VALUES ('${username}', '${email}', '${password}', '${jabatan}', ${trn_date})`
   );
-  console.log(result);
+
   return result.count;
 };
 

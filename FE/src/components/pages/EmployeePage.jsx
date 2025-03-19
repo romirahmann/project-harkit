@@ -70,6 +70,8 @@ export function EmployeePage() {
       });
   };
 
+  const handleQuery = () => {};
+
   return (
     <div className="container-fluid p-4">
       {successMessage && (
@@ -94,7 +96,11 @@ export function EmployeePage() {
           <FaCirclePlus /> <span className="ms-2">Add</span>
         </button>
         <div className="ms-auto">
-          <SearchComponent result={setFilteredData} data={karyawan} />
+          <SearchComponent
+            result={setFilteredData}
+            data={karyawan}
+            queryInput={() => handleQuery()}
+          />
         </div>
       </div>
 

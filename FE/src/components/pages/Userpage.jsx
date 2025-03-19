@@ -73,6 +73,8 @@ export function Userpage() {
     setShowModalRemove(true);
   };
 
+  const handleQuery = () => {};
+
   return (
     <>
       <div className="container-fluid p-4 ">
@@ -109,7 +111,11 @@ export function Userpage() {
             <FaCirclePlus /> <span className="ms-2">Add</span>
           </button>
           <div className=" dark:bg-gray-900 ms-auto">
-            <SearchComponent result={setFilteredData} data={users} />
+            <SearchComponent
+              result={setFilteredData}
+              data={users}
+              queryInput={() => handleQuery()}
+            />
           </div>
         </div>
         <div className="usersTable">

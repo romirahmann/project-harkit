@@ -107,10 +107,7 @@ const createCandra = async (data) => {
     submittedby,
   } = data;
 
-  console.log("tanggal: ", tanggal);
-
   const formattedTanggal = moment(tanggal, "YYYY-MM-DD").format("yyyy-MM-DD");
-  console.log("formated: ", formattedTanggal);
 
   const query = `
     INSERT INTO tblcandra (kode_checklist, idproses, nik, qty_image, nama_proses, nama_karyawan, tanggal, mulai, selesai, submittedby)

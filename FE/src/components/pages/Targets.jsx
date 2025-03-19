@@ -71,6 +71,8 @@ export function TargetsPage() {
     setShowModalEdit(false);
   };
 
+  const handleQuery = () => {};
+
   return (
     <>
       <div className="container-fluid p-4 ">
@@ -108,7 +110,11 @@ export function TargetsPage() {
             </button>
           </div>
           <div className=" dark:bg-gray-900 ms-auto">
-            <SearchComponent result={setFilteredData} data={targets} />
+            <SearchComponent
+              result={setFilteredData}
+              data={targets}
+              queryInput={() => handleQuery}
+            />
           </div>
         </div>
         <div className="prosesTable">
