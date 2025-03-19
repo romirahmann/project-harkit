@@ -29,9 +29,9 @@ export function CheecksheetPage() {
     const user = JSON.parse(localStorage.getItem("userData"));
     setUserLogin(user);
     fecthDataMRt();
-  }, [dataMRt]);
+  }, []);
 
-  const fecthDataMRt = async (req, res) => {
+  const fecthDataMRt = async () => {
     try {
       let res = await axios.get(`${baseUrl}/master/datMRt3`);
       let data = res.data.data;

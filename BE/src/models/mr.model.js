@@ -187,7 +187,7 @@ const getAllMRt3 = async () => {
 };
 const getMRt3ByKodeChecklist = async (kode_checklist) => {
   const db = getDB();
-  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen FROM tblDataMRt3 WHERE Kode_Checklist = '${kode_checklist}'`;
+  const query = `SELECT NoUrut, Periode_Ranap, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen FROM tblDataMRt3 WHERE Kode_Checklist = '${kode_checklist}'`;
   const result = await db.query(query);
   return result;
 };

@@ -25,7 +25,7 @@ export function KcpPage() {
 
   useEffect(() => {
     fecthDataMRt();
-  }, [dataMRt]);
+  }, []);
 
   const fecthDataMRt = async () => {
     try {
@@ -70,18 +70,27 @@ export function KcpPage() {
   const handleExport = () => {
     const exportCsv = async () => {
       try {
-        const response = await axios.get(
-          `${baseUrl}/master/export-mrt3/${query}`,
+        const response = await axios.post(
+          `${baseUrl}/master/export-mrt3`,
+          filteredData,
           {
             responseType: "blob",
           }
         );
 
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-
+        const url = window.URL.createObjectURL(
+          new Blob([response.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          })
+        );
+        let dateNow = moment().format("YYYYMMDD HH:mm:ss");
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "dataMRt3.csv"); // Nama file
+        link.setAttribute(
+          "download",
+          `dataMRt3_${query !== null ? query : dateNow}.xlsx`
+        ); // Nama file
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -115,7 +124,8 @@ export function KcpPage() {
             onClick={() => handleExport()}
             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center"
           >
-            <FaFileExport size={25} /> <span className="ms-2">Export CSV</span>
+            <FaFileExport size={25} />{" "}
+            <span className="ms-2">Export Excell</span>
           </button>
 
           <div className="ms-auto">

@@ -256,8 +256,8 @@
     "controller": "MrController.removeMRt3"
   },
   {
-    "path": "/export-mrt3/:Kode_Checklist",
-    "method": "get",
+    "path": "/export-mrt3",
+    "method": "post",
     "controller": "MrController.exportCSVMRt3"
   },
   {

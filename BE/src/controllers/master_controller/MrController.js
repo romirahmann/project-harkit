@@ -12,6 +12,10 @@ const ExcelJS = require("exceljs");
 const getAllDataMR = async (req, res) => {
   try {
     const data = await model.getAllDataMR();
+    data.sort((a, b) => {
+      const getNumber = (str) => parseInt(str.replace("PBL-", ""), 10);
+      return getNumber(a.NoUrut) - getNumber(b.NoUrut);
+    });
     return api.ok(res, data);
   } catch (error) {
     console.error("❌ Error getting DataMR:", error);
@@ -21,6 +25,18 @@ const getAllDataMR = async (req, res) => {
 const getAllNonaktifMR = async (req, res) => {
   try {
     const data = await model.getAllNonaktifMR();
+    data.sort((a, b) => {
+      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
+
+      // Urutkan berdasarkan angka setelah "PBL-"
+      if (aParts[1] !== bParts[1]) {
+        return aParts[1] - bParts[1];
+      }
+
+      // Jika sama, urutkan berdasarkan angka terakhir setelah "PBL-X-"
+      return aParts[2] - bParts[2];
+    });
     return api.ok(res, data);
   } catch (error) {
     console.error("❌ Error getting DataMR:", error);
@@ -273,12 +289,18 @@ const generateFinishinCheecksheet = async (req, res) => {
     if (!kode_checklist)
       return res.status(400).json({ message: "Kode checklist diperlukan!" });
 
-    // 🔍 Ambil data dari database
     let data = await model.getMRt3ByKodeChecklist(kode_checklist);
     if (!data || data.length === 0)
       return res.status(404).json({ message: "Data tidak ditemukan!" });
 
-    // 🖋️ Definisi font yang benar
+    data.sort((a, b) => {
+      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
+
+      if (aParts[1] !== bParts[1]) return aParts[1] - bParts[1];
+      return aParts[2] - bParts[2];
+    });
+
     const fonts = {
       Roboto: {
         normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
@@ -288,10 +310,6 @@ const generateFinishinCheecksheet = async (req, res) => {
       },
     };
 
-    // 🖨️ Inisialisasi PdfPrinter
-    const printer = new PdfPrinter(fonts);
-
-    // 🏷️ Generate Barcode
     let barcodeBase64 = null;
     try {
       const barcodeBuffer = await bwipJs.toBuffer({
@@ -310,7 +328,6 @@ const generateFinishinCheecksheet = async (req, res) => {
       console.error("⚠️ Gagal membuat barcode:", err);
     }
 
-    // Pastikan barcode valid, jika tidak, tampilkan teks alternatif
     const barcodeImage = barcodeBase64
       ? { image: barcodeBase64, width: 150, alignment: "right" }
       : {
@@ -319,9 +336,52 @@ const generateFinishinCheecksheet = async (req, res) => {
           alignment: "right",
         };
 
+    const displayedEntries = new Set();
+
+    const tableBody = [
+      [
+        { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
+        { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
+        { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
+        { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
+        { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
+        { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
+        { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
+        { text: "Cheked", bold: true, fillColor: "#D3D3D3" },
+      ],
+      ...data.map((item) => {
+        const key = `${item.Periode_Ranap}-${item.NamaPasien}-${item.NoMR}`;
+
+        if (displayedEntries.has(key)) {
+          return [
+            item.NoUrut || "-",
+            "",
+            "",
+            "",
+            item.Layanan || "-",
+            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+            item.namadokumen || "-",
+            "",
+          ];
+        } else {
+          displayedEntries.add(key);
+          return [
+            item.NoUrut || "-",
+            item.Periode_Ranap || "-",
+            item.NoMR || "-",
+            item.NamaPasien || "-",
+            item.Layanan || "-",
+            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+            item.namadokumen || "-",
+            "",
+          ];
+        }
+      }),
+    ];
+
     const docDefinition = {
       pageSize: "A4",
-      pageMargins: [20, 40, 20, 40],
+      pageMargins: [10, 20, 10, 20],
       content: [
         { text: "FINISHING CHECK SHEET", style: "header" },
 
@@ -356,34 +416,34 @@ const generateFinishinCheecksheet = async (req, res) => {
                           text: "Proses",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                         {
                           text: "Nama",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                         {
                           text: "Tanggal",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                         {
                           text: "Mulai",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                         {
                           text: "Selesai",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                       ],
-                      [{ text: "QC Image", fontSize: 9 }, "", "", "", ""],
+                      [{ text: "QC Image", fontSize: 6 }, "", "", "", ""],
                     ],
                     alignment: "left",
                     style: "table",
@@ -397,50 +457,40 @@ const generateFinishinCheecksheet = async (req, res) => {
           layout: "noBorders",
         },
 
-        // 📌 Table Utama (Data)
         {
           table: {
-            widths: ["10%", "12%", "20%", "10%", "15%", "18%", "12%"],
-            body: [
-              [
-                { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
-                { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
-                { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
-                { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
-                { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
-                { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
-                { text: "Cek Finishing", bold: true, fillColor: "#D3D3D3" },
-              ],
-              ...data.map((item) => [
-                item.NoUrut || "-",
-                item.NoMR || "-",
-                item.NamaPasien || "-",
-                item.Layanan || "-",
-                moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
-                item.namadokumen || "-",
-                "",
-              ]),
-            ],
+            widths: ["10%", "10%", "8%", "16%", "8%", "8%", "35%", "6%"],
+            body: tableBody,
           },
-          margin: [0, 10, 0, 0], //
+          margin: [0, 10, 0, 0],
           style: "table",
         },
       ],
+
       styles: {
         header: {
-          fontSize: 20,
+          fontSize: 15,
           bold: true,
           alignment: "center",
           margin: [0, 0, 0, 10],
         },
-
         table: {
-          fontSize: 9,
+          fontSize: 6,
         },
+      },
+
+      // ✨ Tambahkan Footer Halaman
+      footer: function (currentPage, pageCount) {
+        return {
+          text: `Page ${currentPage} of ${pageCount}`,
+          alignment: "right",
+          margin: [0, 10, 20, 0],
+          fontSize: 8,
+        };
       },
     };
 
-    // 📄 Generate PDF dan kirim langsung ke response
+    const printer = new PdfPrinter(fonts);
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
     res.setHeader(
       "Content-Disposition",
@@ -449,9 +499,10 @@ const generateFinishinCheecksheet = async (req, res) => {
     res.setHeader("Content-Type", "application/pdf");
     pdfDoc.pipe(res);
     pdfDoc.end();
+    console.log("Exports Successfully");
   } catch (err) {
     console.error("❌ Error generate Finishing Checksheet:", err);
-    return api.error(res, "Internal Server Error", 500);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -465,6 +516,15 @@ const generateQcChecksheet = async (req, res) => {
     let data = await model.getMRt3ByKodeChecklist(kode_checklist);
     if (!data || data.length === 0)
       return res.status(404).json({ message: "Data tidak ditemukan!" });
+
+    // Urutakan Berdasarkan No URUT
+    data.sort((a, b) => {
+      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
+
+      if (aParts[1] !== bParts[1]) return aParts[1] - bParts[1];
+      return aParts[2] - bParts[2];
+    });
 
     // 🖋️ Definisi font yang benar
     const fonts = {
@@ -507,9 +567,56 @@ const generateQcChecksheet = async (req, res) => {
           alignment: "right",
         };
 
+    const displayedEntries = new Set();
+    const tableBody = [
+      [
+        { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
+        { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
+        { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
+        { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
+        { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
+        { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
+        { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
+        { text: "Cek Ouput", bold: true, fillColor: "#D3D3D3" },
+        { text: "Cek QC", bold: true, fillColor: "#D3D3D3" },
+      ],
+      ...data.map((item) => {
+        const key = `${item.Periode_Ranap || "-"}-${item.NamaPasien || "-"}-${
+          item.NoMR || "-"
+        }`;
+
+        if (displayedEntries.has(key)) {
+          return [
+            item.NoUrut || "-",
+            "",
+            "",
+            "",
+            item.Layanan || "-",
+            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+            item.namadokumen || "-",
+            "",
+            "",
+          ];
+        } else {
+          displayedEntries.add(key);
+          return [
+            item.NoUrut || "-",
+            item.Periode_Ranap || "-",
+            item.NoMR || "-",
+            item.NamaPasien || "-",
+            item.Layanan || "-",
+            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+            item.namadokumen || "-",
+            "",
+            "",
+          ];
+        }
+      }),
+    ];
+
     const docDefinition = {
       pageSize: "A4",
-      pageMargins: [20, 40, 20, 40],
+      pageMargins: [10, 20, 10, 20],
       content: [
         { text: "QC CHECK SHEET", style: "header" },
 
@@ -544,35 +651,35 @@ const generateQcChecksheet = async (req, res) => {
                           text: "Proses",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                         {
                           text: "Nama",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                         {
                           text: "Tanggal",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                         {
                           text: "Mulai",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                         {
                           text: "Selesai",
                           bold: true,
                           fillColor: "#D3D3D3",
-                          fontSize: 9,
+                          fontSize: 6,
                         },
                       ],
-                      [{ text: "Output", fontSize: 9 }, "", "", "", ""],
-                      [{ text: "QC", fontSize: 9 }, "", "", "", ""],
+                      [{ text: "Output", fontSize: 6 }, "", "", "", ""],
+                      [{ text: "QC", fontSize: 6 }, "", "", "", ""],
                     ],
                     alignment: "left",
                     style: "table",
@@ -589,29 +696,8 @@ const generateQcChecksheet = async (req, res) => {
         // 📌 Table Utama (Data)
         {
           table: {
-            widths: ["10%", "12%", "20%", "10%", "10%", "18%", "10%", "10%"],
-            body: [
-              [
-                { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
-                { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
-                { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
-                { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
-                { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
-                { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
-                { text: "Cek Ouput", bold: true, fillColor: "#D3D3D3" },
-                { text: "Cek QC", bold: true, fillColor: "#D3D3D3" },
-              ],
-              ...data.map((item) => [
-                item.NoUrut || "-",
-                item.NoMR || "-",
-                item.NamaPasien || "-",
-                item.Layanan || "-",
-                moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
-                item.namadokumen || "-",
-                "",
-                "",
-              ]),
-            ],
+            widths: ["7%", "9%", "7%", "16%", "7%", "8%", "35%", "6%", "6%"],
+            body: tableBody,
           },
           margin: [0, 10, 0, 0], //
           style: "table",
@@ -619,15 +705,23 @@ const generateQcChecksheet = async (req, res) => {
       ],
       styles: {
         header: {
-          fontSize: 20,
+          fontSize: 15,
           bold: true,
           alignment: "center",
           margin: [0, 0, 0, 10],
         },
-
         table: {
-          fontSize: 9,
+          fontSize: 6,
         },
+      },
+      // ✨ Tambahkan Footer Halaman
+      footer: function (currentPage, pageCount) {
+        return {
+          text: `Page ${currentPage} of ${pageCount}`,
+          alignment: "right",
+          margin: [0, 10, 20, 0],
+          fontSize: 8,
+        };
       },
     };
 
@@ -669,55 +763,70 @@ const removeMRt3 = async (req, res) => {
 };
 
 const exportCSVMRt3 = async (req, res) => {
-  const { Kode_Checklist } = req.params;
+  // const { Kode_Checklist } = req.params;
   try {
-    let data;
-    if (Kode_Checklist !== null) {
-      data = await model.getMRt3ByKodeChecklist(Kode_Checklist);
-    } else {
-      data = await model.getAllMRt3();
-    }
+    let data = req.body;
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       return api.error(res, "Data Not Found!", 400);
     }
 
-    // Definisikan kolom yang akan diekspor
-    const fields = [
-      "NoUrut",
-      "NoMR",
-      "Kode_Checklist",
-      "NamaPasien",
-      "Tanggal",
-      "Qty_Image",
-      "Urut",
-      "Mulai",
-      "Selesai",
-      "Layanan",
-      "Mulai",
-      "Selesai",
-      "namadokumen",
-    ];
-    // Konversi data ke CSV
-    const json2csvParser = new Parser({ fields });
-    const csv = json2csvParser.parse(data);
-    // Simpan CSV ke file sementara
-    const filePath = path.join(__dirname, "../../exports/MRt3.csv");
-    fs.writeFileSync(filePath, csv);
+    // **Buat Workbook dan Worksheet**
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Data MRt3");
 
-    // Kirim file CSV ke client
-    res.download(filePath, "data_MRt3.csv", (err) => {
+    // **Definisikan Header**
+    const headers = [
+      "No Urut",
+      "Period Ranap",
+      "No MR",
+      "Kode Checklist",
+      "Nama Pasien",
+      "Tanggal",
+      "Layanan",
+      "Nama Dokumen",
+    ];
+    worksheet.addRow(headers);
+
+    // **Tambahkan Data**
+    data.forEach((row) => {
+      worksheet.addRow([
+        row.NoUrut || "-",
+        row.Periode_Ranap || "-",
+        row.NoMR || "-",
+        row.Kode_Checklist || "-",
+        row.NamaPasien || "-",
+        row.Tanggal || "-",
+        row.Layanan || "-",
+        row.namadokumen || "-",
+      ]);
+    });
+
+    // **Format Header Agar Tebal**
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center" };
+    });
+
+    // **Buat Path File Excel**
+    const filePath = path.join(__dirname, "../../exports/MRt3_export.xlsx");
+
+    // **Simpan File**
+    await workbook.xlsx.writeFile(filePath);
+
+    // **Kirim File Excel ke Client**
+    res.download(filePath, "data_MRt3.xlsx", (err) => {
       if (err) {
         console.error("Error saat mengirim file:", err);
         res.status(500).json({ message: "Gagal mengunduh file" });
       }
 
-      // Hapus file setelah dikirim (opsional)
+      // **Hapus File Setelah Dikirim (Opsional)**
       fs.unlinkSync(filePath);
     });
   } catch (error) {
-    console.error("❌ Error exporting CSV:", error);
-    return api.error(res, "Failed to export CSV", 500);
+    console.error("❌ Error exporting Excel:", error);
+    return api.error(res, "Failed to export Excel", 500);
   }
 };
 
