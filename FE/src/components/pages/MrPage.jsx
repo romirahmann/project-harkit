@@ -191,40 +191,40 @@ export function MrPage() {
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="text-xs font-bold text-gray-300 bg-[#043A70]">
             <tr>
-              <th className="px-4 py-2 w-4">No Urut</th>
-              <th className="px-4 py-2 w-4">Kode Checklist</th>
-              <th className="px-4 py-2 w-4">No MR</th>
+              <th className="px-4 py-2">No Urut</th>
+              <th className="px-5 py-2">Kode Checklist</th>
+              <th className="px-4 py-2">No MR</th>
               {/* <th className="px-6 py-3">No Box</th> */}
-              <th className="px-4 py-2 w-4">Nama Pasien</th>
-              <th className="px-4 py-2 w-4">Tanggal</th>
-              <th className="px-4 py-2 w-4">Qty Image</th>
-              <th className="px-4 py-2 w-4">Mulai</th>
-              <th className="px-4 py-2 w-4">Selesai</th>
-              <th className="px-4 py-2 w-2">File Path</th>
-              <th className="px-4 py-2 w-4">Action</th>
+              <th className="px-5 py-2 ">Nama Pasien</th>
+              <th className="px-4 py-2">Tanggal</th>
+              <th className="px-4 py-2">Qty Image</th>
+              <th className="px-4 py-2">Mulai</th>
+              <th className="px-4 py-2">Selesai</th>
+              <th className="px-2 py-2 lg:w-[5em]">File Path</th>
+              <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
           <tbody className="bg-white">
             {paginatedData?.length > 0 ? (
               paginatedData.map((data, index) => (
                 <tr key={index} className="border-b">
-                  <td className="px-4 py-2 w-4">{data.NoUrut}</td>
-                  <td className="px-4 py-2 w-4">{data.Kode_Checklist}</td>
-                  <td className="px-4 py-2 w-4">{data.NoMR}</td>
+                  <td className="px-4 py-2 ">{data.NoUrut}</td>
+                  <td className="px-5 py-2 ">{data.Kode_Checklist}</td>
+                  <td className="px-4 py-2 ">{data.NoMR}</td>
                   {/* <td className="px-6 py-4">{data.nobox}</td> */}
-                  <td className="px-4 py-2 w-4">{data.NamaPasien}</td>
-                  <td className="px-4 py-2 w-4">
+                  <td className="px-5 py-2 ">{data.NamaPasien}</td>
+                  <td className="px-4 py-2 ">
                     {data.Tanggal
                       ? moment(data.Tanggal, "DDMMYYYY").format("DD/MM/YYYY")
                       : ""}
                   </td>
-                  <td className="px-4 py- w-4">{data.Qty_Image}</td>
+                  <td className="px-4 py- ">{data.Qty_Image}</td>
 
-                  <td className="px-4 py-2 w-4">{data.Mulai}</td>
-                  <td className="px-4 py-2 w-4">{data.Selesai}</td>
+                  <td className="px-4 py-2 ">{data.Mulai}</td>
+                  <td className="px-4 py-2 ">{data.Selesai}</td>
 
-                  <td className="px-4 py-2 w-2 break-words">{data.FilePath}</td>
-                  <td className="px-4 py-2 w-4">
+                  <td className="px-2 py-2 break-words">{data.FilePath}</td>
+                  <td className="px-4 py-2 ">
                     <button
                       onClick={() => handleEdit(data)}
                       className="text-green-500 px-1 py-1 rounded-md"
