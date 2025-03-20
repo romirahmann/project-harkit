@@ -24,6 +24,7 @@ export function CheecksheetPage() {
   const baseUrl = useContext(ApiUrl);
   const [loading, setLoading] = useState(false);
   const [userLogin, setUserLogin] = useState(null);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("userData"));
@@ -118,9 +119,6 @@ export function CheecksheetPage() {
     setSelectedChecklist(value);
   };
 
-  const handleEdit = (data) => {};
-  const handleModalRemove = (data) => {};
-
   return (
     <>
       <div className="container-fluid p-4">
@@ -195,6 +193,7 @@ export function CheecksheetPage() {
               result={setFilteredData}
               data={dataMRt}
               queryInput={(e) => handleSelectedChecklist(e)}
+              currentQuery={selectedChecklist}
             />
           </div>
         </div>

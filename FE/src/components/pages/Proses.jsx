@@ -21,6 +21,7 @@ export function Proses() {
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [selectedProses, setSelectedProses] = useState(null);
   const baseUrl = useContext(ApiUrl);
+  const [query, setQuery] = useState("");
   // STATUS
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -70,6 +71,11 @@ export function Proses() {
         console.log(err);
       });
   };
+
+  const handleQuery = (val) => {
+    setQuery(val);
+  };
+
   return (
     <>
       <div className="container-fluid p-4 ">
@@ -106,7 +112,12 @@ export function Proses() {
             <FaCirclePlus /> <span className="ms-2">Add</span>
           </button>
           <div className=" dark:bg-gray-900 ms-auto">
-            <SearchComponent result={setFilteredData} data={proses} />
+            <SearchComponent
+              result={setFilteredData}
+              data={proses}
+              queryInput={(val) => handleQuery(val)}
+              currentQuery={query}
+            />
           </div>
         </div>
         <div className="prosesTable">

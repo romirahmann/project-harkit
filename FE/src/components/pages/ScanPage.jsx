@@ -28,6 +28,7 @@ export function ScanPage() {
   const [showModalScan, setShowModalScan] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   const [filterIdProses, setFilterIdProses] = useState("All");
+  const [query, setQuery] = useState("");
 
   const [formData, setFormData] = useState({
     kode_checklist: "",
@@ -288,7 +289,9 @@ export function ScanPage() {
     }
   };
 
-  const handleQuery = () => {};
+  const handleQuery = (val) => {
+    setQuery(val);
+  };
 
   return (
     <div className="container-fluid">
@@ -445,7 +448,8 @@ export function ScanPage() {
               <SearchComponent
                 result={setFilteredData}
                 data={dataCandra}
-                queryInput={() => handleQuery()}
+                queryInput={(val) => handleQuery(val)}
+                currentQuery={query}
               />
             </div>
           </div>

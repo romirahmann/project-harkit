@@ -24,6 +24,7 @@ export function TargetsPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const baseUrl = useContext(ApiUrl);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     fecthTarget();
@@ -71,7 +72,9 @@ export function TargetsPage() {
     setShowModalEdit(false);
   };
 
-  const handleQuery = () => {};
+  const handleQuery = (val) => {
+    setQuery(val);
+  };
 
   return (
     <>
@@ -113,7 +116,8 @@ export function TargetsPage() {
             <SearchComponent
               result={setFilteredData}
               data={targets}
-              queryInput={() => handleQuery}
+              queryInput={(val) => handleQuery(val)}
+              currentQuery={query}
             />
           </div>
         </div>

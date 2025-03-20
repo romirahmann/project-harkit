@@ -14,7 +14,7 @@ export function NonaktifPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [paginatedData, setPaginatedData] = useState();
-
+  const [query, setQuery] = useState("");
   const [showModalAktif, setShowModalAktif] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
 
@@ -37,7 +37,9 @@ export function NonaktifPage() {
     setShowModalAktif(true);
     setSelectedData(data);
   };
-  const handleQuery = () => {};
+  const handleQuery = (val) => {
+    setQuery(val);
+  };
 
   return (
     <>
@@ -54,7 +56,8 @@ export function NonaktifPage() {
             <SearchComponent
               result={setFilteredData}
               data={dataMr}
-              queryInput={(query) => handleQuery(query)}
+              queryInput={(val) => handleQuery(val)}
+              currentQuery={query}
             />
           </div>
         </div>

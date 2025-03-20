@@ -45,14 +45,12 @@ const uploadFile = async (req, res) => {
     const filename = req.file.originalname;
     const mdbFilePath = path.join(__dirname, "../../database", filename);
 
-    // Lakukan backup sebelum update
-    backupMDB(mdbFilePath);
-
     if (filename === "dbData.mdb") {
       let newDataCandra = await modelUpdate.getAllCandra();
       let newDataMR = await modelUpdate.getAllDataMR();
       let newDataMR3 = await modelUpdate.getAllDataMR3();
-
+      // Lakukan backup sebelum update
+      backupMDB(mdbFilePath);
       // UPDATE DATA CANDRA
       for (const candra of newDataCandra) {
         const existing = await modelCandra.dataExisting(
@@ -96,18 +94,19 @@ const uploadFile = async (req, res) => {
       let newData = await modelUpdate.getQty();
 
       for (const data of newData) {
-        const existing = await modelMR.dataExistingByMR(data.NoMR);
+        let existing = await modelMR.dataExistingByMR(data.NoMR);
         if (existing) {
           let result = await modelMR.updateQtyMR(data);
         }
       }
       const dataQTY = await modelMR.getQtyByMR();
+      // console.log(dataQTY);
       if (!dataQTY) {
         return api.error(res, "No Data on Table MR", 400);
       }
 
       for (const qty of dataQTY) {
-        await modelCandra.updateCandraByMR(qty);
+        let res = await modelCandra.updateCandraByMR(qty);
       }
 
       return api.ok(res, "UPDATE QTY SUCCESFULLY!");

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 import { Modal } from "flowbite-react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ApiUrl } from "../../../context/Urlapi";
 
 export function FinishedScan({ isOpen, onClose, selectedData, onUpdate }) {
@@ -11,6 +11,17 @@ export function FinishedScan({ isOpen, onClose, selectedData, onUpdate }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const baseUrl = useContext(ApiUrl);
+  // Referensi untuk input Qty Images
+  const qtyImageRef = useRef(null);
+
+  // Fokus otomatis ke input qty_image ketika modal dibuka
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        qtyImageRef.current?.focus();
+      }, 100); // Delay kecil untuk memastikan modal sudah terbuka
+    }
+  }, [isOpen]);
 
   const handleOnChange = (e) => {
     setFormData((prevData) => ({
@@ -101,6 +112,7 @@ export function FinishedScan({ isOpen, onClose, selectedData, onUpdate }) {
               <input
                 type="number"
                 name="qty_image"
+                ref={qtyImageRef}
                 onChange={(e) => handleOnChange(e)}
                 className="w-full p-2 border border-gray-200 rounded-lg "
               />

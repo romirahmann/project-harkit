@@ -99,13 +99,12 @@ const createDataMR_Double = async (data) => {
     nobox,
     FilePath,
   } = data;
-  // Konversi tanggal ke format Access atau NULL
-  const formattedTanggal = Tanggal ? `#${Tanggal}#` : "NULL";
+
   const query = `
     INSERT INTO tblDataMR_Doubel 
     (NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, 
      Selesai, rumahsakit, nobox, filePath) 
-    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', ${formattedTanggal} , ${Qty_Image}, '${Kode_Checklist}', '${Urut}', '${Mulai}', '${Selesai}', '${rumahsakit}', '${nobox}', '${FilePath}')`;
+    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', '${Tanggal}' , ${Qty_Image}, '${Kode_Checklist}', '${Urut}', '${Mulai}', '${Selesai}', '${rumahsakit}', '${nobox}', '${FilePath}')`;
 
   const result = await db.query(query);
   return result;
@@ -133,7 +132,7 @@ const updateQtyMR = async (data) => {
   SET Qty_Image = '${totalPages}', 
       FilePath = '${filePath}'
       
-  WHERE NoMR = '${NoMR}'
+  WHERE NoMR = '${NoMR}' AND Qty_Image IS NULL
 `;
 
   const result = await db.query(query);

@@ -41,6 +41,7 @@ export function CandraPage() {
       .then((res) => {
         setDatacandra(res.data.data);
         setFilteredData(res.data.data);
+        setQuery(""); // Reset query setelah update
       })
       .catch((err) => {
         console.log(err);
@@ -151,6 +152,7 @@ export function CandraPage() {
             result={setFilteredData}
             data={datacandra}
             queryInput={(query) => handleQuery(query)}
+            currentQuery={query}
           />
         </div>
       </div>
@@ -223,7 +225,10 @@ export function CandraPage() {
 
         <EditCandra
           isOpen={showModalEdit}
-          onClose={() => setShowModalEdit(false)}
+          onClose={() => {
+            setShowModalEdit(false);
+            setQuery("");
+          }}
           candraData={selectedData}
           updateCandra={() => getDatacandra()}
         />

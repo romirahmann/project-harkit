@@ -148,13 +148,23 @@ const createCandraFromScan = async (data) => {
 
 const updateCandra = async (kode_checklist, idproses, data) => {
   const db = getDB();
-  const { nik, nama_proses, nama_karyawan, tanggal, mulai, selesai, editby } =
-    data;
+  const {
+    nik,
+    nama_proses,
+    nama_karyawan,
+    qty_image,
+    tanggal,
+    mulai,
+    selesai,
+    editby,
+  } = data;
   const formattedTanggal = tanggal ? `#${tanggal}#` : "NULL";
   const query = `
     UPDATE tblcandra
     SET nik = '${nik}', nama_proses = '${nama_proses}', 
-        nama_karyawan = '${nama_karyawan}', tanggal = ${formattedTanggal}, mulai = '${mulai}', 
+        nama_karyawan = '${nama_karyawan}', tanggal = ${formattedTanggal}, mulai = '${mulai}', qty_image = ${parseInt(
+    qty_image
+  )}, 
         selesai = '${selesai}', editby = '${editby}'
     WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
   `;
@@ -192,11 +202,11 @@ const finishedProsesScan = async (kode_checklist, idproses, data) => {
 
 const updateCandraByMR = async (data) => {
   const db = getDB();
-  const { Kode_Checklist, totalPages } = data;
+  let { Kode_Checklist, totalPages } = data;
   if (totalPages === null) {
     totalPages = 0;
   }
-  const query = `UPDATE tblcandra SET qty_image = ${totalPages} WHERE kode_checklist = '${Kode_Checklist}'`;
+  const query = `UPDATE tblcandra SET qty_image = ${totalPages} WHERE kode_checklist = '${Kode_Checklist}' AND idproses = '1001'`;
   const result = await db.query(query);
   return result;
 };

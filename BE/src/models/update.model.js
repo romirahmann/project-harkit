@@ -44,7 +44,7 @@ const getQty = async () => {
       FROM (
           SELECT NoMR, IIF(ISNULL(SUM(Pages)), 0, SUM(Pages)) AS totalPages
           FROM Query1 
-          GROUP BY NoMR
+          GROUP BY NoMR, [File Path]
       ) AS subquery
       INNER JOIN Query1 ON subquery.NoMR = Query1.NoMR
     `;

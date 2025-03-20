@@ -158,6 +158,8 @@ const updateCandra = async (req, res) => {
   let { kode_checklist, idproses } = req.params;
   const data = req.body;
 
+  // console.log(data);
+
   kode_checklist = kode_checklist.replace(/'/g, "''");
   idproses = idproses.replace(/'/g, "''");
 

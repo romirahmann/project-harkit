@@ -64,8 +64,8 @@ export function KcpPage() {
       }, 1500);
     }
   };
-  const handleQuery = (query) => {
-    setQuery(query);
+  const handleQuery = (val) => {
+    setQuery(val);
   };
   const handleExport = () => {
     const exportCsv = async () => {
@@ -132,7 +132,8 @@ export function KcpPage() {
             <SearchComponent
               result={setFilteredData}
               data={dataMRt}
-              queryInput={(query) => handleQuery(query)}
+              queryInput={(val) => handleQuery(val)}
+              currentQuery={query}
             />
           </div>
         </div>

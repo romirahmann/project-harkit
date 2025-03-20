@@ -17,6 +17,7 @@ export function Userpage() {
   const [filteredData, setFilteredData] = useState([]);
   const [paginatedData, setPaginatedData] = useState();
   const baseUrl = useContext(ApiUrl);
+  const [query, setQuery] = useState("");
   // MODAL
   const [showModalAdd, setModalAdd] = useState(false);
   const [showModalEdit, setModalEdit] = useState(false);
@@ -73,7 +74,9 @@ export function Userpage() {
     setShowModalRemove(true);
   };
 
-  const handleQuery = () => {};
+  const handleQuery = (val) => {
+    setQuery(val);
+  };
 
   return (
     <>
@@ -114,7 +117,8 @@ export function Userpage() {
             <SearchComponent
               result={setFilteredData}
               data={users}
-              queryInput={() => handleQuery()}
+              queryInput={(val) => handleQuery(val)}
+              currentQuery={query}
             />
           </div>
         </div>

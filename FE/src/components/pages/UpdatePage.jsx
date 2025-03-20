@@ -49,7 +49,7 @@ export function UpdatePage() {
       type === "candra" ? setFileCandra(null) : setFileQty(null);
       setLoading(false);
     } catch (error) {
-      setErrorMessage("Upload File Failed!");
+      setErrorMessage("Upload File Failed!", error);
       AddLog(`User ${userLogin.username} update database ${type} !`, "FAILED");
     } finally {
       setTimeout(() => {

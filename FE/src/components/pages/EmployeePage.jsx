@@ -21,7 +21,7 @@ export function EmployeePage() {
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [selectedKaryawan, setSelectedKaryawan] = useState(null);
   const baseUrl = useContext(ApiUrl);
-
+  const [query, setQuery] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -70,7 +70,9 @@ export function EmployeePage() {
       });
   };
 
-  const handleQuery = () => {};
+  const handleQuery = (val) => {
+    setQuery(val);
+  };
 
   return (
     <div className="container-fluid p-4">
@@ -99,7 +101,8 @@ export function EmployeePage() {
           <SearchComponent
             result={setFilteredData}
             data={karyawan}
-            queryInput={() => handleQuery()}
+            queryInput={(val) => handleQuery(val)}
+            currentQuery={query}
           />
         </div>
       </div>

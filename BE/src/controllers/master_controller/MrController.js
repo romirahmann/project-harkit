@@ -5,17 +5,17 @@ const fs = require("fs");
 const path = require("path");
 const bwipJs = require("bwip-js");
 const PdfPrinter = require("pdfmake");
-const { table, Console } = require("console");
+
 const moment = require("moment");
 const ExcelJS = require("exceljs");
 
 const getAllDataMR = async (req, res) => {
   try {
     const data = await model.getAllDataMR();
-    data.sort((a, b) => {
-      const getNumber = (str) => parseInt(str.replace("PBL-", ""), 10);
-      return getNumber(a.NoUrut) - getNumber(b.NoUrut);
-    });
+    // data.sort((a, b) => {
+    //   const getNumber = (str) => parseInt(str.replace("PBL-", ""), 10);
+    //   return getNumber(a.NoUrut) - getNumber(b.NoUrut);
+    // });
     return api.ok(res, data);
   } catch (error) {
     console.error("❌ Error getting DataMR:", error);

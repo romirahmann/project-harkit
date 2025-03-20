@@ -31,7 +31,7 @@ export function EditCandra({ isOpen, onClose, candraData, updateCandra }) {
         idproses: candraData.idproses || "",
         nama_proses: candraData.nama_proses || "",
         nik: candraData.nik || "",
-        qty_image: candraData.qty_image || "",
+        qty_image: candraData.qty_image || 0,
         nama_karyawan: candraData.nama_karyawan || "",
         tanggal:
           moment(candraData.tanggal, "YYYY-MM-DD").format("yyyy-MM-DD") || "",
@@ -49,6 +49,7 @@ export function EditCandra({ isOpen, onClose, candraData, updateCandra }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // console.log(formData);
     setLoading(true);
     await axios
       .put(
@@ -160,6 +161,21 @@ export function EditCandra({ isOpen, onClose, candraData, updateCandra }) {
               required
             />
           </div>
+          {formData.idproses === "1003" ? (
+            <div>
+              <label className="block text-sm font-medium">Qty Image</label>
+              <input
+                type="text"
+                name="qty_image"
+                value={formData.qty_image}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-lg"
+                required
+              />
+            </div>
+          ) : (
+            ""
+          )}
 
           <div>
             <label className="block text-sm font-medium">Tanggal</label>

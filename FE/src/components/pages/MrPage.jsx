@@ -58,8 +58,8 @@ export function MrPage() {
     setSelectedData(data);
   };
 
-  const handleQuery = (query) => {
-    setQuery(query);
+  const handleQuery = (val) => {
+    setQuery(val);
   };
 
   const handleExportCsv = () => {
@@ -182,7 +182,8 @@ export function MrPage() {
           <SearchComponent
             result={setFilteredData}
             data={dataMr}
-            queryInput={(query) => handleQuery(query)}
+            queryInput={(val) => handleQuery(val)}
+            currentQuery={query}
           />
         </div>
       </div>
