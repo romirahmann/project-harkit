@@ -158,8 +158,6 @@ const updateCandra = async (req, res) => {
   let { kode_checklist, idproses } = req.params;
   const data = req.body;
 
-  // console.log(data);
-
   kode_checklist = kode_checklist.replace(/'/g, "''");
   idproses = idproses.replace(/'/g, "''");
 
@@ -309,6 +307,27 @@ const exportCsv = async (req, res) => {
   }
 };
 
+const validate1007 = async (req, res) => {
+  try {
+    let fourDaysAgo = moment().subtract(4, "days").format("YYYY-MM-DD");
+
+    let dataCandra = await model.getCandraByDate1001(fourDaysAgo);
+
+    if (dataCandra.length === 0) {
+      return api.ok(res, dataCandra);
+    }
+    // Ambil semua kode_checklist
+    let kodeChecklistList = dataCandra.map((item) => item.kode_checklist);
+
+    let data = await model.getCandraWithout1004and1007(kodeChecklistList);
+
+    return api.ok(res, data);
+  } catch (err) {
+    console.log(err);
+    return api.error(res, "Validate Error", 500);
+  }
+};
+
 module.exports = {
   getAllCandra,
   getCandraByKeys,
@@ -320,4 +339,5 @@ module.exports = {
   finishedProses,
   getAllCandraDayNow,
   finishedProsesScan,
+  validate1007,
 };

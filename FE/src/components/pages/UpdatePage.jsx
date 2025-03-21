@@ -12,12 +12,27 @@ export function UpdatePage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [userLogin, setUserLogin] = useState(null);
+  const [candraNotComplete, setCandraNotComplete] = useState([]);
   const baseUrl = useContext(ApiUrl);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("userData"));
     setUserLogin(user);
-  }, [userLogin]);
+  }, []);
+
+  useEffect(() => {
+    fecthDataCandra();
+  }, []);
+
+  const fecthDataCandra = async () => {
+    try {
+      let res = await axios.get(`${baseUrl}/master/validate-proses`);
+      console.log(res.data.data);
+      setCandraNotComplete(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleFileChange = (event, type) => {
     const file = event.target.files[0];
@@ -112,8 +127,12 @@ export function UpdatePage() {
           </div>
           <button
             onClick={() => handleUpload("candra")}
-            disabled={loading}
-            className="mt-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+            disabled={loading || candraNotComplete.length !== 0}
+            className={`mt-5 text-white ${
+              candraNotComplete.length === 0
+                ? "bg-blue-700 hover:bg-blue-800"
+                : "bg-gray-300 "
+            } focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5`}
           >
             {loading ? (
               <div role="status">
@@ -163,8 +182,12 @@ export function UpdatePage() {
           </div>
           <button
             onClick={() => handleUpload("qty")}
-            disabled={loading}
-            className="mt-5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+            disabled={loading || candraNotComplete.length !== 0}
+            className={`mt-5 text-white ${
+              candraNotComplete.length === 0
+                ? "bg-blue-700 hover:bg-blue-800"
+                : "bg-gray-300 "
+            } focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5`}
           >
             {loading ? (
               <div role="status flex">

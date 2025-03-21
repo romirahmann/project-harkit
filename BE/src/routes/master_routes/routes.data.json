@@ -264,5 +264,10 @@
     "path": "/log",
     "method": "post",
     "controller": "LogController.addLog"
+  },
+  {
+    "path": "/validate-proses",
+    "method": "get",
+    "controller": "CandraController.validate1007"
   }
 ]

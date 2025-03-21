@@ -221,6 +221,30 @@ const deleteCandra = async (id) => {
   return result.count; // ✅ Return jumlah baris yang dihapus
 };
 
+const getCandraByDate1001 = async (date) => {
+  const db = getDB();
+  const query = `SELECT kode_checklist FROM tblcandra WHERE idproses = '1001' AND tanggal = #${date}#`;
+  const result = await db.query(query);
+  return result;
+};
+
+const getCandraWithout1004and1007 = async (kodeChecklistList) => {
+  const db = getDB();
+
+  // Konversi array ke format SQL ('250306-0001', '240722-0001', '250319-0001')
+  let checklistStr = kodeChecklistList.map((kc) => `'${kc}'`).join(",");
+
+  let query = `
+  SELECT c.kode_checklist
+  FROM tblcandra c
+  WHERE c.kode_checklist IN (${checklistStr})
+  GROUP BY c.kode_checklist
+  HAVING SUM(IIF(c.idproses = '1007', 1, 0)) > 0
+`;
+  let result = await db.query(query);
+  return result;
+};
+
 module.exports = {
   getAllCandra,
   getCandraByKeys,
@@ -234,4 +258,6 @@ module.exports = {
   getAllByDateNow,
   finishedProsesScan,
   getCandraByChecklist,
+  getCandraByDate1001,
+  getCandraWithout1004and1007,
 };

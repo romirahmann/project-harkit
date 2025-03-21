@@ -166,12 +166,12 @@ export function TargetsPage() {
                         >
                           <FaEdit size={20} />
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => handleModalRemove(target)}
                           className="text-red-600 hover:bg-red-600 hover:text-white text-center font-medium px-1 py-1  rounded-md"
                         >
                           <FaTrash size={18} />
-                        </button>
+                        </button> */}
                       </td>
                     </tr>
                   ))
