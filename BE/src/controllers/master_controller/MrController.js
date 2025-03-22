@@ -574,7 +574,12 @@ const generateQcChecksheet = async (req, res) => {
         { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
         { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
         { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
-        { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
+        {
+          text: "Layanan",
+          bold: true,
+          fillColor: "#D3D3D3",
+          alignment: "center",
+        },
         { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
 
         { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
@@ -697,7 +702,7 @@ const generateQcChecksheet = async (req, res) => {
         // 📌 Table Utama (Data)
         {
           table: {
-            widths: ["7%", "7%", "15%", "7%", "7%", "7%", "40%", "5%", "5%"],
+            widths: ["7%", "7%", "15%", "7%", "9%", "7%", "38%", "5%", "5%"],
             body: tableBody,
           },
           margin: [0, 10, 0, 0], //

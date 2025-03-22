@@ -92,7 +92,7 @@ const uploadFile = async (req, res) => {
 
     if (filename === "dbQty.mdb") {
       let newData = await modelUpdate.getQty();
-
+      // console.log(newData);
       for (const data of newData) {
         let existing = await modelMR.dataExistingByMR(data.NoMR);
         if (existing) {

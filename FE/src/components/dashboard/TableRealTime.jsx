@@ -22,7 +22,7 @@ export function TableRealTime() {
       let res = await axios.get(`${baseUrl}/master/realtime-proses`);
 
       let data = res.data.data;
-      console.log(data);
+      // console.log(data);
       setChecklist(data);
       setFilteredData(data);
     } catch (err) {

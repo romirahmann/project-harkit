@@ -28,7 +28,10 @@ ChartJS.register(
 );
 
 const ChartComponent = () => {
-  const [datasetVisibility, setDatasetVisibility] = useState({});
+  const [datasetVisibility, setDatasetVisibility] = useState({
+    1: false, // Target Qty Image (index dataset ke-1) terlihat sejak awal
+    2: false,
+  });
   const [chartData, setChartData] = useState({});
   const [selectionDate, setSelectionDate] = useState(
     moment().format("YYYY-MM")
@@ -86,6 +89,7 @@ const ChartComponent = () => {
         borderWidth: 1,
         borderDash: [5, 5],
         spanGaps: true,
+        hidden: !datasetVisibility[1],
       },
       {
         label: "Qty Lembar Scan",
@@ -104,6 +108,7 @@ const ChartComponent = () => {
         borderWidth: 2,
         borderDash: [5, 5],
         spanGaps: true,
+        hidden: !datasetVisibility[3], // Pastikan default terlihat
       },
     ],
   };
@@ -121,10 +126,12 @@ const ChartComponent = () => {
           const index = legendItem.datasetIndex;
           const newVisibility = {
             ...datasetVisibility,
-            [index]: !datasetVisibility[index],
+            [index]: !datasetVisibility[index], // Toggle visibility
           };
           setDatasetVisibility(newVisibility);
-          legend.chart.getDatasetMeta(index).hidden = newVisibility[index];
+
+          // Update visibility pada dataset di chart
+          legend.chart.getDatasetMeta(index).hidden = !newVisibility[index];
           legend.chart.update();
         },
       },

@@ -310,17 +310,17 @@ const exportCsv = async (req, res) => {
 const validate1007 = async (req, res) => {
   try {
     let fourDaysAgo = moment().subtract(4, "days").format("YYYY-MM-DD");
-
+    // console.log(fourDaysAgo);
     let dataCandra = await model.getCandraByDate1001(fourDaysAgo);
-
+    // console.log(dataCandra.length);
     if (dataCandra.length === 0) {
       return api.ok(res, dataCandra);
     }
     // Ambil semua kode_checklist
     let kodeChecklistList = dataCandra.map((item) => item.kode_checklist);
-
-    let data = await model.getCandraWithout1004and1007(kodeChecklistList);
-
+    // console.log(kodeChecklistList);
+    let data = await model.getCandraWithout1007(kodeChecklistList);
+    // console.log(data);
     return api.ok(res, data);
   } catch (err) {
     console.log(err);
