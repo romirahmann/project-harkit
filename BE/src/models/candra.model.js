@@ -240,11 +240,62 @@ const getCandraWithout1007 = async (kodeChecklistList) => {
   let checklistStr = kodeChecklistList.map((kc) => `'${kc}'`).join(",");
 
   let query = `
-  SELECT c.kode_checklist
+   SELECT 
+    c.kode_checklist, 
+    p.nama_proses
   FROM tblcandra c
-  WHERE c.kode_checklist IN (${checklistStr})
-  GROUP BY c.kode_checklist
-  HAVING SUM(IIF(c.idproses = '1007', 1, 0)) = 0 OR  SUM(IIF(c.idproses = '1007' AND FORMAT(c.selesai, 'HH:mm:ss') = '00:00:00', 1, 0)) > 0;
+  LEFT JOIN tblproses p 
+      ON c.idproses = p.idproses
+  WHERE 
+    c.kode_checklist IN (${checklistStr})
+    AND (
+        NOT EXISTS (
+            SELECT 1 FROM tblcandra c2 
+            WHERE c2.kode_checklist = c.kode_checklist 
+            AND c2.idproses = '1007'
+        )
+        OR EXISTS (
+            SELECT 1 FROM tblcandra c3 
+            WHERE c3.kode_checklist = c.kode_checklist 
+            AND c3.idproses = '1007' 
+            AND CStr(c3.selesai) = '00:00:00'
+        )
+        OR NOT EXISTS (
+            SELECT 1 FROM tblcandra c4 
+            WHERE c4.kode_checklist = c.kode_checklist 
+            AND c4.idproses = '1005'
+        )
+        OR EXISTS (
+            SELECT 1 FROM tblcandra c5 
+            WHERE c5.kode_checklist = c.kode_checklist 
+            AND c5.idproses = '1005' 
+            AND CStr(c5.selesai) = '00:00:00'
+        )
+        OR NOT EXISTS (
+            SELECT 1 FROM tblcandra c6 
+            WHERE c6.kode_checklist = c.kode_checklist 
+            AND c6.idproses = '1004'
+        )
+        OR EXISTS (
+            SELECT 1 FROM tblcandra c7 
+            WHERE c7.kode_checklist = c.kode_checklist 
+            AND c7.idproses = '1004' 
+            AND CStr(c7.selesai) = '00:00:00'
+        )
+        OR NOT EXISTS (
+            SELECT 1 FROM tblcandra c8 
+            WHERE c8.kode_checklist = c.kode_checklist 
+            AND c8.idproses = '1006'
+        )
+        OR EXISTS (
+            SELECT 1 FROM tblcandra c9 
+            WHERE c9.kode_checklist = c.kode_checklist 
+            AND c9.idproses = '1006' 
+            AND CStr(c9.selesai) = '00:00:00'
+        )
+    )
+ORDER BY c.kode_checklist, c.idproses;
+
 `;
   let result = await db.query(query);
   return result;

@@ -310,18 +310,33 @@ const exportCsv = async (req, res) => {
 const validate1007 = async (req, res) => {
   try {
     let fourDaysAgo = moment().subtract(4, "days").format("YYYY-MM-DD");
-    // console.log(fourDaysAgo);
     let dataCandra = await model.getCandraByDate1001(fourDaysAgo);
-    // console.log(dataCandra.length);
+
     if (dataCandra.length === 0) {
-      return api.ok(res, dataCandra);
+      return api.ok(res, []);
     }
-    // Ambil semua kode_checklist
+
     let kodeChecklistList = dataCandra.map((item) => item.kode_checklist);
-    // console.log(kodeChecklistList);
     let data = await model.getCandraWithout1007(kodeChecklistList);
-    // console.log(data);
-    return api.ok(res, data);
+
+    // Format hasil agar setiap kode_checklist memiliki daftar idproses dan nama_proses
+    let groupedData = {};
+    data.forEach((item) => {
+      if (!groupedData[item.kode_checklist]) {
+        groupedData[item.kode_checklist] = [];
+      }
+      groupedData[item.kode_checklist].push({
+        idproses: item.idproses,
+        nama_proses: item.nama_proses,
+      });
+    });
+
+    let formattedResult = Object.keys(groupedData).map((kode) => ({
+      kode_checklist: kode,
+      proses: groupedData[kode],
+    }));
+
+    return api.ok(res, formattedResult);
   } catch (err) {
     console.log(err);
     return api.error(res, "Validate Error", 500);

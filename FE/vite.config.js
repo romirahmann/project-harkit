@@ -8,4 +8,7 @@ export default defineConfig({
     host: "192.168.9.192",
     port: 75,
   },
+  // server: {
+  //   port: 75,
+  // },
 });

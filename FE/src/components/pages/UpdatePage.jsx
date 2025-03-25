@@ -264,7 +264,7 @@ export function UpdatePage() {
                 <tr>
                   <th className="px-6 py-3">No</th>
                   <th className="px-6 py-3">Kode Checklist</th>
-                  <th className="px-6 py-3">Not Finished</th>
+                  <th className="px-6 py-3">Finished</th>
                 </tr>
               </thead>
               <tbody>
@@ -275,8 +275,8 @@ export function UpdatePage() {
                       <td className="px-6 py-4 text-wrap">
                         {data.kode_checklist}
                       </td>
-                      <td className="px-6 py-4 text-wrap">
-                        QC Out Going (1007)
+                      <td className="px-6 py-4">
+                        {data.proses.map((p) => p.nama_proses).join(", ")}
                       </td>
                     </tr>
                   ))
