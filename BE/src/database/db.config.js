@@ -4,10 +4,13 @@ const path = require("path");
 
 // Path absolut ke file MDB
 const dbDSN = process.env.DB_DSN;
+// const dbDataPath = path.resolve(__dirname, "../database/dbData.mdb");
+const dbDataPath = path.resolve("X:DBASE/dbData.mdb");
+// console.log(dbDataPath);
 const dbPassword = process.env.DB_PASSWORD || "";
 
 // Konfigurasi koneksi ODBC tanpa DSN
-const connectionString = `DSN=${dbDSN};PWD=${dbPassword};`;
+const connectionString = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${dbDataPath};PWD=${dbPassword};`;
 
 let db;
 

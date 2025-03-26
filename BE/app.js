@@ -30,7 +30,7 @@ Promise.all([connectDB(), connectDB2()])
     app.get("/", (req, res) => {
       res.status(200).json({
         status: true,
-        service: "Backend Project Starter Kit with WebSocket",
+        service: "Backend Project RS-HARKIT Starter Kit with WebSocket",
       });
     });
 
@@ -47,9 +47,10 @@ Promise.all([connectDB(), connectDB2()])
 
     // Jalankan server setelah database terkoneksi
     const PORT = process.env.PORT || 8800;
-    server.listen(PORT, () => {
+    const HOST = process.env.HOST || "192.168.9.208";
+    server.listen(PORT, HOST, () => {
       console.log(
-        `🚀 Backend is Running on PORT: ${PORT} ${
+        `🚀 Backend is Running on URL: ${HOST}:${PORT} ${
           process.env.DEV === "TRUE" ? "<Development Mode>" : ""
         }`
       );
