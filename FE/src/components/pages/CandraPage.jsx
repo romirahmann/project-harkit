@@ -13,7 +13,7 @@ import { EditCandra } from "../reuse/modals/EditCandra";
 import { AddLog } from "../../context/Log";
 
 // import { AddDatacandra } from "../reuse/modals/AddDatacandra";
-// import { EditDatacandra } from "../reuse/modals/EditDatacandra";
+// import { EditDatacandra } from ."../reuse/modals/EditDatacandra";
 
 export function CandraPage() {
   const [datacandra, setDatacandra] = useState([]);
