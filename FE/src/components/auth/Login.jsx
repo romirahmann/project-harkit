@@ -99,7 +99,7 @@ export function Login() {
               )}
               <div className="brand flex justify-center items-center">
                 <img
-                  src="/RS-HARKIT/images/logo_candra.png"
+                  src="/RSAB-HARAPAN-KITA/images/logo_candra.png"
                   className="w-12"
                   alt=""
                 />

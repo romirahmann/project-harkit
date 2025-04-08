@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <ApiUrl.Provider value={baseUrl}>
-        <RouterProvider router={router} basepath="/RS-HARKIT" />
+        <RouterProvider router={router} basepath="/RSAB-HARAPAN-KITA" />
       </ApiUrl.Provider>
     </>
   );
