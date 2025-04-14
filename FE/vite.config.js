@@ -9,7 +9,4 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 71,
   },
-  // server: {
-  //   port: 75,
-  // },
 });

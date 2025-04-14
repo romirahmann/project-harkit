@@ -47,7 +47,7 @@ Promise.all([connectDB(), connectDB2()])
 
     // Jalankan server setelah database terkoneksi
     const PORT = process.env.PORT || 8800;
-    const HOST = process.env.HOST || "192.168.9.208";
+    const HOST = process.env.HOST || "localhost";
     server.listen(PORT, HOST, () => {
       console.log(
         `🚀 Backend is Running on URL: ${HOST}:${PORT} ${
