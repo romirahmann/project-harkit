@@ -35,9 +35,10 @@ export function UpdatePage() {
   const fecthDataCandra = async () => {
     try {
       let res = await axios.get(`${baseUrl}/master/validate-proses`);
-      console.log(res.data.data);
+      // console.log(res.data.data);
       setCandraNotComplete(res.data.data);
       setFilteredData(res.data.data);
+      setFetchLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -116,7 +117,7 @@ export function UpdatePage() {
           UPDATE DATABASE
         </h1>
 
-        {loading ? (
+        {fecthLoading ? (
           <div role="status me-5">
             <svg
               aria-hidden="true"
