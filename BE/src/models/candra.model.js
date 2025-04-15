@@ -235,70 +235,21 @@ const getCandraByDate1001 = async (date) => {
   return result;
 };
 
-const getCandraWithout1007 = async (kodeChecklistList) => {
+const getCandraTanpaFilter = async () => {
   const db = getDB();
-  // Konversi array ke format SQL ('250306-0001', '240722-0001', '250319-0001')
-  let checklistStr = kodeChecklistList.map((kc) => `'${kc}'`).join(",");
+  // let checklistStr = kodeChecklistList.map((kc) => `'${kc}'`).join(",");
 
-  let query = `
+  const query = `
    SELECT 
-    c.kode_checklist, 
-    p.nama_proses
-  FROM tblcandra c
-  LEFT JOIN tblproses p 
-      ON c.idproses = p.idproses
-  WHERE 
-    c.kode_checklist IN (${checklistStr})
-    AND (
-        NOT EXISTS (
-            SELECT 1 FROM tblcandra c2 
-            WHERE c2.kode_checklist = c.kode_checklist 
-            AND c2.idproses = '1007'
-        )
-        OR EXISTS (
-            SELECT 1 FROM tblcandra c3 
-            WHERE c3.kode_checklist = c.kode_checklist 
-            AND c3.idproses = '1007' 
-            AND CStr(c3.selesai) = '00:00:00'
-        )
-        OR NOT EXISTS (
-            SELECT 1 FROM tblcandra c4 
-            WHERE c4.kode_checklist = c.kode_checklist 
-            AND c4.idproses = '1005'
-        )
-        OR EXISTS (
-            SELECT 1 FROM tblcandra c5 
-            WHERE c5.kode_checklist = c.kode_checklist 
-            AND c5.idproses = '1005' 
-            AND CStr(c5.selesai) = '00:00:00'
-        )
-        OR NOT EXISTS (
-            SELECT 1 FROM tblcandra c6 
-            WHERE c6.kode_checklist = c.kode_checklist 
-            AND c6.idproses = '1004'
-        )
-        OR EXISTS (
-            SELECT 1 FROM tblcandra c7 
-            WHERE c7.kode_checklist = c.kode_checklist 
-            AND c7.idproses = '1004' 
-            AND CStr(c7.selesai) = '00:00:00'
-        )
-        OR NOT EXISTS (
-            SELECT 1 FROM tblcandra c8 
-            WHERE c8.kode_checklist = c.kode_checklist 
-            AND c8.idproses = '1006'
-        )
-        OR EXISTS (
-            SELECT 1 FROM tblcandra c9 
-            WHERE c9.kode_checklist = c.kode_checklist 
-            AND c9.idproses = '1006' 
-            AND CStr(c9.selesai) = '00:00:00'
-        )
-    )
-ORDER BY c.kode_checklist, c.idproses;
+  c.kode_checklist, 
+  c.idproses,
+  p.nama_proses,
+  FORMAT(c.selesai, 'HH:mm:ss') AS selesai
+FROM tblcandra c
+LEFT JOIN tblproses p ON c.idproses = p.idproses
+  `;
 
-`;
-  let result = await db.query(query);
+  const result = await db.query(query);
   return result;
 };
 
@@ -316,5 +267,5 @@ module.exports = {
   finishedProsesScan,
   getCandraByChecklist,
   getCandraByDate1001,
-  getCandraWithout1007,
+  getCandraTanpaFilter,
 };
