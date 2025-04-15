@@ -319,7 +319,6 @@ const validate1007 = async (req, res) => {
     let kodeChecklistList = dataCandra.map((item) => item.kode_checklist);
     let data = await model.getCandraWithout1007(kodeChecklistList);
 
-    // Format hasil agar setiap kode_checklist memiliki daftar idproses dan nama_proses
     let groupedData = {};
     data.forEach((item) => {
       if (!groupedData[item.kode_checklist]) {
