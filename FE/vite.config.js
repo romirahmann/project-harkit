@@ -6,7 +6,7 @@ export default defineConfig({
   base: "/RSAB-HARAPAN-KITA/",
   plugins: [react()],
   server: {
-    host: "192.168.9.192",
+    host: "0.0.0.0",
     port: 71,
   },
 });

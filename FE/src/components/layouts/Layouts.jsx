@@ -19,6 +19,7 @@ import { TbLogout, TbTargetArrow } from "react-icons/tb";
 import { BsClipboardData } from "react-icons/bs";
 import { RxActivityLog } from "react-icons/rx";
 import { AddLog } from "../../context/Log";
+import socket from "../../context/socket";
 
 export function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -26,6 +27,7 @@ export function Layout() {
   const [isKelolaDataOpen, setIsKelolaDataOpen] = useState(false);
   const [isChecksheetOpen, setIsChecksheet] = useState(false);
   const [userLogin, setUserLogin] = useState({});
+  const [testIo, setTestIo] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,6 +56,13 @@ export function Layout() {
       window.removeEventListener("keydown", resetTimer);
       window.removeEventListener("click", resetTimer);
     };
+  }, []);
+
+  useEffect(() => {
+    socket.on("update_data", (newData) => {
+      console.log("📥 Dapat data dari server:", newData);
+      setTestIo(newData);
+    });
   }, []);
 
   const handleLogout = () => {

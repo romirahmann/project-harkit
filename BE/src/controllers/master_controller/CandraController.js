@@ -7,6 +7,7 @@ const path = require("path");
 const moment = require("moment");
 const logService = require("../../services/log.service");
 const ExcelJS = require("exceljs");
+const { getIO } = require("../../services/socket.service");
 
 const getAllCandra = async (req, res) => {
   try {
@@ -110,7 +111,9 @@ const addScanCandra = async (req, res) => {
     // Jika proses ini urutan pertama, langsung tambahkan
     if (urutanProses === 1) {
       await model.createCandraFromScan(data);
+      const io = getIO();
 
+      io.emit("scan_created", { message: "SCAN NEW CREATED!" });
       return api.ok(res, "Candra created successfully");
     }
 
@@ -145,6 +148,10 @@ const addScanCandra = async (req, res) => {
 
     // Semua proses sebelumnya sudah selesai, tambahkan proses baru
     await model.createCandraFromScan(data);
+
+    const io = getIO();
+
+    io.emit("scan_created", { message: "SCAN NEW CREATED!" });
 
     return api.ok(res, "Candra created successfully");
   } catch (error) {
@@ -187,7 +194,13 @@ const finishedProses = async (req, res) => {
 
   try {
     const updated = await model.finishedProses(kode_checklist, idproses, data);
+
     if (!updated) return api.error(res, "Candra not found or no changes", 404);
+
+    const io = getIO();
+    io.emit("finished_process", {
+      message: `Checklist ${kode_checklist} dengan proses ${idproses} selesai!`,
+    });
 
     return api.ok(res, "Candra updated successfully");
   } catch (error) {
@@ -316,8 +329,8 @@ const validate1007 = async (req, res) => {
       return api.ok(res, []);
     }
 
-    // let kodeChecklistList = dataCandra.map((item) => item.kode_checklist);
-    let data = await model.getCandraTanpaFilter();
+    let kodeChecklistList = dataCandra.map((item) => item.kode_checklist);
+    let data = await model.getCandraFilterByKode(kodeChecklistList);
 
     let kodeUnik = [...new Set(data.map((d) => d.kode_checklist))];
 
@@ -346,7 +359,7 @@ const validate1007 = async (req, res) => {
 
           const selesai = item?.selesai?.trim();
 
-          if (!item || selesai === "00:00:00") {
+          if (!item || !selesai || selesai === "00:00:00") {
             // console.log(
             //   `kode: ${kode} | idproses: ${id} | nama_proses: ${
             //     item?.nama_proses || prosesMap[id]

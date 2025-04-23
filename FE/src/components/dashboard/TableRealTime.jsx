@@ -5,16 +5,35 @@ import { PaginationComponent } from "../reuse/PaginationComponent";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { ApiUrl } from "../../context/Urlapi";
+import socket from "../../context/socket";
 
 export function TableRealTime() {
   const [checklist, setChecklist] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [paginatedData, setPaginatedData] = useState([]);
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [query, setQuery] = useState("");
   const baseUrl = useContext(ApiUrl);
 
   useEffect(() => {
     fetchChecklist();
+  }, []);
+
+  useEffect(() => {
+    const handleUpdate = (newData) => {
+      fetchChecklist();
+      console.log("Update Data Real Time: ", newData);
+    };
+
+    socket.on("scan_created", handleUpdate);
+    socket.on("finished_process", handleUpdate);
+
+    // Cleanup listener ketika komponen unmount
+    return () => {
+      socket.off("scan_created", handleUpdate);
+      socket.off("finished_process", handleUpdate);
+    };
   }, []);
 
   const fetchChecklist = async () => {
@@ -30,7 +49,9 @@ export function TableRealTime() {
     }
   };
 
-  const handleQuery = () => {};
+  const handleQuery = (query) => {
+    setQuery(query);
+  };
 
   return (
     <div className="container-fluid p-5">
@@ -43,7 +64,8 @@ export function TableRealTime() {
           <SearchComponent
             result={setFilteredData}
             data={checklist}
-            queryInput={() => handleQuery()}
+            queryInput={(query) => handleQuery(query)}
+            currentQuery={query}
           />
         </div>
       </div>
@@ -62,7 +84,9 @@ export function TableRealTime() {
             {paginatedData.length > 0 ? (
               paginatedData.map((data, index) => (
                 <tr key={index} className="border-b">
-                  <td className="px-6 py-4 text-wrap">{index + 1}</td>
+                  <td className="px-6 py-4 text-wrap">
+                    {index + 1 + (currentPage - 1) * 10}
+                  </td>
                   <td className="px-6 py-4 text-wrap">{data.kode_checklist}</td>
                   <td className="px-6 py-4 text-wrap">
                     {data.idproses_array

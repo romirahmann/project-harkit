@@ -1,11 +1,11 @@
 {
-  "name": "staterkit-backend-nodejs",
+  "name": "BACKEND-RS-HARAPAN-KITA",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "start": "nodemon -r dotenv/config app.js dotenv_config_path=./env/.env-dev",
-    "prod": "nodemon -r dotenv/config app.js dotenv_config_path=./env/.env"
+    "prod": "node -r dotenv/config app.js "
   },
   "keywords": [],
   "author": "",
