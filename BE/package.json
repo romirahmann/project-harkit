@@ -1,11 +1,20 @@
 {
+<<<<<<< HEAD
   "name": "HARKIT",
+=======
+  "name": "BACKEND-RS-HARAPAN-KITA",
+>>>>>>> 28bfda9df8f7f4443a65342f031538ef4ef66d77
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "nodemon -r dotenv/config app.js dotenv_config_path=./.env",
     "prod": "node app.js "
+=======
+    "start": "nodemon -r dotenv/config app.js dotenv_config_path=./env/.env-dev",
+    "prod": "node -r dotenv/config app.js "
+>>>>>>> 28bfda9df8f7f4443a65342f031538ef4ef66d77
   },
   "keywords": [],
   "author": "",

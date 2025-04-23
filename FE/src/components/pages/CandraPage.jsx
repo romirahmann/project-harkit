@@ -161,7 +161,7 @@ export function CandraPage() {
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="text-xs font-bold text-gray-300 bg-[#043A70]">
             <tr>
-              <th className="px-4 py-2">N</th>
+              <th className="px-4 py-2">No</th>
               <th className="px-4 py-2">Kode Checklist</th>
               <th className="px-4 py-2">ID Proses</th>
               <th className="px-4 py-2">NIK</th>
@@ -178,7 +178,9 @@ export function CandraPage() {
             {paginatedData?.length > 0 ? (
               paginatedData.map((data, index) => (
                 <tr key={data.id} className="border-b">
-                  <td className="px-4 py-2">{index + 1}</td>
+                  <td className="px-4 py-2">
+                    {index + 1 + (currentPage - 1) * 10}
+                  </td>
                   <td className="px-4 py-2">{data.kode_checklist}</td>
                   <td className="px-4 py-2">{data.idproses}</td>
                   <td className="px-4 py-2">{data.nik}</td>

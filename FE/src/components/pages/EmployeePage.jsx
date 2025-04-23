@@ -123,7 +123,9 @@ export function EmployeePage() {
             {paginatedData?.length > 0 ? (
               paginatedData.map((karyawan, index) => (
                 <tr key={karyawan.id} className="border-b">
-                  <th className="px-4 py-2">{index + 1}</th>
+                  <th className="px-4 py-2">
+                    {index + 1 + (currentPage - 1) * 10}
+                  </th>
                   <td className="px-4 py-2">{karyawan.nik}</td>
                   <td className="px-4 py-2">{karyawan.nama_karyawan}</td>
                   <td className="px-4 py-2">{karyawan.submittedby}</td>

@@ -5,47 +5,49 @@ const { createServer } = require("http");
 const { connectDB } = require("./src/database/db.config");
 const { connectDB2 } = require("./src/database/update.config");
 const mainRoutes = require("./src/routes/routes");
+const { init } = require("./src/services/socket.service");
 
 const app = express();
-const server = createServer(app); // Buat HTTP Server
+const server = createServer(app);
+
+// Inisialisasi Socket.IO
+const io = init(server);
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(
   cors({
-    origin: "*", // Atau ganti dengan "http://192.168.9.192:3000" jika hanya untuk frontend tertentu
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-app.use(express.urlencoded({ extended: true }));
+// Endpoint default
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: true,
+    service: "Backend Project RS-HARKIT Starter Kit with WebSocket",
+  });
+});
 
-// Koneksi Database sebelum server berjalan
+// Routes utama
+app.use("/api", mainRoutes);
+
+// 404 Handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Endpoint not found",
+  });
+});
+
+// Jalankan server setelah DB terkoneksi
 Promise.all([connectDB(), connectDB2()])
   .then(() => {
     console.log("✅ All Database connections established");
 
-    // Route Utama
-    app.get("/", (req, res) => {
-      res.status(200).json({
-        status: true,
-        service: "Backend Project RS-HARKIT Starter Kit with WebSocket",
-      });
-    });
-
-    // API Routes
-    app.use("/api", mainRoutes);
-
-    // 404 Not Found Middleware
-    app.use((req, res) => {
-      res.status(404).json({
-        success: false,
-        message: "Endpoint not found",
-      });
-    });
-
-    // Jalankan server setelah database terkoneksi
     const PORT = process.env.PORT || 8800;
     const HOST = process.env.HOST || "localhost";
     server.listen(PORT, HOST, () => {
@@ -61,5 +63,5 @@ Promise.all([connectDB(), connectDB2()])
     process.exit(1);
   });
 
-// Ekspor server untuk keperluan lain jika dibutuhkan
+// Ekspor app dan server jika dibutuhkan
 module.exports = { app, server };

@@ -10,6 +10,7 @@ import { SearchComponent } from "../reuse/SearchComponent";
 import { FinishedScan } from "../../components/reuse/modals/FinishedScan";
 import { useRef } from "react";
 import { AddLog } from "../../context/Log";
+import socket from "../../context/socket";
 
 export function ScanPage() {
   const baseUrl = useContext(ApiUrl);
@@ -94,6 +95,16 @@ export function ScanPage() {
     if (kodeChecklistRef.current) {
       kodeChecklistRef.current.focus();
     }
+  }, []);
+
+  useEffect(() => {
+    socket.on("scan_created", (result) => {
+      console.log("Product New", result);
+    });
+
+    return () => {
+      socket.off("scan_created");
+    };
   }, []);
 
   const fetchDataCandra = async () => {
@@ -196,19 +207,18 @@ export function ScanPage() {
   };
 
   const handleSelesai = (scan) => {
-    // console.log(scan);
     const timestamp = moment().format("HH:mm:ss");
     let newData = {
       ...scan,
       selesai_formatted: timestamp,
     };
     if (newData) {
-      axios
-        .put(
-          `${baseUrl}/master/finish-proses/${newData.kode_checklist}/${newData.idproses}`,
-          newData
-        )
-        .then((res) => {
+      let submitSelesai = async () => {
+        try {
+          await axios.put(
+            `${baseUrl}/master/finish-proses/${newData.kode_checklist}/${newData.idproses}`,
+            newData
+          );
           AddLog(
             `Proses dengan Kode Checklist: ${newData.kode_checklist} dan ID Proses ${newData.idproses} telah diselesaikan oleh ${userLogin?.username}`
           );
@@ -220,14 +230,16 @@ export function ScanPage() {
             setSuccessMessage("");
             kodeChecklistRef.current.focus();
           }, 2000);
-        })
-        .catch((err) => {
+        } catch (error) {
           AddLog(
             `Proses dengan Kode Checklist: ${newData.kode_checklist} dan ID Proses ${newData.idproses} telah diselesaikan oleh ${userLogin?.username}`,
             "FAILED"
           );
           setErrorMessage(`Silahkan ulangi klik tombol selesai`);
-        });
+        }
+      };
+
+      submitSelesai();
     } else {
       setErrorMessage("Data Not Found!");
       setTimeout(() => {
@@ -470,7 +482,9 @@ export function ScanPage() {
               {paginatedData.length > 0 ? (
                 paginatedData.map((scan, index) => (
                   <tr key={index} className="text-center">
-                    <td className="border p-2">{index + 1}</td>
+                    <td className="border p-2">
+                      {index + 1 + (currentPage - 1) * 10}
+                    </td>
                     <td className="border p-2">{scan.kode_checklist}</td>
                     <td className="border p-2">{scan.idproses}</td>
                     <td className="border p-2">{scan.nama_proses}</td>

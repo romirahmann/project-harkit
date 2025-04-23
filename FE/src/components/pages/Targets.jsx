@@ -152,7 +152,7 @@ export function TargetsPage() {
                         scope="row"
                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
-                        {index + 1}
+                        {index + 1 + (currentPage - 1) * 10}
                       </th>
                       <td className="px-4 py-2">{target.nama}</td>
                       <td className="px-4 py-2">
