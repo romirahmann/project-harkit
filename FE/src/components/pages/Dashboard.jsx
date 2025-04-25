@@ -23,25 +23,25 @@ export function Dashboard() {
         <div className="content mt-10">
           <StatistikDashboard />
         </div>
+        <div className="summary ">
+          <SummaryDashboard />
+        </div>
 
         <div className="content-2">
-          <div className="dashboard-2 grid sm:grid-cols-1 lg:grid-cols-4 lg:mt-10 gap-3">
-            <div className="firstChart col-span-3">
+          <div className="dashboard-2  lg:mt-10 ">
+            <div className="firstChart ">
               <ChartComponent />
-            </div>
-            <div className="pieChart col-span-1 ">
-              <TargetChart />
             </div>
           </div>
         </div>
 
         <div className="content-3">
           <div className="dashboard-3 grid grid-cols-1 lg:grid-cols-4 mt-10 gap-3">
-            <div className="summary ">
-              <SummaryDashboard />
-            </div>
             <div className="tblRealTime col-span-3 bg-white p-3 rounded-md">
               <TableRealTime />
+            </div>
+            <div className="pieChart col-span-1 ">
+              <TargetChart />
             </div>
           </div>
         </div>

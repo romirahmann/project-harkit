@@ -92,6 +92,16 @@ const totalDates = async (filterQuery = "") => {
   return result[0].total_dates || 0;
 };
 
+const totalMR = async (filterQuery = "") => {
+  const db = await getDB();
+  const query = `SELECT COUNT(*) AS total_MR 
+               FROM tblDataMR 
+               WHERE 1=1 ${filterQuery}`;
+
+  const result = await db.query(query);
+  return result[0].total_MR || 0;
+};
+
 const getAllTarget = async () => {
   const db = await getDB();
   const query = `SELECT * FROM tbltarget`;
@@ -171,4 +181,5 @@ module.exports = {
   getProsesData,
   getAllTarget,
   getQtyImage,
+  totalMR,
 };

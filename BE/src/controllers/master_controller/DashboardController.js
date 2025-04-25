@@ -41,10 +41,11 @@ const getSummaryData = async (req, res) => {
       filterQuery = ` AND tanggal >= ${formattedDate}`;
     }
 
-    const [image1003, image1001, dates] = await Promise.all([
+    const [image1003, image1001, dates, totalMR] = await Promise.all([
       model.allImage1003(filterQuery),
       model.allImage1001(filterQuery),
       model.totalDates(filterQuery),
+      model.totalMR(filterQuery),
     ]);
 
     // console.log(image1001);
@@ -53,6 +54,7 @@ const getSummaryData = async (req, res) => {
       image1001,
       image1003,
       dates,
+      totalMR,
       filteredFrom: startDate || null,
     });
   } catch (err) {
