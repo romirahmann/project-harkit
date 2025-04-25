@@ -12,7 +12,6 @@ export function TableRealTime() {
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [paginatedData, setPaginatedData] = useState([]);
-  const [isUpdate, setIsUpdate] = useState(false);
   const [query, setQuery] = useState("");
   const baseUrl = useContext(ApiUrl);
 

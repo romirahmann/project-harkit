@@ -64,34 +64,39 @@ const cekDate = async () => {
   return result;
 };
 
-const allImage1003 = async () => {
+const allImage1003 = async (filterQuery = "") => {
   const db = await getDB();
   const query = `SELECT SUM(qty_image) AS total_1003 
-                    FROM tblcandra 
-                    WHERE idproses = '1003'`;
+                 FROM tblcandra 
+                 WHERE idproses = '1003' ${filterQuery}`;
   const result = await db.query(query);
-  return result[0].total_1003;
+  return result[0].total_1003 || 0;
 };
-const allImage1001 = async () => {
+
+const allImage1001 = async (filterQuery = "") => {
   const db = await getDB();
   const query = `SELECT SUM(qty_image) AS total_1001 
-                    FROM tblcandra 
-                    WHERE idproses = '1001'`;
+                 FROM tblcandra 
+                 WHERE idproses = '1001' ${filterQuery}`;
   const result = await db.query(query);
-  return result[0].total_1001;
+  return result[0].total_1001 || 0;
 };
+
+const totalDates = async (filterQuery = "") => {
+  const db = await getDB();
+  const query = `SELECT COUNT(*) AS total_dates 
+                 FROM (SELECT DISTINCT tanggal 
+                       FROM tblcandra 
+                       WHERE 1=1 ${filterQuery}) AS subquery`;
+  const result = await db.query(query);
+  return result[0].total_dates || 0;
+};
+
 const getAllTarget = async () => {
   const db = await getDB();
   const query = `SELECT * FROM tbltarget`;
   const result = await db.query(query);
   return result;
-};
-const totalDates = async () => {
-  const db = await getDB();
-  const query = `SELECT COUNT(*) AS total_dates 
-                    FROM (SELECT DISTINCT tanggal FROM tblcandra)`;
-  const result = await db.query(query);
-  return result[0].total_dates;
 };
 
 const targetImage = async () => {

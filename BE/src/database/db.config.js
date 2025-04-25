@@ -2,7 +2,7 @@ const odbc = require("odbc");
 require("dotenv").config();
 const path = require("path");
 
-const dbDataPath = path.resolve(process.env.DB_PATH);
+const dbDataPath = process.env.DB_PATH;
 const dbPassword = process.env.DB_PASSWORD || "adi121711";
 
 // Konfigurasi koneksi ODBC tanpa DSN
