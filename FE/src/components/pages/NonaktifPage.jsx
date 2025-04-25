@@ -90,7 +90,7 @@ export function NonaktifPage() {
                     <td className="px-4 py-2 w-4">{data.NamaPasien}</td>
                     <td className="px-4 py-2 w-4">
                       {data.Tanggal
-                        ? moment(data.Tanggal).format("DD/MM/YYYY")
+                        ? moment(data.Tanggal, "DDMMYYYY").format("DD/MM/YYYY")
                         : ""}
                     </td>
                     <td className="px-4 py- w-4">{data.Qty_Image}</td>

@@ -52,7 +52,6 @@ export function StatistikDashboard() {
                 onChange={(e) => handleChange(e)}
                 className="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-gray-700 bg-white"
               />
-              <FaCalendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
         </div>

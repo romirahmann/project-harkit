@@ -44,17 +44,27 @@ const uploadFile = async (req, res) => {
     }
 
     const filename = req.file.originalname;
+<<<<<<< HEAD
     // const mdbFilePath = path.join(__dirname, "../../database", filename);
     const mdbFilePath = process.env.DB_PATH;
     // Lakukan backup sebelum update
+=======
+    const mdbFilePath = process.env.DB_PATH;
+
+>>>>>>> 18d28e54d7c729b2c696d30812960f362e6c3e8e
     backupMDB(mdbFilePath);
 
     if (filename === "dbData.mdb") {
       let newDataCandra = await modelUpdate.getAllCandra();
       let newDataMR = await modelUpdate.getAllDataMR();
       let newDataMR3 = await modelUpdate.getAllDataMR3();
+<<<<<<< HEAD
       // // Lakukan backup sebelum update
       // backupMDB(mdbFilePath);
+=======
+      // Lakukan backup sebelum update
+
+>>>>>>> 18d28e54d7c729b2c696d30812960f362e6c3e8e
       // UPDATE DATA CANDRA
       for (const candra of newDataCandra) {
         const existing = await modelCandra.dataExisting(

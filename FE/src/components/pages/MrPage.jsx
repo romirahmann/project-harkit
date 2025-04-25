@@ -195,7 +195,6 @@ export function MrPage() {
               <th className="px-4 py-2">No Urut</th>
               <th className="px-5 py-2">Kode Checklist</th>
               <th className="px-4 py-2">No MR</th>
-              {/* <th className="px-6 py-3">No Box</th> */}
               <th className="px-5 py-2 ">Nama Pasien</th>
               <th className="px-4 py-2">Tanggal</th>
               <th className="px-4 py-2">Qty Image</th>
@@ -212,7 +211,6 @@ export function MrPage() {
                   <td className="px-4 py-2 ">{data.NoUrut}</td>
                   <td className="px-5 py-2 ">{data.Kode_Checklist}</td>
                   <td className="px-4 py-2 ">{data.NoMR}</td>
-                  {/* <td className="px-6 py-4">{data.nobox}</td> */}
                   <td className="px-5 py-2 ">{data.NamaPasien}</td>
                   <td className="px-4 py-2 ">
                     {data.Tanggal

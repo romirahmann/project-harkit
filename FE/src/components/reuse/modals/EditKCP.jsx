@@ -78,7 +78,7 @@ export function ModalEditKCP({ isOpen, onClose, data, onUpdate }) {
       <Modal show={isOpen} onClose={onClose} size="2xl">
         <Modal.Header>
           <p className="text-lg font-semibold text-gray-800 dark:text-white">
-            EDIT MR
+            EDIT DATA KCP
           </p>
         </Modal.Header>
         <Modal.Body>
@@ -101,143 +101,145 @@ export function ModalEditKCP({ isOpen, onClose, data, onUpdate }) {
               </div>
             )}
 
-            <div>
-              <label
-                htmlFor="NoUrut"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                NoUrut
-              </label>
-              <input
-                type="text"
-                name="NoUrut"
-                id="NoUrut"
-                value={formData.NoUrut}
-                disabled
-                className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div>
+                <label
+                  htmlFor="NoUrut"
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  NoUrut
+                </label>
+                <input
+                  type="text"
+                  name="NoUrut"
+                  id="NoUrut"
+                  value={formData.NoUrut}
+                  disabled
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                />
+              </div>
 
-            <div>
-              <label
-                htmlFor="Kode_Checklist"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Kode_Checklist
-              </label>
-              <input
-                type="text"
-                name="Kode_Checklist"
-                id="Kode_Checklist"
-                value={formData.Kode_Checklist}
-                disabled
-                className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="NoMR"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                NoMR
-              </label>
-              <input
-                type="text"
-                name="NoMR"
-                id="NoMR"
-                value={formData.NoMR}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
+              <div>
+                <label
+                  htmlFor="Kode_Checklist"
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Kode_Checklist
+                </label>
+                <input
+                  type="text"
+                  name="Kode_Checklist"
+                  id="Kode_Checklist"
+                  value={formData.Kode_Checklist}
+                  disabled
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="NoMR"
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  NoMR
+                </label>
+                <input
+                  type="text"
+                  name="NoMR"
+                  id="NoMR"
+                  value={formData.NoMR}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                />
+              </div>
 
-            <div>
-              <label
-                htmlFor="NamaPasien"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                NamaPasien
-              </label>
-              <input
-                type="text"
-                name="NamaPasien"
-                id="NamaPasien"
-                value={formData.NamaPasien}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
+              <div>
+                <label
+                  htmlFor="NamaPasien"
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  NamaPasien
+                </label>
+                <input
+                  type="text"
+                  name="NamaPasien"
+                  id="NamaPasien"
+                  value={formData.NamaPasien}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                />
+              </div>
 
-            <div>
-              <label
-                htmlFor="Tanggal"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Tanggal
-              </label>
-              <input
-                type="date"
-                name="Tanggal"
-                id="Tanggal"
-                value={formData.Tanggal}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="Periode_Ranap"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Periode Ranap
-              </label>
-              <input
-                type="text"
-                name="Periode_Ranap"
-                id="Periode_Ranap"
-                value={formData.Periode_Ranap}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="Layanan"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Layanan
-              </label>
-              <input
-                type="text"
-                name="Layanan"
-                id="Layanan"
-                value={formData.Layanan}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
-            </div>
+              <div>
+                <label
+                  htmlFor="Tanggal"
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Tanggal
+                </label>
+                <input
+                  type="date"
+                  name="Tanggal"
+                  id="Tanggal"
+                  value={formData.Tanggal}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="Periode_Ranap"
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Periode Ranap
+                </label>
+                <input
+                  type="text"
+                  name="Periode_Ranap"
+                  id="Periode_Ranap"
+                  value={formData.Periode_Ranap}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="Layanan"
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Layanan
+                </label>
+                <input
+                  type="text"
+                  name="Layanan"
+                  id="Layanan"
+                  value={formData.Layanan}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                />
+              </div>
 
-            <div>
-              <label
-                htmlFor="namadokumen"
-                className="block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Nama Dokumen
-              </label>
-              <input
-                type="text"
-                name="namadokumen"
-                id="namadokumen"
-                value={formData.namadokumen}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                required
-              />
+              <div>
+                <label
+                  htmlFor="namadokumen"
+                  className="block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Nama Dokumen
+                </label>
+                <input
+                  type="text"
+                  name="namadokumen"
+                  id="namadokumen"
+                  value={formData.namadokumen}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  required
+                />
+              </div>
             </div>
           </form>
         </Modal.Body>

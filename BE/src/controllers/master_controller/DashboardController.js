@@ -31,14 +31,34 @@ const getTotalStatistik = async (req, res) => {
 
 const getSummaryData = async (req, res) => {
   try {
-    const [image1003, image1001, dates] = await Promise.all([
-      model.allImage1003(),
-      model.allImage1001(),
-      model.totalDates(),
+    const { startDate } = req.params;
+
+    let filterQuery = "";
+
+    if (startDate && moment(startDate, "YYYY-MM-DD", true).isValid()) {
+      // Access butuh #tanggal#
+      const formattedDate = `#${startDate}#`;
+      filterQuery = ` AND tanggal >= ${formattedDate}`;
+    }
+
+    const [image1003, image1001, dates, totalMR] = await Promise.all([
+      model.allImage1003(filterQuery),
+      model.allImage1001(filterQuery),
+      model.totalDates(filterQuery),
+      model.totalMR(filterQuery),
     ]);
 
-    return api.ok(res, { image1001, image1003, dates });
+    // console.log(image1001);
+
+    return api.ok(res, {
+      image1001,
+      image1003,
+      dates,
+      totalMR,
+      filteredFrom: startDate || null,
+    });
   } catch (err) {
+    console.error(err);
     return api.error(res, "Internal Server Error", 500);
   }
 };

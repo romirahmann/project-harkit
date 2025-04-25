@@ -206,7 +206,7 @@
     "controller": "DashboardController.getTotalStatistik"
   },
   {
-    "path": "/data-summary",
+    "path": "/data-summary/:startDate?",
     "method": "get",
     "controller": "DashboardController.getSummaryData"
   },
