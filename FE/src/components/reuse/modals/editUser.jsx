@@ -144,24 +144,26 @@ export function EditUser({ isOpen, onClose, userData, updateUser }) {
         </form>
       </Modal.Body>
       <Modal.Footer>
-        <button
-          onClick={handleSubmit}
-          className={`text-white px-4 py-2 rounded-lg ${
-            loading
-              ? "bg-blue-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
-          }`}
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Save Changes"}
-        </button>
-        <button
-          onClick={onClose}
-          className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-          disabled={loading}
-        >
-          Cancel
-        </button>
+        <div className="buttonAction ms-auto">
+          <button
+            onClick={onClose}
+            className="bg-gray-500 text-white px-4 py-2 rounded-lg me-3 hover:bg-gray-600"
+            disabled={loading}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            className={`text-white px-4 py-2 rounded-lg ${
+              loading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
       </Modal.Footer>
     </Modal>
   );

@@ -12,7 +12,7 @@ import { TableRealTime } from "../dashboard/TableRealTime";
 export function Dashboard() {
   return (
     <>
-      <div className="container-fluid p-4">
+      <div className="max-w-screen p-4 overflow-x-hidden">
         <div className="titlePage flex mb-3 items-center">
           <FaTachometerAlt className="text-3xl text-gray-700" />
           <h1 className="text-3xl ms-3 font-bold text-gray-700 dark:text-white">
@@ -28,7 +28,7 @@ export function Dashboard() {
         </div>
 
         <div className="content-2">
-          <div className="dashboard-2  lg:mt-10 ">
+          <div className="dashboard-2  lg:mt-10 gap-3">
             <div className="firstChart ">
               <ChartComponent />
             </div>
