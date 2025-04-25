@@ -5,6 +5,7 @@ const modelMR = require("../../models/mr.model");
 const moment = require("moment");
 const fs = require("fs");
 const path = require("path");
+require("dotenv").config();
 
 // Fungsi backup file MDB
 const backupMDB = (sourceFile) => {
@@ -43,14 +44,17 @@ const uploadFile = async (req, res) => {
     }
 
     const filename = req.file.originalname;
-    const mdbFilePath = path.join(__dirname, "../../database", filename);
+    // const mdbFilePath = path.join(__dirname, "../../database", filename);
+    const mdbFilePath = process.env.DB_PATH;
+    // Lakukan backup sebelum update
+    backupMDB(mdbFilePath);
 
     if (filename === "dbData.mdb") {
       let newDataCandra = await modelUpdate.getAllCandra();
       let newDataMR = await modelUpdate.getAllDataMR();
       let newDataMR3 = await modelUpdate.getAllDataMR3();
-      // Lakukan backup sebelum update
-      backupMDB(mdbFilePath);
+      // // Lakukan backup sebelum update
+      // backupMDB(mdbFilePath);
       // UPDATE DATA CANDRA
       for (const candra of newDataCandra) {
         const existing = await modelCandra.dataExisting(
