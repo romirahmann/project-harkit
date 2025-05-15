@@ -35,6 +35,12 @@ export function SummaryDashboard() {
     setSelectionDate(e.target.value);
   };
 
+  const formatNumber = (number) => {
+    return new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(
+      number
+    );
+  };
+
   return (
     <>
       <div className="summary bg-cyan-600 p-10 rounded-2xl mt-5">
@@ -63,7 +69,7 @@ export function SummaryDashboard() {
               </h5>
             </a>
             <p className="mb-3 text-2xl font-normal text-gray-50 dark:text-gray-400">
-              {summary?.totalMR}
+              {formatNumber(summary?.totalMR || 0)}
             </p>
           </div>
           {/* Total Semua Lembar Scan */}
@@ -75,7 +81,7 @@ export function SummaryDashboard() {
               </h5>
             </a>
             <p className="mb-3 text-2xl font-normal text-gray-50 dark:text-gray-400">
-              {summary?.image1003}
+              {formatNumber(summary?.image1003) || 0}
             </p>
           </div>
           {/* Total Semua Image */}
@@ -87,7 +93,7 @@ export function SummaryDashboard() {
               </h5>
             </a>
             <p className="mb-3 text-2xl font-normal text-gray-50 dark:text-gray-400">
-              {summary?.image1001}
+              {formatNumber(summary?.image1001) || 0}
             </p>
           </div>
           {/* Total Jumlah Hari */}
