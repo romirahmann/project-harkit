@@ -30,7 +30,7 @@ const login = async (req, res) => {
     };
     const token = generateToken(payload);
     logService.log(`${payload.username} Berhasil Login`, "SUCCESSFULLY");
-    return api.ok(res, { token, user: payload });
+    return api.ok(res, { token, userData: payload });
   } catch (error) {
     console.error("❌ Error logging in:", error);
     return api.error(res, "Internal Server Error", 500);

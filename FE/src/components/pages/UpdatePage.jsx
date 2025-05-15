@@ -289,7 +289,7 @@ export function UpdatePage() {
                 <tr>
                   <th className="px-6 py-3">No</th>
                   <th className="px-6 py-3">Kode Checklist</th>
-                  <th className="px-6 py-3">Finished</th>
+                  <th className="px-6 py-3">Not Finished</th>
                 </tr>
               </thead>
               <tbody>
