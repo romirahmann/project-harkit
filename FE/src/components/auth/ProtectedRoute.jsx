@@ -3,8 +3,8 @@ import { useEffect } from "react";
 
 export function ProtectedRoute({ children }) {
   const navigate = useNavigate();
-  const isAuthenticated = localStorage.getItem("token") !== null;
-  const expiresAt = localStorage.getItem("expiresAt");
+  const isAuthenticated = sessionStorage.getItem("token") !== null;
+  const expiresAt = sessionStorage.getItem("expiresAt");
 
   useEffect(() => {
     if (!isAuthenticated || (expiresAt && Date.now() > Number(expiresAt))) {

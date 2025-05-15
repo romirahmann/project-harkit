@@ -1,9 +1,9 @@
 import { RouterProvider } from "@tanstack/react-router";
 import { router } from "./components/routes/Routes";
-import { ApiUrl } from "./context/Urlapi";
+import { api, ApiUrl } from "./context/Urlapi";
 
 function App() {
-  const baseUrl = "http://192.168.9.208:3002/api";
+  const baseUrl = api;
 
   return (
     <>

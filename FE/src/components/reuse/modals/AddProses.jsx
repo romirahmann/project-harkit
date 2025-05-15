@@ -7,7 +7,7 @@ import { AddLog } from "../../../context/Log";
 
 export function AddProses({ isOpen, onClose, addProses }) {
   const baseUrl = useContext(ApiUrl);
-  const userData = JSON.parse(localStorage.getItem("userData")) || {};
+  const userData = JSON.parse(sessionStorage.getItem("userData")) || {};
   // Fungsi untuk mendapatkan tanggal hari ini dalam format YYYY-MM-DD
   const getTodayDate = () => {
     const today = new Date();

@@ -13,7 +13,7 @@ export function EditTarget({ isOpen, onClose, data, onEdit }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const baseUrl = useContext(ApiUrl);
-  const userData = JSON.parse(localStorage.getItem("userData")) || {};
+  const userData = JSON.parse(sessionStorage.getItem("userData")) || {};
   useEffect(() => {
     if (data) {
       setFormData({

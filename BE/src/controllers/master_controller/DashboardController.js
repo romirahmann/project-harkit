@@ -25,6 +25,7 @@ const getTotalStatistik = async (req, res) => {
       totalLembar,
     });
   } catch (err) {
+    console.log(err);
     return api.error(res, "Internal Server Error", 500);
   }
 };
@@ -140,6 +141,7 @@ const getDataRealTime = async (req, res) => {
 
     return api.ok(res, filteredResult);
   } catch (error) {
+    console.log(error);
     return api.error(res, "Internal Server Error", 500);
   }
 };
@@ -187,6 +189,7 @@ const getDataPrimaryChart = async (req, res) => {
 
     return api.ok(res, { targets, dates, values1, values2 });
   } catch (err) {
+    console.log(err);
     return api.error(res, err, 500);
   }
 };

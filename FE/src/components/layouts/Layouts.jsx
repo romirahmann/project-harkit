@@ -31,7 +31,7 @@ export function Layout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("userData"));
+    const user = JSON.parse(sessionStorage.getItem("userData"));
     setUserLogin(user);
 
     // Timer logout otomatis setelah 30 menit tidak ada aktivitas
@@ -60,15 +60,14 @@ export function Layout() {
 
   useEffect(() => {
     socket.on("update_data", (newData) => {
-      console.log("📥 Dapat data dari server:", newData);
       setTestIo(newData);
     });
   }, []);
 
   const handleLogout = () => {
     AddLog(`User ${userLogin.username} telah logout`, "SUCCESSFULLY");
-    localStorage.removeItem("token");
-    localStorage.removeItem("userData");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("userData");
     navigate({ to: "/login" });
   };
 
