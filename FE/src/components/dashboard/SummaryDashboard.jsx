@@ -37,13 +37,13 @@ export function SummaryDashboard() {
 
   return (
     <>
-      <div className="summary bg-gray-50 p-10 rounded-2xl mt-5">
+      <div className="summary bg-gradient-to-r from-blue-500 to-cyan-500 p-10 rounded-2xl mt-5">
         <div className="flex rounded-lg mb-2 items-center">
-          <span className=" text-2xl font-bold text-gray-600 uppercase">
-            RINGKASAN PROSES
+          <span className="text-white text-2xl font-bold  uppercase">
+            TOTAL PROSES
           </span>
           <div className="filterDate ms-auto flex items-center space-x-2">
-            <span className="me-2 rounded-md px-3">Start Date:</span>
+            <span className="me-2 text-white rounded-md px-3">Start Date:</span>
             <input
               type="date"
               value={selectionDate}

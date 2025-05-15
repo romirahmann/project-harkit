@@ -109,17 +109,17 @@ const updateDataMR = async (req, res) => {
   const { nourut, kode_checklist } = req.params;
   const { NoMR, NamaPasien, Tanggal, nobox } = req.body;
 
-  if (!nourut || !kode_checklist) {
-    return api.error(res, "NoUrut and Kode_Checklist are required", 400);
-  }
+  // if (!nourut || !kode_checklist) {
+  //   return api.error(res, "NoUrut and Kode_Checklist are required", 400);
+  // }
 
-  if (!NoMR || !NamaPasien || !Tanggal || !nobox) {
-    return api.error(
-      res,
-      "All fields (NoMR, NamaPasien, Tanggal, nobox) are required",
-      400
-    );
-  }
+  // if (!NoMR || !NamaPasien || !Tanggal || !nobox) {
+  //   return api.error(
+  //     res,
+  //     "All fields (NoMR, NamaPasien, Tanggal, nobox) are required",
+  //     400
+  //   );
+  // }
 
   let formatedTanggal = moment(Tanggal, "YYYY-MM-DD").format("DDMMYYYY");
 

@@ -1,0 +1,7 @@
+C:\Program Files\nodejs\npm.cmd
+D:\IT\ROMI\APP\CANDRA\NEW CANDRA\project-harkit\BE
+start
+
+C:\Program Files\nodejs\npm.cmd
+D:\IT\ROMI\APP\CANDRA\NEW CANDRA\project-harkit\FE
+run dev
