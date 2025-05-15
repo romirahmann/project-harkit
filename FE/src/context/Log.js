@@ -11,7 +11,6 @@ export function AddLog(messege, level) {
         level: level,
       };
       let result = await axios.post(`${url}/master/log`, data);
-      // console.log(result);
     } catch (err) {
       console.log(err);
     }

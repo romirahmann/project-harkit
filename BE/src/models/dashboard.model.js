@@ -157,13 +157,6 @@ const getQtyImage = async (idproses, tanggal) => {
   return result;
 };
 
-const qtyDate = () => {
-  const db = getDB();
-};
-const qtyLembar = () => {
-  const db = getDB();
-};
-
 module.exports = {
   getTotalKodeChecklist,
   totalNoMR,

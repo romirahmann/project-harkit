@@ -52,9 +52,8 @@ Promise.all([connectDB(), connectDB2()])
     const HOST = process.env.HOST || "localhost";
     server.listen(PORT, HOST, () => {
       console.log(
-        `🚀 Backend is Running on URL: ${HOST}:${PORT} ${
-          process.env.DEV === "TRUE" ? "<Development Mode>" : ""
-        }`
+        `🚀 Backend is Running on URL: ${HOST}:${PORT} 
+        `
       );
     });
   })
