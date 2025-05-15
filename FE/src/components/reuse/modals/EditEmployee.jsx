@@ -21,7 +21,7 @@ export function EditEmployee({
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const userData = JSON.parse(localStorage.getItem("userData")) || {};
+  const userData = JSON.parse(sessionStorage.getItem("userData")) || {};
 
   useEffect(() => {
     if (employeeData) {

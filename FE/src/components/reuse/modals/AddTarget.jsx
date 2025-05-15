@@ -13,7 +13,7 @@ export function AddTarget({ isOpen, onClose, onAdd }) {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const userData = JSON.parse(localStorage.getItem("userData")) || {};
+  const userData = JSON.parse(sessionStorage.getItem("userData")) || {};
   const baseUrl = useContext(ApiUrl);
 
   const handleSubmit = async () => {

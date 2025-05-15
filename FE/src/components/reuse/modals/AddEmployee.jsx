@@ -8,7 +8,7 @@ import { AddLog } from "../../../context/Log";
 export function AddEmployee({ isOpen, onClose, addEmployee }) {
   const baseUrl = useContext(ApiUrl);
 
-  const userData = JSON.parse(localStorage.getItem("userData")) || {};
+  const userData = JSON.parse(sessionStorage.getItem("userData")) || {};
 
   // State untuk menyimpan input form
   const [formData, setFormData] = useState({

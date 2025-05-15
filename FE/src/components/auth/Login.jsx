@@ -29,12 +29,13 @@ export function Login() {
       axios
         .post(`${baseUrl}/auth/login`, formLogin)
         .then((res) => {
-          // console.log(res.data.data);
+          let userData = res.data.data;
+
           const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
 
-          localStorage.setItem("token", res.data.data.token);
-          localStorage.setItem("expiresAt", expiresAt);
-          localStorage.setItem("userData", JSON.stringify(res.data.data.user));
+          sessionStorage.setItem("token", userData.token);
+          sessionStorage.setItem("expiresAt", expiresAt);
+          sessionStorage.setItem("userData", JSON.stringify(userData.userData));
           setAllert(true);
           setTimeout(() => {
             setAllert(false);

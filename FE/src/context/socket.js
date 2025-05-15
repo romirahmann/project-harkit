@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
+import { baseUrl } from "./Urlapi";
 
-const socket = io("http://192.168.9.192:3002");
+const socket = io(baseUrl);
 
 export default socket;
