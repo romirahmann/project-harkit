@@ -25,7 +25,7 @@ export function StatistikDashboard() {
       let res = await axios.get(
         `${baseUrl}/master/data-statistik/${selectionDate}`
       );
-      // console.log(res.data.data);
+
       setStatistikData(res.data.data);
     } catch (err) {
       console.log(err);

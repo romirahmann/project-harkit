@@ -60,7 +60,6 @@ export function Layout() {
 
   useEffect(() => {
     socket.on("update_data", (newData) => {
-      console.log("📥 Dapat data dari server:", newData);
       setTestIo(newData);
     });
   }, []);

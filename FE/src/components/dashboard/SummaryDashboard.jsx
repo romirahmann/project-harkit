@@ -23,7 +23,7 @@ export function SummaryDashboard() {
         `${baseUrl}/master/data-summary/${selectionDate}`
       );
       let data = res.data.data;
-      console.log(res.data.data);
+
       setSummary(data);
     } catch (err) {
       console.log(err);
@@ -31,7 +31,6 @@ export function SummaryDashboard() {
   };
 
   const handleChange = (e) => {
-    // console.log(e.target.value);
     setSelectionDate(e.target.value);
   };
 

@@ -28,7 +28,7 @@ export function TargetChart() {
   const fecthTarget = async () => {
     try {
       let res = await axios.get(`${baseUrl}/master/data-pie`);
-      // console.log(res.data.data);
+
       let data = res.data.data;
       setTargetHarian(data.targetHarian);
       setTargetScan(data.targetImage);
