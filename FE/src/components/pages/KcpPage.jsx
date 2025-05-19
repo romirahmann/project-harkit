@@ -145,7 +145,7 @@ export function KcpPage() {
                 <th className="px-4 py-2">No Urut</th>
                 <th className="px-4 py-2">Kode Checklist</th>
                 <th className="px-4 py-2">No MR</th>
-                <th className="px-4 py-2">Layanan</th>
+
                 <th className="px-4 py-2 lg:w-[15em]">Nama Pasien</th>
                 <th className="px-4 py-2">Tanggal</th>
                 <th className="px-4 py-2 lg:w-[15em]">Periode Ranap</th>
@@ -161,7 +161,7 @@ export function KcpPage() {
                     <td className="px-4 py-2">{data.NoUrut}</td>
                     <td className="px-4 py-2">{data.Kode_Checklist}</td>
                     <td className="px-4 py-2">{data.NoMR}</td>
-                    <td className="px-4 py-4">{data.Layanan}</td>
+
                     <td className="px-4 py-2 lg:w-[15em]">{data.NamaPasien}</td>
                     <td className="px-4 py-2">
                       {data.Tanggal

@@ -205,7 +205,7 @@ export function CheecksheetPage() {
                 <th className="px-4 py-2">No Urut</th>
                 <th className="px-4 py-2">Kode Checklist</th>
                 <th className="px-4 py-2">No MR</th>
-                <th className="px-4 py-2">Layanan</th>
+
                 <th className="px-4 py-2">Nama Pasien</th>
                 <th className="px-4 py-2">Tanggal</th>
                 <th className="px-4 py-2">Periode Ranap</th>
@@ -219,7 +219,7 @@ export function CheecksheetPage() {
                     <td className="px-4 py-2">{data.NoUrut}</td>
                     <td className="px-4 py-2">{data.Kode_Checklist}</td>
                     <td className="px-4 py-2">{data.NoMR}</td>
-                    <td className="px-6 py-4">{data.Layanan}</td>
+
                     <td className="px-4 py-2">{data.NamaPasien}</td>
                     <td className="px-4 py-2">
                       {data.Tanggal
