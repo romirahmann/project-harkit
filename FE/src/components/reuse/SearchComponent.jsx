@@ -11,7 +11,7 @@ export const SearchComponent = ({
     const filteredData = data.filter((item) =>
       Object.values(item).some((val) => {
         if (val === null || val === undefined) {
-          return false; // Lewati nilai null/undefined
+          return false;
         }
         return val.toString().toLowerCase().includes(query);
       })

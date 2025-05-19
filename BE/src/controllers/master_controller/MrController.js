@@ -344,7 +344,7 @@ const generateFinishinCheecksheet = async (req, res) => {
         { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
         { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
         { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
-        { text: "Layanan", bold: true, fillColor: "#D3D3D3" },
+
         { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
         { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
         { text: "Cheked", bold: true, fillColor: "#D3D3D3" },
@@ -358,7 +358,7 @@ const generateFinishinCheecksheet = async (req, res) => {
             "",
             "",
             "",
-            item.Layanan || "-",
+
             item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
@@ -370,7 +370,7 @@ const generateFinishinCheecksheet = async (req, res) => {
             item.NoMR || "-",
             item.NamaPasien || "-",
             moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
-            item.Layanan || "-",
+
             item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
@@ -574,12 +574,7 @@ const generateQcChecksheet = async (req, res) => {
         { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
         { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
         { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
-        {
-          text: "Layanan",
-          bold: true,
-          fillColor: "#D3D3D3",
-          alignment: "center",
-        },
+
         { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
 
         { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
@@ -597,7 +592,7 @@ const generateQcChecksheet = async (req, res) => {
             "",
             "",
             "",
-            item.Layanan || "-",
+
             item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
@@ -610,7 +605,7 @@ const generateQcChecksheet = async (req, res) => {
             item.NoMR || "-",
             item.NamaPasien || "-",
             moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
-            item.Layanan || "-",
+
             item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
@@ -789,7 +784,7 @@ const exportCSVMRt3 = async (req, res) => {
       "Kode Checklist",
       "Nama Pasien",
       "Tanggal",
-      "Layanan",
+
       "Nama Dokumen",
     ];
     worksheet.addRow(headers);
@@ -803,7 +798,7 @@ const exportCSVMRt3 = async (req, res) => {
         row.Kode_Checklist || "-",
         row.NamaPasien || "-",
         row.Tanggal || "-",
-        row.Layanan || "-",
+
         row.namadokumen || "-",
       ]);
     });
