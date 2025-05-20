@@ -10,14 +10,15 @@ import {
   FaUsers,
   FaTasks,
   FaUserCog,
+  FaBoxes,
 } from "react-icons/fa";
 import { AiFillStop } from "react-icons/ai";
 import { MdOutlineLibraryAddCheck, MdOutlineFactCheck } from "react-icons/md";
 import { MdDocumentScanner } from "react-icons/md";
-import { IoDocumentsSharp, IoShieldCheckmarkOutline } from "react-icons/io5";
+import { IoDocumentsSharp } from "react-icons/io5";
 import { TbLogout, TbTargetArrow } from "react-icons/tb";
 import { BsClipboardData } from "react-icons/bs";
-import { RxActivityLog } from "react-icons/rx";
+
 import { AddLog } from "../../context/Log";
 import socket from "../../context/socket";
 
@@ -25,7 +26,6 @@ export function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
   const [isKelolaDataOpen, setIsKelolaDataOpen] = useState(false);
-  const [isChecksheetOpen, setIsChecksheet] = useState(false);
   const [userLogin, setUserLogin] = useState({});
   const [testIo, setTestIo] = useState("");
   const navigate = useNavigate();
@@ -185,6 +185,12 @@ export function Layout() {
                     {isSidebarOpen && <span className="ml-3">Data Proses</span>}
                   </li>
                 </Link>
+                <Link to={"/box-page"}>
+                  <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
+                    <FaBoxes size={16} />
+                    {isSidebarOpen && <span className="ml-3">Data Box</span>}
+                  </li>
+                </Link>
                 <Link to={"/targets"}>
                   <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
                     <TbTargetArrow size={16} />
@@ -193,6 +199,7 @@ export function Layout() {
                     )}
                   </li>
                 </Link>
+
                 {userLogin?.jabatan === "Admin" && (
                   <div>
                     <Link to={"/data-users"}>
@@ -203,14 +210,6 @@ export function Layout() {
                         )}
                       </li>
                     </Link>
-                    {/* <Link to={"/logpage"}>
-                      <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
-                        <RxActivityLog size={16} />
-                        {isSidebarOpen && (
-                          <span className="ml-3">Log Activity</span>
-                        )}
-                      </li>
-                    </Link> */}
                   </div>
                 )}
               </ul>
