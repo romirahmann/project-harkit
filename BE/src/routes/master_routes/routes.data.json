@@ -269,5 +269,30 @@
     "path": "/validate-proses",
     "method": "get",
     "controller": "CandraController.validate1007"
+  },
+  {
+    "path": "/boxs",
+    "method": "get",
+    "controller": "BoxController.getAllBox"
+  },
+  {
+    "path": "/box",
+    "method": "post",
+    "controller": "BoxController.createBox"
+  },
+  {
+    "path": "/box/:id",
+    "method": "get",
+    "controller": "BoxController.getBoxById"
+  },
+  {
+    "path": "/box/:id",
+    "method": "put",
+    "controller": "BoxController.updateBox"
+  },
+  {
+    "path": "/box/:id",
+    "method": "delete",
+    "controller": "BoxController.deleteBox"
   }
 ]

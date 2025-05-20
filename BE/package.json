@@ -4,8 +4,13 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "nodemon -r dotenv/config app.js dotenv_config_path=./.env",
     "prod": "node app.js "
+=======
+    "start": "nodemon -r dotenv/config app.js ",
+    "prod": "node -r dotenv/config app.js "
+>>>>>>> d55771cbfb58d31d7c507b8bad98be2cf0973ac6
   },
   "keywords": [],
   "author": "",

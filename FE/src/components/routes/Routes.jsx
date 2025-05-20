@@ -19,6 +19,7 @@ import { CheecksheetPage } from "../pages/CheecksheetPage";
 import { KcpPage } from "../pages/KcpPage";
 import { NonaktifPage } from "../pages/NonaktifPage";
 import { LogPage } from "../pages/LogPage";
+import { BoxPage } from "../pages/BoxPage";
 
 const rootRoute = createRootRoute();
 
@@ -146,6 +147,17 @@ const nonaktifPage = createRoute({
     </ProtectedRoute>
   ),
 });
+
+const boxPage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/box-page",
+  component: () => (
+    <ProtectedRoute>
+      <BoxPage />
+    </ProtectedRoute>
+  ),
+});
+
 const logPage = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/logpage",
@@ -171,6 +183,7 @@ const routeTree = rootRoute.addChildren([
     kcpPage,
     nonaktifPage,
     logPage,
+    boxPage,
   ]),
   loginRoute,
 ]);
