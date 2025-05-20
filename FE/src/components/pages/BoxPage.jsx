@@ -6,6 +6,9 @@ import { SearchComponent } from "../reuse/SearchComponent";
 import { PaginationComponent } from "../reuse/PaginationComponent";
 import axios from "axios";
 import { ApiUrl } from "../../context/Urlapi";
+import { EditBox } from "../reuse/modals/EditBox";
+import { RemoveModal } from "../reuse/RemoveModal";
+import { AddLog } from "../../context/Log";
 
 export function BoxPage() {
   const [box, setBox] = useState([]);
@@ -15,7 +18,10 @@ export function BoxPage() {
   const [query, setQuery] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [modalEdit, setModalEdit] = useState(false);
+  const [modalRemove, setModalRemove] = useState(false);
+  const [selectedBox, setSelectedBox] = useState([]);
+  const userData = JSON.parse(sessionStorage.getItem("userData")) || {};
   const baseUrl = useContext(ApiUrl);
 
   useEffect(() => {
@@ -32,10 +38,38 @@ export function BoxPage() {
     }
   };
 
-  const handleEdit = () => {};
-  const handleRemove = () => {};
+  const handleEdit = (box) => {
+    setSelectedBox(box);
+    setModalEdit(true);
+  };
+  const handleRemove = (data) => {
+    setSelectedBox(data);
+    setModalRemove(true);
+  };
   const handleQuery = (query) => {
     setQuery(query);
+  };
+
+  const handleModalRemove = async (data) => {
+    try {
+      let res = await axios.delete(`${baseUrl}/master/box/${data?.id}`);
+      fecthBox();
+      setModalRemove(false);
+      AddLog(`${userData.username} edit data Box dengan id ${selectedBox.id}`);
+      setSuccessMessage(
+        `Box dengan ID ${selectedBox.id} dan MR ${selectedBox.NoMR} berhasil di delete.`
+      );
+      setTimeout(() => {
+        setSuccessMessage("");
+
+        setSelectedBox([]);
+      }, 1500);
+    } catch (error) {
+      setErrorMessage("Data gagal dihapus");
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 1500);
+    }
   };
   return (
     <>
@@ -124,6 +158,19 @@ export function BoxPage() {
           />
         </div>
       </div>
+      <EditBox
+        isOpen={modalEdit}
+        onClose={() => setModalEdit(!modalEdit)}
+        boxData={selectedBox}
+        updateBox={() => fecthBox()}
+      />
+
+      <RemoveModal
+        isOpen={modalRemove}
+        onClose={() => setModalRemove(false)}
+        data={selectedBox}
+        deleted={(data) => handleModalRemove(data)}
+      />
     </>
   );
 }

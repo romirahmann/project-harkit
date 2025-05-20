@@ -24,14 +24,14 @@ const insert = async (data) => {
 const update = async (id, data) => {
   const db = getDB();
   const query = `UPDATE tblBox
-    SET NoMR='${data.NoMR}', NamaPasien='${data.NamaPasien}', Kode_Checklist='${data.Kode_Checklist}', NoBox='${data.NoBox}' WHERE id = ${id}'`;
+    SET NoMR='${data.NoMR}', NamaPasien='${data.NamaPasien}', Kode_Checklist='${data.Kode_Checklist}', NoBox='${data.NoBox}' WHERE id = ${id}`;
   const result = await db.query(query);
   return result;
 };
 
 const remove = async (id) => {
   const db = getDB();
-  const query = `DELETE FROM tblBox WHERE WHERE id = ${id}`;
+  const query = `DELETE FROM tblBox WHERE id = ${id}`;
   const result = await db.query(query);
   return result;
 };
