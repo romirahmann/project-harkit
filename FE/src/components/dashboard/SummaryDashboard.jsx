@@ -23,6 +23,7 @@ export function SummaryDashboard() {
     setLoading(true);
     try {
       let res = await axios.get(`${baseUrl}/master/totalPDF`);
+      console.log(res.data.data);
       setLoading(false);
       setTotalPDF(res.data.data);
     } catch (error) {
@@ -77,7 +78,7 @@ export function SummaryDashboard() {
           </div>
         </div>
 
-        <div className="grafik grid grid-cols-1 lg:grid-cols-5 gap-2">
+        <div className="grafik grid grid-cols-1 lg:grid-cols-4 gap-2">
           {/* Total Semua MR */}
           <div className="max-w-full px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <MdDocumentScanner className="text-2xl mb-3 text-gray-50" />
@@ -124,18 +125,6 @@ export function SummaryDashboard() {
             </a>
             <p className="mb-3 text-2xl font-normal text-gray-50 dark:text-gray-400">
               {summary?.dates}
-            </p>
-          </div>
-          {/* TOTAL FILE */}
-          <div className="max-w-full px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-            <FaCalendarDay className="text-2xl mb-3 text-gray-50" />
-            <a href="#">
-              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-50 dark:text-white">
-                Total Jumlah PDF
-              </h5>
-            </a>
-            <p className="mb-3 text-2xl font-normal text-gray-50 dark:text-gray-400">
-              {loading ? "Loading..." : formatNumber(totalPDF || 0)}
             </p>
           </div>
         </div>

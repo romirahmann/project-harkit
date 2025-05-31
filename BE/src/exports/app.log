@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [SUCCESSFULLY]-[25-04-2025 09:43:52]  romirahman Berhasil Login
 [FAILED]-[25-04-2025 09:44:28]  romirahman edit data MR dengan Kode Checklist 250321-0001 dan No Urut PBL-2
 [SUCCESSFULLY]-[25-04-2025 09:44:30]  romirahman edit data MR dengan Kode Checklist 250321-0001 dan No Urut PBL-2
@@ -62,3 +63,192 @@
 [SUCCESSFULLY]-[14-05-2025 15:40:04]  User aziz telah logout
 [SUCCESSFULLY]-[31-05-2025 11:10:02]  romirahman Berhasil Login
 [SUCCESSFULLY]-[31-05-2025 11:14:11]  User romirahman telah logout
+=======
+[SUCCESSFULLY]-[21-03-2025 08:34:37]  aziz edit data candra dengan kode checklist 250315-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 08:54:51]  romirahman Berhasil Login
+[SUCCESSFULLY]-[21-03-2025 08:56:12]  romirahman edit data Target dengan ID 1
+[SUCCESSFULLY]-[21-03-2025 09:28:27]  romirahman edit data candra dengan kode checklist 250306-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 09:28:42]  romirahman Delete Data CANDRA dengan Kode Checklist 250306-0001
+[SUCCESSFULLY]-[21-03-2025 09:29:11]  romirahman Delete Data CANDRA dengan Kode Checklist 250306-0001
+[SUCCESSFULLY]-[21-03-2025 09:29:43]  romirahman edit data candra dengan kode checklist 250306-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 09:48:35]  aziz edit data candra dengan kode checklist 240722-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 09:49:06]  aziz edit data candra dengan kode checklist 250306-0001 dan id proses 1001
+[FAILED]-[21-03-2025 09:49:30]  User aziz update database candra !
+[FAILED]-[21-03-2025 09:49:42]  User aziz update database candra !
+[FAILED]-[21-03-2025 09:50:01]  User aziz update database qty !
+[FAILED]-[21-03-2025 09:50:15]  User aziz update database qty !
+[SUCCESSFULLY]-[21-03-2025 09:50:19]  User aziz update database qty !
+[FAILED]-[21-03-2025 09:50:28]  User aziz update database qty !
+[SUCCESSFULLY]-[21-03-2025 09:50:38]  User aziz update database qty !
+[FAILED]-[21-03-2025 09:51:39]  User aziz update database qty !
+[FAILED]-[21-03-2025 09:51:46]  User aziz update database qty !
+[FAILED]-[21-03-2025 09:51:59]  User aziz update database qty !
+[SUCCESSFULLY]-[21-03-2025 09:52:02]  User aziz update database qty !
+[SUCCESSFULLY]-[21-03-2025 09:52:30]  User aziz update database qty !
+[FAILED]-[21-03-2025 09:52:41]  User aziz update database qty !
+[FAILED]-[21-03-2025 09:52:44]  User aziz update database qty !
+[FAILED]-[21-03-2025 09:52:47]  User aziz update database qty !
+[FAILED]-[21-03-2025 09:53:08]  User aziz update database qty !
+[SUCCESSFULLY]-[21-03-2025 09:53:11]  User aziz update database qty !
+[SUCCESSFULLY]-[21-03-2025 09:57:42]  aziz edit data candra dengan kode checklist 240722-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 10:05:36]  aziz edit data candra dengan kode checklist 240722-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 10:08:02]  aziz edit data candra dengan kode checklist 240722-0002 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 10:08:29]  aziz edit data candra dengan kode checklist 240722-0002 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 10:27:16]  aziz edit data candra dengan kode checklist 240722-0002 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 10:27:30]  aziz edit data candra dengan kode checklist 250315-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 10:27:45]  aziz edit data candra dengan kode checklist 250319-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 10:29:46]  aziz edit data candra dengan kode checklist 250306-0001 dan id proses 1001
+[FAILED]-[21-03-2025 10:30:35]  Gagal menambahkan proses dengan Kode Checklist: 250306-0001 dan ID Proses 1007
+[SUCCESSFULLY]-[21-03-2025 10:31:01]  Proses dengan Kode Checklist: 250306-0001 dan ID Proses 1004 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[21-03-2025 10:31:05]  Proses dengan Kode Checklist: 250306-0001 dan ID Proses 1004 telah diselesaikan oleh aziz
+[FAILED]-[21-03-2025 10:31:14]  Gagal menambahkan proses dengan Kode Checklist: 231009-0001 dan ID Proses 1007
+[SUCCESSFULLY]-[21-03-2025 10:31:26]  Proses dengan Kode Checklist: 250306-0001 dan ID Proses 1007 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[21-03-2025 10:31:29]  Proses dengan Kode Checklist: 250306-0001 dan ID Proses 1007 telah diselesaikan oleh aziz
+[SUCCESSFULLY]-[21-03-2025 10:32:04]  Proses dengan Kode Checklist: 240722-0002 dan ID Proses 1002 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[21-03-2025 10:32:06]  Proses dengan Kode Checklist: 240722-0002 dan ID Proses 1002 telah diselesaikan oleh aziz
+[SUCCESSFULLY]-[21-03-2025 10:36:47]  aziz edit data candra dengan kode checklist 240722-0002 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 10:55:36]  aziz edit data candra dengan kode checklist 240722-0002 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 11:08:13]  aziz edit data candra dengan kode checklist 240722-0002 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 13:02:39]  aziz edit data candra dengan kode checklist 240722-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 13:03:01]  aziz edit data candra dengan kode checklist 250315-0001 dan id proses 1001
+[SUCCESSFULLY]-[21-03-2025 13:03:21]  aziz edit data candra dengan kode checklist 250306-0001 dan id proses 1001
+[FAILED]-[21-03-2025 13:06:15]  User aziz update database qty !
+[SUCCESSFULLY]-[21-03-2025 13:08:04]  aziz edit data Target dengan ID 1
+[SUCCESSFULLY]-[21-03-2025 13:08:15]  aziz edit data Target dengan ID 3
+[SUCCESSFULLY]-[21-03-2025 13:10:15]  aziz edit data Target dengan ID 4
+[SUCCESSFULLY]-[21-03-2025 14:03:17]  aziz Berhasil Login
+[SUCCESSFULLY]-[22-03-2025 08:29:59]  User aziz update database candra !
+[SUCCESSFULLY]-[22-03-2025 08:30:47]  Proses dengan Kode Checklist: 250321-0001 dan ID Proses 1004 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 08:30:51]  Proses dengan Kode Checklist: 250321-0001 dan ID Proses 1004 telah diselesaikan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 08:31:02]  Proses dengan Kode Checklist: 250321-0001 dan ID Proses 1007 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 08:31:04]  Proses dengan Kode Checklist: 250321-0001 dan ID Proses 1007 telah diselesaikan oleh aziz
+[FAILED]-[22-03-2025 08:32:01]  Gagal menambahkan proses dengan Kode Checklist: 250321-0002 dan ID Proses 1007
+[SUCCESSFULLY]-[22-03-2025 08:32:21]  Proses dengan Kode Checklist: 250321-0002 dan ID Proses 1004 telah ditambahkan oleh aziz
+[FAILED]-[22-03-2025 08:32:45]  Gagal menambahkan proses dengan Kode Checklist: 250321-0002 dan ID Proses 1007
+[SUCCESSFULLY]-[22-03-2025 08:32:47]  Proses dengan Kode Checklist: 250321-0002 dan ID Proses 1004 telah diselesaikan oleh aziz
+[FAILED]-[22-03-2025 08:32:56]  Gagal menambahkan proses dengan Kode Checklist: 250321-0002 dan ID Proses 1006
+[SUCCESSFULLY]-[22-03-2025 08:33:05]  Proses dengan Kode Checklist: 250321-0002 dan ID Proses 1007 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 08:33:07]  Proses dengan Kode Checklist: 250321-0002 dan ID Proses 1007 telah diselesaikan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 08:33:26]  User aziz Export Finishing Checksheet
+[SUCCESSFULLY]-[22-03-2025 08:33:33]  User aziz Export QC Checksheet
+[SUCCESSFULLY]-[22-03-2025 08:34:43]  romirahman Berhasil Login
+[SUCCESSFULLY]-[22-03-2025 08:35:48]  User romirahman Export QC Checksheet
+[SUCCESSFULLY]-[22-03-2025 08:37:02]  User aziz update database qty !
+[SUCCESSFULLY]-[22-03-2025 08:37:11]  User romirahman Export QC Checksheet
+[SUCCESSFULLY]-[22-03-2025 08:37:11]  User romirahman Export QC Checksheet
+[SUCCESSFULLY]-[22-03-2025 08:38:23]  User romirahman Export QC Checksheet
+[SUCCESSFULLY]-[22-03-2025 08:39:24]  User aziz update database qty !
+[SUCCESSFULLY]-[22-03-2025 08:40:30]  User aziz update database qty !
+[SUCCESSFULLY]-[22-03-2025 08:42:53]  User aziz update database qty !
+[SUCCESSFULLY]-[22-03-2025 08:46:23]  User aziz update database candra !
+[SUCCESSFULLY]-[22-03-2025 08:46:44]  aziz edit data candra dengan kode checklist 250321-0001 dan id proses 1003
+[SUCCESSFULLY]-[22-03-2025 08:46:53]  aziz edit data candra dengan kode checklist 250321-0002 dan id proses 1003
+[SUCCESSFULLY]-[22-03-2025 08:46:57]  User romirahman telah logout
+[SUCCESSFULLY]-[22-03-2025 08:47:53]  User aziz update database qty !
+[SUCCESSFULLY]-[22-03-2025 08:48:55]  aziz edit data candra dengan kode checklist 250320-0001 dan id proses 1001
+[SUCCESSFULLY]-[22-03-2025 08:49:17]  aziz edit data candra dengan kode checklist 250320-0002 dan id proses 1001
+[SUCCESSFULLY]-[22-03-2025 08:49:27]  aziz edit data candra dengan kode checklist 250320-0001 dan id proses 1003
+[SUCCESSFULLY]-[22-03-2025 08:49:44]  aziz edit data candra dengan kode checklist 250320-0002 dan id proses 1003
+[SUCCESSFULLY]-[22-03-2025 08:55:11]  User aziz update database candra !
+[SUCCESSFULLY]-[22-03-2025 08:55:24]  User aziz update database qty !
+[SUCCESSFULLY]-[22-03-2025 08:55:58]  aziz edit data candra dengan kode checklist 250321-0002 dan id proses 1003
+[SUCCESSFULLY]-[22-03-2025 08:58:23]  User aziz update database candra !
+[SUCCESSFULLY]-[22-03-2025 08:59:04]  aziz edit data candra dengan kode checklist 250319-0001 dan id proses 1001
+[SUCCESSFULLY]-[22-03-2025 08:59:15]  aziz edit data candra dengan kode checklist 250319-0001 dan id proses 1003
+[SUCCESSFULLY]-[22-03-2025 08:59:23]  aziz edit data candra dengan kode checklist 250319-0002 dan id proses 1001
+[SUCCESSFULLY]-[22-03-2025 08:59:32]  aziz edit data candra dengan kode checklist 250319-0002 dan id proses 1003
+[SUCCESSFULLY]-[22-03-2025 09:02:09]  User aziz update database candra !
+[SUCCESSFULLY]-[22-03-2025 09:02:41]  Proses dengan Kode Checklist: 250317-0001 dan ID Proses 1004 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 09:02:43]  Proses dengan Kode Checklist: 250317-0001 dan ID Proses 1004 telah diselesaikan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 09:02:52]  Proses dengan Kode Checklist: 250317-0001 dan ID Proses 1007 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 09:02:54]  Proses dengan Kode Checklist: 250317-0001 dan ID Proses 1007 telah diselesaikan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 09:03:13]  Proses dengan Kode Checklist: 250317-0002 dan ID Proses 1004 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 09:03:23]  Proses dengan Kode Checklist: 250317-0002 dan ID Proses 1004 telah diselesaikan oleh aziz
+[FAILED]-[22-03-2025 09:03:30]  Gagal menambahkan proses dengan Kode Checklist: 250317-0002 dan ID Proses 1006
+[SUCCESSFULLY]-[22-03-2025 09:03:51]  Proses dengan Kode Checklist: 250317-0002 dan ID Proses 1007 telah ditambahkan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 09:04:21]  romirahman Berhasil Login
+[SUCCESSFULLY]-[22-03-2025 09:36:26]  Proses dengan Kode Checklist: 250317-0002 dan ID Proses 1007 telah diselesaikan oleh aziz
+[SUCCESSFULLY]-[22-03-2025 15:53:54]  aziz Berhasil Login
+[SUCCESSFULLY]-[24-03-2025 08:30:06]  aziz Berhasil Login
+[SUCCESSFULLY]-[24-03-2025 08:30:42]  romirahman Berhasil Login
+[SUCCESSFULLY]-[24-03-2025 09:24:46]  User romirahman telah logout
+[SUCCESSFULLY]-[24-03-2025 09:33:33]  romirahman Berhasil Login
+[SUCCESSFULLY]-[24-03-2025 13:08:47]  aziz Berhasil Login
+[SUCCESSFULLY]-[24-03-2025 13:08:54]  romirahman Berhasil Login
+[SUCCESSFULLY]-[24-03-2025 13:08:57]  romirahman Berhasil Login
+[SUCCESSFULLY]-[24-03-2025 13:10:32]  romirahman Berhasil Login
+[SUCCESSFULLY]-[25-03-2025 20:00:27]  romirahman Berhasil Login
+[SUCCESSFULLY]-[26-03-2025 09:05:20]  romirahman Berhasil Login
+[SUCCESSFULLY]-[26-03-2025 09:05:30]  User romirahman telah logout
+[SUCCESSFULLY]-[26-03-2025 09:53:15]  romirahman Berhasil Login
+[SUCCESSFULLY]-[26-03-2025 09:53:33]  User romirahman telah logout
+[SUCCESSFULLY]-[26-03-2025 09:55:36]  romirahman Berhasil Login
+[SUCCESSFULLY]-[26-03-2025 09:55:43]  User romirahman telah logout
+[SUCCESSFULLY]-[26-03-2025 10:06:00]  romirahman Berhasil Login
+[SUCCESSFULLY]-[08-04-2025 08:59:51]  romirahman Berhasil Login
+[SUCCESSFULLY]-[08-04-2025 08:59:57]  User romirahman telah logout
+[SUCCESSFULLY]-[15-04-2025 08:28:27]  romirahman Berhasil Login
+[SUCCESSFULLY]-[21-04-2025 10:06:31]  romirahman Berhasil Login
+[SUCCESSFULLY]-[21-04-2025 10:12:15]  romirahman menambahkan user user !
+[SUCCESSFULLY]-[21-04-2025 10:12:33]  User romirahman telah logout
+[SUCCESSFULLY]-[21-04-2025 10:12:40]  user Berhasil Login
+[SUCCESSFULLY]-[21-04-2025 10:18:15]  Proses dengan Kode Checklist: 200425-0001 dan ID Proses 1001 telah ditambahkan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:18:28]  Proses dengan Kode Checklist: 200425-0002 dan ID Proses 1001 telah ditambahkan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:18:42]  Proses dengan Kode Checklist: 200425-0003 dan ID Proses 1001 telah ditambahkan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:18:47]  Proses dengan Kode Checklist: 200425-0003 dan ID Proses 1001 telah diselesaikan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:18:55]  Proses dengan Kode Checklist: 200425-0002 dan ID Proses 1001 telah diselesaikan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:18:59]  Proses dengan Kode Checklist: 200425-0001 dan ID Proses 1001 telah diselesaikan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:30:46]  Proses dengan Kode Checklist: 200425-0004 dan ID Proses 1001 telah ditambahkan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:33:22]  Proses dengan Kode Checklist: 200425-0005 dan ID Proses 1001 telah ditambahkan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:33:37]  Proses dengan Kode Checklist: 200425-0006 dan ID Proses 1001 telah ditambahkan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:33:47]  Proses dengan Kode Checklist: 200425-0006 dan ID Proses 1001 telah diselesaikan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:34:14]  Proses dengan Kode Checklist: 200425-0005 dan ID Proses 1001 telah diselesaikan oleh user
+[SUCCESSFULLY]-[21-04-2025 10:34:21]  User user telah logout
+[SUCCESSFULLY]-[21-04-2025 10:40:24]  romirahman Berhasil Login
+[SUCCESSFULLY]-[21-04-2025 10:56:41]  Proses dengan Kode Checklist: 200425-0004 dan ID Proses 1001 telah diselesaikan oleh romirahman
+[SUCCESSFULLY]-[21-04-2025 11:32:30]  Proses dengan Kode Checklist: 200425-0007 dan ID Proses 1001 telah ditambahkan oleh romirahman
+[SUCCESSFULLY]-[21-04-2025 11:33:34]  Proses dengan Kode Checklist: 200425-0008 dan ID Proses 1001 telah ditambahkan oleh romirahman
+[SUCCESSFULLY]-[21-04-2025 11:34:45]  Proses dengan Kode Checklist: 200425-0009 dan ID Proses 1001 telah ditambahkan oleh romirahman
+[SUCCESSFULLY]-[21-04-2025 11:37:12]  Proses dengan Kode Checklist: 200425-0010 dan ID Proses 1001 telah ditambahkan oleh romirahman
+[SUCCESSFULLY]-[21-04-2025 11:39:28]  Proses dengan Kode Checklist: 200425-0011 dan ID Proses 1001 telah ditambahkan oleh romirahman
+[SUCCESSFULLY]-[21-04-2025 13:18:45]  User romirahman telah logout
+[SUCCESSFULLY]-[23-04-2025 09:21:04]  romirahman Berhasil Login
+[SUCCESSFULLY]-[23-04-2025 09:38:20]  Proses dengan Kode Checklist: 250423-0001 dan ID Proses 1001 telah ditambahkan oleh romirahman
+[SUCCESSFULLY]-[23-04-2025 09:39:26]  Proses dengan Kode Checklist: 250423-0002 dan ID Proses 1001 telah ditambahkan oleh romirahman
+[Failed]-[23-04-2025 09:45:52]  Proses dengan Kode Checklist: 250423-0001 dan ID Proses: 1001
+[FAILED]-[23-04-2025 09:45:52]  Proses dengan Kode Checklist: 250423-0001 dan ID Proses 1001 telah diselesaikan oleh romirahman
+[Failed]-[23-04-2025 09:46:19]  Proses dengan Kode Checklist: 250423-0002 dan ID Proses: 1001
+[FAILED]-[23-04-2025 09:46:19]  Proses dengan Kode Checklist: 250423-0002 dan ID Proses 1001 telah diselesaikan oleh romirahman
+[SUCCESSFULLY]-[23-04-2025 09:51:34]  Proses dengan Kode Checklist: 250423-0001 dan ID Proses 1002 telah ditambahkan oleh romirahman
+[Failed]-[23-04-2025 09:51:51]  Proses dengan Kode Checklist: 250423-0001 dan ID Proses: 1002
+[FAILED]-[23-04-2025 09:51:51]  Proses dengan Kode Checklist: 250423-0001 dan ID Proses 1002 telah diselesaikan oleh romirahman
+[SUCCESSFULLY]-[23-04-2025 09:55:00]  Proses dengan Kode Checklist: 250423-0002 dan ID Proses 1002 telah ditambahkan oleh romirahman
+[Failed]-[23-04-2025 09:55:12]  Proses dengan Kode Checklist: 250423-0002 dan ID Proses: 1002
+[FAILED]-[23-04-2025 09:55:12]  Proses dengan Kode Checklist: 250423-0002 dan ID Proses 1002 telah diselesaikan oleh romirahman
+[SUCCESSFULLY]-[23-04-2025 09:57:29]  Proses dengan Kode Checklist: 250423-0003 dan ID Proses 1001 telah ditambahkan oleh romirahman
+[SUCCESSFULLY]-[23-04-2025 09:57:39]  Proses dengan Kode Checklist: 250423-0003 dan ID Proses 1001 telah diselesaikan oleh romirahman
+[SUCCESSFULLY]-[23-04-2025 09:58:21]  Proses dengan Kode Checklist: 250423-0003 dan ID Proses 1002 telah ditambahkan oleh romirahman
+[SUCCESSFULLY]-[23-04-2025 09:58:28]  Proses dengan Kode Checklist: 250423-0003 dan ID Proses 1002 telah diselesaikan oleh romirahman
+[SUCCESSFULLY]-[24-04-2025 08:40:26]  User romirahman telah logout
+[SUCCESSFULLY]-[24-04-2025 08:40:30]  romirahman Berhasil Login
+[SUCCESSFULLY]-[24-04-2025 08:41:10]  romirahman edit data MR dengan Kode Checklist 250321-0001 dan No Urut PBL-2
+[SUCCESSFULLY]-[24-04-2025 08:41:22]  romirahman edit data MR dengan Kode Checklist 250321-0001 dan No Urut PBL-2
+[SUCCESSFULLY]-[24-04-2025 08:49:05]  User romirahman Export Finishing Checksheet
+[SUCCESSFULLY]-[24-04-2025 08:49:16]  User romirahman Export QC Checksheet
+[SUCCESSFULLY]-[24-04-2025 08:49:55]  romirahman Export Data MR
+[SUCCESSFULLY]-[25-04-2025 08:33:29]  User romirahman telah logout
+[SUCCESSFULLY]-[25-04-2025 08:34:05]  romirahman Berhasil Login
+[SUCCESSFULLY]-[25-04-2025 09:20:06]  romirahman edit data MR dengan Kode Checklist 250321-0001 dan No Urut PBL-3
+[SUCCESSFULLY]-[25-04-2025 09:20:11]  romirahman edit data MR dengan Kode Checklist 250321-0001 dan No Urut PBL-3
+[SUCCESSFULLY]-[25-04-2025 09:20:28]  romirahman Export Data MR
+[SUCCESSFULLY]-[25-04-2025 09:20:37]  romirahman Export Data MR
+[SUCCESSFULLY]-[15-05-2025 08:01:53]  romirahman Berhasil Login
+[SUCCESSFULLY]-[20-05-2025 10:14:44]  romirahman Berhasil Login
+[SUCCESSFULLY]-[20-05-2025 13:50:58]  romirahman edit data Box dengan id 2
+[SUCCESSFULLY]-[20-05-2025 13:55:38]  romirahman edit data Box dengan id 7
+[SUCCESSFULLY]-[20-05-2025 13:56:27]  romirahman edit data Box dengan id 7
+[SUCCESSFULLY]-[20-05-2025 14:05:53]  romirahman edit data Box dengan id 7
+[SUCCESSFULLY]-[31-05-2025 09:27:34]  romirahman Berhasil Login
+[SUCCESSFULLY]-[31-05-2025 10:20:02]  romirahman Berhasil Login
+[SUCCESSFULLY]-[31-05-2025 11:49:42]  romirahman Berhasil Login
+>>>>>>> 151337131dc1290ff6e3a067e1b1d18b0a136b03

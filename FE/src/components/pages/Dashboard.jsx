@@ -8,6 +8,7 @@ import { TargetChart } from "../dashboard/TargetChart";
 import { SummaryDashboard } from "../dashboard/SummaryDashboard";
 import { StatistikDashboard } from "../dashboard/StatistikDashboard";
 import { TableRealTime } from "../dashboard/TableRealTime";
+import { CountFiles } from "../dashboard/countFIles";
 
 export function Dashboard() {
   return (
@@ -25,6 +26,9 @@ export function Dashboard() {
         </div>
         <div className="summary ">
           <SummaryDashboard />
+        </div>
+        <div className="countFIle ">
+          <CountFiles />
         </div>
 
         <div className="content-2">
