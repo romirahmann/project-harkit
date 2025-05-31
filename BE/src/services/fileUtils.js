@@ -1,4 +1,3 @@
-// src/tools/fileUtils.js
 import fg from "fast-glob";
 import path from "path";
 
@@ -9,6 +8,7 @@ export async function countPdfFiles(
     const normalizedPath = dirPath.replace(/\\/g, "/").replace(/\/+$/, "");
 
     const pattern = `${normalizedPath}/**/*.pdf`;
+    const folderPattern = `${normalizedPath}/**/`;
 
     const files = await fg(pattern, {
       onlyFiles: true,
@@ -17,9 +17,25 @@ export async function countPdfFiles(
       suppressErrors: true,
     });
 
-    return files.length;
+    const folders = await fg(folderPattern, {
+      onlyDirectories: true,
+      unique: true,
+      followSymbolicLinks: false,
+      suppressErrors: true,
+    });
+
+    // console.log("Jumlah folder ditemukan:", folders.length);
+    // console.log("Jumlah file PDF ditemukan:", files.length);
+
+    return {
+      totalPdf: files.length,
+      totalFolder: folders.length,
+    };
   } catch (err) {
     console.error(`Gagal membaca folder ${dirPath}: ${err.message}`);
-    return 0;
+    return {
+      totalPdf: 0,
+      totalFolder: 0,
+    };
   }
 }
