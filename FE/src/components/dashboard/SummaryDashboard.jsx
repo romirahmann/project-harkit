@@ -23,6 +23,7 @@ export function SummaryDashboard() {
       let res = await axios.get(
         `${baseUrl}/master/data-summary/${selectionDate}`
       );
+      console.log(res.data.data);
       let data = res.data.data;
 
       setSummary(data);
@@ -59,9 +60,9 @@ export function SummaryDashboard() {
           </div>
         </div>
 
-        <div className="grafik grid grid-cols-1 lg:grid-cols-4 gap-3">
+        <div className="grafik grid grid-cols-1 lg:grid-cols-5 gap-2">
           {/* Total Semua MR */}
-          <div className="max-w-full p-6 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+          <div className="max-w-full px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <MdDocumentScanner className="text-2xl mb-3 text-gray-50" />
             <a href="#">
               <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-50 dark:text-white">
@@ -73,7 +74,7 @@ export function SummaryDashboard() {
             </p>
           </div>
           {/* Total Semua Lembar Scan */}
-          <div className="max-w-full p-6 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+          <div className="max-w-full px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <MdDocumentScanner className="text-2xl mb-3 text-gray-50" />
             <a href="#">
               <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-50 dark:text-white">
@@ -85,7 +86,7 @@ export function SummaryDashboard() {
             </p>
           </div>
           {/* Total Semua Image */}
-          <div className="max-w-full p-6 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+          <div className="max-w-full px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <FaImages className="text-2xl mb-3 text-gray-50" />
             <a href="#">
               <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-50 dark:text-white">
@@ -97,7 +98,7 @@ export function SummaryDashboard() {
             </p>
           </div>
           {/* Total Jumlah Hari */}
-          <div className="max-w-full p-6 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+          <div className="max-w-full px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <FaCalendarDay className="text-2xl mb-3 text-gray-50" />
             <a href="#">
               <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-50 dark:text-white">
@@ -106,6 +107,18 @@ export function SummaryDashboard() {
             </a>
             <p className="mb-3 text-2xl font-normal text-gray-50 dark:text-gray-400">
               {summary?.dates}
+            </p>
+          </div>
+          {/* TOTAL FILE */}
+          <div className="max-w-full px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <FaCalendarDay className="text-2xl mb-3 text-gray-50" />
+            <a href="#">
+              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-50 dark:text-white">
+                Total Jumlah PDF
+              </h5>
+            </a>
+            <p className="mb-3 text-2xl font-normal text-gray-50 dark:text-gray-400">
+              {formatNumber(summary?.totalPDF) || 0}
             </p>
           </div>
         </div>

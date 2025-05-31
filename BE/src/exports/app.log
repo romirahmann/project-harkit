@@ -258,6 +258,7 @@
 [SUCCESSFULLY]-[20-05-2025 13:55:38]  romirahman edit data Box dengan id 7
 [SUCCESSFULLY]-[20-05-2025 13:56:27]  romirahman edit data Box dengan id 7
 [SUCCESSFULLY]-[20-05-2025 14:05:53]  romirahman edit data Box dengan id 7
+<<<<<<< HEAD
 >>>>>>> d55771cbfb58d31d7c507b8bad98be2cf0973ac6
 [SUCCESSFULLY]-[20-05-2025 15:42:15]  romirahman Berhasil Login
 [SUCCESSFULLY]-[21-05-2025 08:34:37]  aziz Berhasil Login
@@ -268,3 +269,6 @@
 [SUCCESSFULLY]-[30-05-2025 15:04:13]  romirahman Berhasil Login
 [SUCCESSFULLY]-[31-05-2025 09:25:19]  romirahman Berhasil Login
 [SUCCESSFULLY]-[31-05-2025 09:25:36]  User romirahman telah logout
+=======
+[SUCCESSFULLY]-[31-05-2025 09:27:34]  romirahman Berhasil Login
+>>>>>>> 90978d5525c12179243addb992ce053b2d0cf85d

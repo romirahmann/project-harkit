@@ -1,4 +1,5 @@
 const model = require("../../models/dashboard.model");
+const { countPdfFiles } = require("../../services/fileUtils");
 const api = require("../../tools/common");
 const moment = require("moment");
 
@@ -42,11 +43,12 @@ const getSummaryData = async (req, res) => {
       filterQuery = ` AND tanggal >= ${formattedDate}`;
     }
 
-    const [image1003, image1001, dates, totalMR] = await Promise.all([
+    const [image1003, image1001, dates, totalMR, totalPDF] = await Promise.all([
       model.allImage1003(filterQuery),
       model.allImage1001(filterQuery),
       model.totalDates(filterQuery),
       model.totalMR(filterQuery),
+      countPdfFiles(),
     ]);
 
     // console.log(image1001);
@@ -56,6 +58,7 @@ const getSummaryData = async (req, res) => {
       image1003,
       dates,
       totalMR,
+      totalPDF,
       filteredFrom: startDate || null,
     });
   } catch (err) {
@@ -194,10 +197,20 @@ const getDataPrimaryChart = async (req, res) => {
   }
 };
 
+const getTotalPDF = async (req, res) => {
+  try {
+    const totalPDF = countPdfFiles();
+    return api.ok(res, totalPDF);
+  } catch (error) {
+    return api.error(res, "Gagal Menghitung PDF", 500);
+  }
+};
+
 module.exports = {
   getTotalStatistik,
   getSummaryData,
   getDataPieChart,
   getDataPrimaryChart,
   getDataRealTime,
+  getTotalPDF,
 };
