@@ -18,6 +18,7 @@
     "dotenv": "^16.4.7",
     "exceljs": "^4.4.0",
     "express": "^4.21.2",
+    "fast-glob": "^3.3.3",
     "joi": "^17.13.3",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
@@ -28,6 +29,7 @@
     "nodemon": "^3.1.9",
     "odbc": "^2.4.9",
     "pdfmake": "^0.2.18",
+    "readdirp": "^4.1.2",
     "socket.io": "^4.8.1"
   }
 }
