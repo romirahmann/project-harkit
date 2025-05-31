@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { motion, useMotionValue, useTransform } from "framer-motion";
-import { useContext, useEffect, useState } from "react";
+
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { FaCalendar, FaCalendarDay, FaImages } from "react-icons/fa";
 
 import { MdDocumentScanner } from "react-icons/md";
@@ -10,19 +10,36 @@ import axios from "axios";
 
 export function SummaryDashboard() {
   const [summary, setSummary] = useState([]);
+  const [totalPDF, setTotalPDF] = useState([]);
   const baseUrl = useContext(ApiUrl);
   const [selectionDate, setSelectionDate] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fecthSummary();
   }, [selectionDate]);
+
+  const fecthTotalPDF = useCallback(async () => {
+    setLoading(true);
+    try {
+      let res = await axios.get(`${baseUrl}/master/totalPDF`);
+      setLoading(false);
+      setTotalPDF(res.data.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  });
+
+  useState(() => {
+    fecthTotalPDF();
+  }, [totalPDF]);
 
   const fecthSummary = async () => {
     try {
       let res = await axios.get(
         `${baseUrl}/master/data-summary/${selectionDate}`
       );
-      console.log(res.data.data);
+      // console.log(res.data.data);
       let data = res.data.data;
 
       setSummary(data);
@@ -117,7 +134,7 @@ export function SummaryDashboard() {
               </h5>
             </a>
             <p className="mb-3 text-2xl font-normal text-gray-50 dark:text-gray-400">
-              {formatNumber(summary?.totalPDF) || 0}
+              {loading ? "Loading..." : formatNumber(totalPDF || 0)}
             </p>
           </div>
         </div>

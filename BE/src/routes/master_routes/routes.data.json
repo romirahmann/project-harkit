@@ -231,6 +231,11 @@
     "controller": "DashboardController.getDataPrimaryChart"
   },
   {
+    "path": "/totalPDF",
+    "method": "get",
+    "controller": "DashboardController.getTotalPDF"
+  },
+  {
     "path": "/datMRt3",
     "method": "get",
     "controller": "MrController.getAllDataMRt3"
