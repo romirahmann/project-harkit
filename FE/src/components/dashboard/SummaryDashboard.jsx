@@ -37,6 +37,7 @@ export function SummaryDashboard() {
 
   const fecthSummary = async () => {
     try {
+      // console.log(selectionDate);
       let res = await axios.get(
         `${baseUrl}/master/data-summary/${selectionDate}`
       );

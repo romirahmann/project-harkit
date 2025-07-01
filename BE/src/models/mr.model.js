@@ -190,6 +190,12 @@ const getMRt3ByKodeChecklist = async (kode_checklist) => {
   const result = await db.query(query);
   return result;
 };
+const getMRt3ByKodeChecklistA2 = async (kode_checklist) => {
+  const db = getDB();
+  const query = `SELECT NoUrut, Periode_Ranap, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen FROM tblDataMRt3_A2 WHERE Kode_Checklist = '${kode_checklist}'`;
+  const result = await db.query(query);
+  return result;
+};
 const createDataMRt3 = async (data) => {
   const db = getDB();
   const {
@@ -268,6 +274,54 @@ const deleteMRt3 = async (data) => {
   return result;
 };
 
+// MRt3 A2
+const getAllMRt3A2 = async () => {
+  const db = getDB();
+  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3_A2 `;
+  const result = await db.query(query);
+  return result;
+};
+
+const updateDataMRt3A2 = async (data) => {
+  const db = getDB();
+  const {
+    NoUrut,
+    NoMR,
+    NamaPasien,
+    Tanggal,
+    Layanan,
+    Qty_Image,
+    Kode_Checklist,
+    Mulai,
+    Selesai,
+    namadokumen,
+  } = data;
+
+  const formDateToString = moment(Tanggal, "YYYY-MM-DD").format("DDMMYYYY");
+
+  const query = `UPDATE tblDataMRt3_A2 
+  SET NoUrut = '${NoUrut}',
+      NoMR = '${NoMR}', 
+      NamaPasien = '${NamaPasien}', 
+      Tanggal = '${formDateToString}', 
+      Layanan = '${Layanan}',
+      Qty_Image = '${Qty_Image}' ,
+      Mulai = '${Mulai}',
+      Selesai = '${Selesai}',
+      namadokumen = '${namadokumen}'
+  WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}'`;
+  const result = await db.query(query);
+  return result;
+};
+
+const deleteMRt3A2 = async (data) => {
+  const db = getDB();
+  const { NoUrut, Kode_Checklist } = data;
+  const query = `DELETE FROM tblDataMRt3_A2 WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}' `;
+  const result = await db.query(query);
+  return result;
+};
+
 module.exports = {
   getAllDataMR,
   getDataMRByKeys,
@@ -288,4 +342,8 @@ module.exports = {
   getAllNonaktifMR,
   createDataMR_Double,
   deleteMRDouble,
+  getAllMRt3A2,
+  getMRt3ByKodeChecklistA2,
+  updateDataMRt3A2,
+  deleteMRt3A2,
 };

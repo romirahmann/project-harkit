@@ -20,6 +20,7 @@ import { KcpPage } from "../pages/KcpPage";
 import { NonaktifPage } from "../pages/NonaktifPage";
 import { LogPage } from "../pages/LogPage";
 import { BoxPage } from "../pages/BoxPage";
+import { KcpA2Page } from "../pages/KcpA2Page";
 
 const rootRoute = createRootRoute();
 
@@ -138,6 +139,16 @@ const kcpPage = createRoute({
   ),
 });
 
+const kcpA2Page = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/data-kcp-a2",
+  component: () => (
+    <ProtectedRoute>
+      <KcpA2Page />
+    </ProtectedRoute>
+  ),
+});
+
 const nonaktifPage = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/nonaktifMR",
@@ -184,6 +195,7 @@ const routeTree = rootRoute.addChildren([
     nonaktifPage,
     logPage,
     boxPage,
+    kcpA2Page,
   ]),
   loginRoute,
 ]);

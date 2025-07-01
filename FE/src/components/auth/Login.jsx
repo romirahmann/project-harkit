@@ -29,8 +29,9 @@ export function Login() {
       axios
         .post(`${baseUrl}/auth/login`, formLogin)
         .then((res) => {
+          console.log(res.data.data);
           let userData = res.data.data;
-
+          console.log(userData);
           const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
 
           sessionStorage.setItem("token", userData.token);

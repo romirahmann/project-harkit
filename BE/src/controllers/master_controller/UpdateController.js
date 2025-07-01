@@ -52,7 +52,6 @@ const uploadFile = async (req, res) => {
       let newDataCandra = await modelUpdate.getAllCandra();
       let newDataMR = await modelUpdate.getAllDataMR();
       let newDataMR3 = await modelUpdate.getAllDataMR3();
-      // Lakukan backup sebelum update
 
       // UPDATE DATA CANDRA
       for (const candra of newDataCandra) {
