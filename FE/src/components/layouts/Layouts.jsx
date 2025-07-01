@@ -171,6 +171,12 @@ export function Layout() {
                     {isSidebarOpen && <span className="ml-3">Data KCP</span>}
                   </li>
                 </Link>
+                <Link to={"/data-kcp-a2"}>
+                  <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
+                    <BsClipboardData size={16} />
+                    {isSidebarOpen && <span className="ml-3">Data KCP A2</span>}
+                  </li>
+                </Link>
                 <Link to={"/data-karyawan"}>
                   <li className="flex items-center p-3 text-white hover:bg-blue-600 cursor-pointer">
                     <FaUsers size={16} />

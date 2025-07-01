@@ -14,6 +14,7 @@ import { AddLog } from "../../context/Log";
 
 export function CheecksheetPage() {
   const [dataMRt, setDataMRt] = useState([]);
+  const [dataMRtA2, setDataMRtA2] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [paginatedData, setPaginatedData] = useState();
@@ -25,23 +26,54 @@ export function CheecksheetPage() {
   const [loading, setLoading] = useState(false);
   const [userLogin, setUserLogin] = useState(null);
   const [query, setQuery] = useState("");
+  const [isA2, setIsA2] = useState(false);
 
+  // Fetch login user
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("userData"));
     setUserLogin(user);
-    fecthDataMRt();
   }, []);
 
-  const fecthDataMRt = async () => {
-    try {
-      let res = await axios.get(`${baseUrl}/master/datMRt3`);
-      let data = res.data.data;
-      // console.log(data);
-      setDataMRt(data);
-      setFilteredData(data);
-    } catch (error) {
-      console.log(error);
+  // Fetch data sesuai pilihan
+  useEffect(() => {
+    if (isA2) {
+      fetchDataMRtA2();
+    } else {
+      fetchDataMRt();
     }
+  }, [isA2]);
+
+  // Sinkronkan filteredData saat data berubah
+  useEffect(() => {
+    setFilteredData(isA2 ? dataMRtA2 : dataMRt);
+  }, [dataMRt, dataMRtA2, isA2]);
+
+  useEffect(() => {
+    setSelectedChecklist("");
+    setQuery("");
+  }, [isA2]);
+
+  const fetchDataMRt = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/master/datMRt3`);
+      setDataMRt(res.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchDataMRtA2 = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/master/dataMRt3-A2`);
+      setDataMRtA2(res.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSetDataMRT = (e) => {
+    const selected = parseInt(e.target.value);
+    setIsA2(selected === 2); // 2 = A2
   };
 
   const handleExportFinishing = async () => {
@@ -51,11 +83,42 @@ export function CheecksheetPage() {
       setLoading(false);
       return;
     }
+    if (!isA2) {
+      try {
+        // Menggunakan `responseType: 'blob'` agar menerima file PDF dalam bentuk binary
+        let res = await axios.get(
+          `${baseUrl}/master/finishing-checksheet/${selectedChecklist}`,
+          { responseType: "blob" }
+        );
+
+        setLoading(false);
+
+        // Buat URL dari Blob
+        const fileURL = window.URL.createObjectURL(
+          new Blob([res.data], { type: "application/pdf" })
+        );
+
+        AddLog(
+          `User ${userLogin?.username} Export Finishing Checksheet`,
+          "SUCCESSFULLY"
+        );
+
+        // Buka di tab baru
+        window.open(fileURL, "_blank");
+      } catch (e) {
+        AddLog(
+          `User ${userLogin?.username} Export Finishing Checksheet`,
+          "FAILED"
+        );
+        console.error("Error exporting PDF:", e);
+      }
+      return;
+    }
 
     try {
       // Menggunakan `responseType: 'blob'` agar menerima file PDF dalam bentuk binary
       let res = await axios.get(
-        `${baseUrl}/master/finishing-checksheet/${selectedChecklist}`,
+        `${baseUrl}/master/finishing-checksheet-a2/${selectedChecklist}`,
         { responseType: "blob" }
       );
 
@@ -122,11 +185,18 @@ export function CheecksheetPage() {
   return (
     <>
       <div className="container-fluid p-4">
-        <div className="titlePage flex mb-3 items-center">
+        <div className="titlePage flex items-center mb-3 ">
           <MdOutlineLibraryAddCheck className="text-3xl text-gray-700" />
           <h1 className="text-3xl ms-3 font-bold text-gray-700">
             Data Checksheet
           </h1>
+          <select
+            onChange={handleSetDataMRT}
+            className="ms-2 px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="1">A4</option>
+            <option value="2">A2</option>
+          </select>
         </div>
 
         <div className="searchBar flex my-2 mt-10">
@@ -191,9 +261,9 @@ export function CheecksheetPage() {
           <div className="ms-auto">
             <SearchComponent
               result={setFilteredData}
-              data={dataMRt}
+              data={isA2 ? dataMRtA2 : dataMRt}
               queryInput={(e) => handleSelectedChecklist(e)}
-              currentQuery={selectedChecklist}
+              currentQuery={selectedChecklist || ""}
             />
           </div>
         </div>
@@ -251,7 +321,7 @@ export function CheecksheetPage() {
           isOpen={showModalRemove}
           onClose={() => setShowModalRemove(false)}
           data={selectedData}
-          deleted={() => fecthDataMRt()}
+          deleted={() => fetchDataMRt()}
         />
       </div>
     </>

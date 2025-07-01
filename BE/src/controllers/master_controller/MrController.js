@@ -358,7 +358,6 @@ const generateFinishinCheecksheet = async (req, res) => {
             "",
             "",
             "",
-
             item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
@@ -370,7 +369,6 @@ const generateFinishinCheecksheet = async (req, res) => {
             item.NoMR || "-",
             item.NamaPasien || "-",
             moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
-
             item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
@@ -459,7 +457,7 @@ const generateFinishinCheecksheet = async (req, res) => {
 
         {
           table: {
-            widths: ["7%", "7%", "15%", "7%", "7%", "8%", "42%", "6%"],
+            widths: ["7%", "7%", "20%", "7%", "8%", "44%", "7%"],
             body: tableBody,
           },
           margin: [0, 10, 0, 0],
@@ -697,7 +695,7 @@ const generateQcChecksheet = async (req, res) => {
         // 📌 Table Utama (Data)
         {
           table: {
-            widths: ["7%", "7%", "15%", "7%", "9%", "7%", "38%", "5%", "5%"],
+            widths: ["7%", "7%", "20%", "7%", "9%", "40%", "5%", "5%"],
             body: tableBody,
           },
           margin: [0, 10, 0, 0], //
@@ -831,6 +829,576 @@ const exportCSVMRt3 = async (req, res) => {
   }
 };
 
+// MRT3 A2
+const getAllDataMRt3A2 = async (req, res) => {
+  try {
+    let data = await model.getAllMRt3A2();
+
+    // Sorting berdasarkan angka di NoUrut (PBL-1-X)
+    data.sort((a, b) => {
+      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
+
+      // Urutkan berdasarkan angka setelah "PBL-"
+      if (aParts[1] !== bParts[1]) {
+        return aParts[1] - bParts[1];
+      }
+
+      // Jika sama, urutkan berdasarkan angka terakhir setelah "PBL-X-"
+      return aParts[2] - bParts[2];
+    });
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting DataMR:", error);
+    return api.error(res, "Failed to get DataMR", 500);
+  }
+};
+
+const updateMRt3A2 = async (req, res) => {
+  const data = req.body;
+  try {
+    let result = await model.updateDataMRt3A2(data);
+    return api.ok(res, result);
+  } catch (error) {
+    console.log(error);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
+const removeMRt3A2 = async (req, res) => {
+  const { NoUrut, Kode_Checklist } = req.params;
+  try {
+    await model.deleteMRt3A2({ NoUrut, Kode_Checklist });
+    return api.ok(res, "Delete Successfully!");
+  } catch (err) {
+    console.log(err);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
+const exportCSVMRt3A2 = async (req, res) => {
+  try {
+    let data = req.body;
+
+    if (!data || data.length === 0) {
+      return api.error(res, "Data Not Found!", 400);
+    }
+
+    // **Buat Workbook dan Worksheet**
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Data MRt3");
+
+    // **Definisikan Header**
+    const headers = [
+      "No Urut",
+      "Period Ranap",
+      "No MR",
+      "Kode Checklist",
+      "Nama Pasien",
+      "Tanggal",
+
+      "Nama Dokumen",
+    ];
+    worksheet.addRow(headers);
+
+    // **Tambahkan Data**
+    data.forEach((row) => {
+      worksheet.addRow([
+        row.NoUrut || "-",
+        row.Periode_Ranap || "-",
+        row.NoMR || "-",
+        row.Kode_Checklist || "-",
+        row.NamaPasien || "-",
+        row.Tanggal || "-",
+
+        row.namadokumen || "-",
+      ]);
+    });
+
+    // **Format Header Agar Tebal**
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center" };
+    });
+
+    // **Buat Path File Excel**
+    const filePath = path.join(__dirname, "../../exports/MRt3_export.xlsx");
+
+    // **Simpan File**
+    await workbook.xlsx.writeFile(filePath);
+
+    // **Kirim File Excel ke Client**
+    res.download(filePath, "data_MRt3.xlsx", (err) => {
+      if (err) {
+        console.error("Error saat mengirim file:", err);
+        res.status(500).json({ message: "Gagal mengunduh file" });
+      }
+
+      // **Hapus File Setelah Dikirim (Opsional)**
+      fs.unlinkSync(filePath);
+    });
+  } catch (error) {
+    console.error("❌ Error exporting Excel:", error);
+    return api.error(res, "Failed to export Excel", 500);
+  }
+};
+
+const generateFinishinCheecksheetA2 = async (req, res) => {
+  try {
+    const { kode_checklist } = req.params;
+    if (!kode_checklist)
+      return res.status(400).json({ message: "Kode checklist diperlukan!" });
+
+    let data = await model.getMRt3ByKodeChecklistA2(kode_checklist);
+    if (!data || data.length === 0)
+      return res.status(404).json({ message: "Data tidak ditemukan!" });
+
+    data.sort((a, b) => {
+      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
+
+      if (aParts[1] !== bParts[1]) return aParts[1] - bParts[1];
+      return aParts[2] - bParts[2];
+    });
+
+    const fonts = {
+      Roboto: {
+        normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
+        bold: path.resolve("src/fonts/Roboto-Bold.ttf"),
+        italics: path.resolve("src/fonts/Roboto-Italic.ttf"),
+        bolditalics: path.resolve("src/fonts/Roboto-BoldItalic.ttf"),
+      },
+    };
+
+    let barcodeBase64 = null;
+    try {
+      const barcodeBuffer = await bwipJs.toBuffer({
+        bcid: "code39",
+        text: kode_checklist,
+        scale: 3,
+        height: 20,
+        includetext: true,
+        textxalign: "center",
+      });
+
+      barcodeBase64 = `data:image/png;base64,${barcodeBuffer.toString(
+        "base64"
+      )}`;
+    } catch (err) {
+      console.error("⚠️ Gagal membuat barcode:", err);
+    }
+
+    const barcodeImage = barcodeBase64
+      ? { image: barcodeBase64, width: 150, alignment: "right" }
+      : {
+          text: "Barcode tidak tersedia",
+          style: "subheader",
+          alignment: "right",
+        };
+
+    const displayedEntries = new Set();
+
+    const tableBody = [
+      [
+        { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
+        { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
+        { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
+        { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
+
+        { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
+        { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
+        { text: "Cheked", bold: true, fillColor: "#D3D3D3" },
+      ],
+      ...data.map((item) => {
+        const key = `${item.NamaPasien}-${item.NoMR}-${item.Tanggal}`;
+
+        if (displayedEntries.has(key)) {
+          return [
+            item.NoUrut || "-",
+            "",
+            "",
+            "",
+            item.Periode_Ranap || "-",
+            item.namadokumen || "-",
+            "",
+          ];
+        } else {
+          displayedEntries.add(key);
+          return [
+            item.NoUrut || "-",
+            item.NoMR || "-",
+            item.NamaPasien || "-",
+            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+            item.Periode_Ranap || "-",
+            item.namadokumen || "-",
+            "",
+          ];
+        }
+      }),
+    ];
+
+    const docDefinition = {
+      pageSize: "A4",
+      pageMargins: [10, 20, 10, 20],
+      content: [
+        { text: "FINISHING CHECK SHEET", style: "header" },
+
+        {
+          table: {
+            widths: ["70%", "30%"],
+            body: [
+              [
+                {
+                  text: `Kode Checklist: ${kode_checklist}`,
+                  style: "table",
+                  alignment: "left",
+                },
+              ],
+            ],
+          },
+          layout: "noBorders",
+          margin: [0, 10, 0, 0],
+        },
+
+        {
+          table: {
+            widths: ["45%", "15%", "40%"],
+            body: [
+              [
+                {
+                  table: {
+                    widths: ["*", "*", "*", "*", "*"],
+                    body: [
+                      [
+                        {
+                          text: "Proses",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                        {
+                          text: "Nama",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                        {
+                          text: "Tanggal",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                        {
+                          text: "Mulai",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                        {
+                          text: "Selesai",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                      ],
+                      [{ text: "QC Image", fontSize: 6 }, "", "", "", ""],
+                    ],
+                    alignment: "left",
+                    style: "table",
+                  },
+                },
+                "",
+                barcodeImage,
+              ],
+            ],
+          },
+          layout: "noBorders",
+        },
+
+        {
+          table: {
+            widths: ["7%", "7%", "20%", "7%", "8%", "44%", "7%"],
+            body: tableBody,
+          },
+          margin: [0, 10, 0, 0],
+          style: "table",
+        },
+      ],
+
+      styles: {
+        header: {
+          fontSize: 15,
+          bold: true,
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+        table: {
+          fontSize: 6,
+        },
+      },
+
+      // ✨ Tambahkan Footer Halaman
+      footer: function (currentPage, pageCount) {
+        return {
+          text: `Page ${currentPage} of ${pageCount}`,
+          alignment: "right",
+          margin: [0, 10, 20, 0],
+          fontSize: 8,
+        };
+      },
+    };
+
+    const printer = new PdfPrinter(fonts);
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="Finishing_Checklist_${kode_checklist}.pdf"`
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    pdfDoc.pipe(res);
+    pdfDoc.end();
+    console.log("Exports Successfully");
+  } catch (err) {
+    console.error("❌ Error generate Finishing Checksheet:", err);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const generateQcChecksheetA2 = async (req, res) => {
+  try {
+    const { kode_checklist } = req.params;
+    if (!kode_checklist)
+      return res.status(400).json({ message: "Kode checklist diperlukan!" });
+
+    // 🔍 Ambil data dari database
+    let data = await model.getMRt3ByKodeChecklistA2(kode_checklist);
+    if (!data || data.length === 0)
+      return res.status(404).json({ message: "Data tidak ditemukan!" });
+
+    // Urutakan Berdasarkan No URUT
+    data.sort((a, b) => {
+      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
+
+      if (aParts[1] !== bParts[1]) return aParts[1] - bParts[1];
+      return aParts[2] - bParts[2];
+    });
+
+    // 🖋️ Definisi font yang benar
+    const fonts = {
+      Roboto: {
+        normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
+        bold: path.resolve("src/fonts/Roboto-Bold.ttf"),
+        italics: path.resolve("src/fonts/Roboto-Italic.ttf"),
+        bolditalics: path.resolve("src/fonts/Roboto-BoldItalic.ttf"),
+      },
+    };
+
+    // 🖨️ Inisialisasi PdfPrinter
+    const printer = new PdfPrinter(fonts);
+
+    // 🏷️ Generate Barcode
+    let barcodeBase64 = null;
+    try {
+      const barcodeBuffer = await bwipJs.toBuffer({
+        bcid: "code39",
+        text: kode_checklist,
+        scale: 3,
+        height: 20,
+        includetext: true,
+        textxalign: "center",
+      });
+
+      barcodeBase64 = `data:image/png;base64,${barcodeBuffer.toString(
+        "base64"
+      )}`;
+    } catch (err) {
+      console.error("⚠️ Gagal membuat barcode:", err);
+    }
+
+    // Pastikan barcode valid, jika tidak, tampilkan teks alternatif
+    const barcodeImage = barcodeBase64
+      ? { image: barcodeBase64, width: 150, alignment: "right" }
+      : {
+          text: "Barcode tidak tersedia",
+          style: "subheader",
+          alignment: "right",
+        };
+
+    const displayedEntries = new Set();
+    const tableBody = [
+      [
+        { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
+        { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
+        { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
+        { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
+
+        { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
+
+        { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
+        { text: "Cek Ouput", bold: true, fillColor: "#D3D3D3" },
+        { text: "Cek QC", bold: true, fillColor: "#D3D3D3" },
+      ],
+      ...data.map((item) => {
+        const key = `${item.NamaPasien || "-"}-${item.NoMR || "-"}-${
+          item.Tanggal || "-"
+        }`;
+
+        if (displayedEntries.has(key)) {
+          return [
+            item.NoUrut || "-",
+            "",
+            "",
+            "",
+
+            item.Periode_Ranap || "-",
+            item.namadokumen || "-",
+            "",
+            "",
+          ];
+        } else {
+          displayedEntries.add(key);
+          return [
+            item.NoUrut || "-",
+            item.NoMR || "-",
+            item.NamaPasien || "-",
+            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
+
+            item.Periode_Ranap || "-",
+            item.namadokumen || "-",
+            "",
+            "",
+          ];
+        }
+      }),
+    ];
+
+    const docDefinition = {
+      pageSize: "A4",
+      pageMargins: [10, 20, 10, 20],
+      content: [
+        { text: "QC CHECK SHEET", style: "header" },
+
+        {
+          table: {
+            widths: ["70%", "30%"],
+            body: [
+              [
+                {
+                  text: `Kode Checklist: ${kode_checklist}`,
+                  style: "table",
+                  alignment: "left",
+                },
+              ],
+            ],
+          },
+          layout: "noBorders",
+          margin: [0, 10, 0, 0],
+        },
+
+        {
+          table: {
+            widths: ["45%", "15%", "40%"],
+            body: [
+              [
+                {
+                  table: {
+                    widths: ["*", "*", "*", "*", "*"],
+                    body: [
+                      [
+                        {
+                          text: "Proses",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                        {
+                          text: "Nama",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                        {
+                          text: "Tanggal",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                        {
+                          text: "Mulai",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                        {
+                          text: "Selesai",
+                          bold: true,
+                          fillColor: "#D3D3D3",
+                          fontSize: 6,
+                        },
+                      ],
+                      [{ text: "Output", fontSize: 6 }, "", "", "", ""],
+                      [{ text: "QC", fontSize: 6 }, "", "", "", ""],
+                    ],
+                    alignment: "left",
+                    style: "table",
+                  },
+                },
+                "",
+                barcodeImage,
+              ],
+            ],
+          },
+          layout: "noBorders",
+        },
+
+        // 📌 Table Utama (Data)
+        {
+          table: {
+            widths: ["7%", "7%", "20%", "7%", "9%", "40%", "5%", "5%"],
+            body: tableBody,
+          },
+          margin: [0, 10, 0, 0], //
+          style: "table",
+        },
+      ],
+      styles: {
+        header: {
+          fontSize: 15,
+          bold: true,
+          alignment: "center",
+          margin: [0, 0, 0, 10],
+        },
+        table: {
+          fontSize: 6,
+        },
+      },
+      // ✨ Tambahkan Footer Halaman
+      footer: function (currentPage, pageCount) {
+        return {
+          text: `Page ${currentPage} of ${pageCount}`,
+          alignment: "right",
+          margin: [0, 10, 20, 0],
+          fontSize: 8,
+        };
+      },
+    };
+
+    // 📄 Generate PDF dan kirim langsung ke response
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="Finishing_Checklist_${kode_checklist}.pdf"`
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    pdfDoc.pipe(res);
+    pdfDoc.end();
+  } catch (err) {
+    console.error("❌ Error generate Finishing Checksheet:", err);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
 module.exports = {
   getAllDataMR,
   getDataMRByKeys,
@@ -847,4 +1415,10 @@ module.exports = {
   getAllNonaktifMR,
   nonaktifMR,
   aktifkanMR,
+  getAllDataMRt3A2,
+  exportCSVMRt3A2,
+  generateFinishinCheecksheetA2,
+  generateQcChecksheetA2,
+  updateMRt3A2,
+  removeMRt3A2,
 };

@@ -299,5 +299,30 @@
     "path": "/box/:id",
     "method": "delete",
     "controller": "BoxController.deleteBox"
+  },
+  {
+    "path": "/finishing-checksheet-a2/:kode_checklist",
+    "method": "get",
+    "controller": "MrController.generateFinishinCheecksheetA2"
+  },
+  {
+    "path": "/qc-checksheet-a2/:kode_checklist",
+    "method": "get",
+    "controller": "MrController.generateQcChecksheetA2"
+  },
+  {
+    "path": "/dataMRt3-A2",
+    "method": "get",
+    "controller": "MrController.getAllDataMRt3A2"
+  },
+  {
+    "path": "/dataMRt3A2",
+    "method": "put",
+    "controller": "MrController.updateMRt3A2"
+  },
+  {
+    "path": "/dataMRt3A2/:NoUrut/:Kode_Checklist",
+    "method": "delete",
+    "controller": "MrController.removeMRt3A2"
   }
 ]
