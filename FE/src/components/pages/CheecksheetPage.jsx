@@ -2,7 +2,7 @@
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import { ApiUrl } from "../../context/Urlapi";
-
+import { saveAs } from "file-saver";
 import { MdOutlineLibraryAddCheck, MdOutlineFactCheck } from "react-icons/md";
 import { IoCheckmarkDoneCircleSharp } from "react-icons/io5";
 import { SearchComponent } from "../reuse/SearchComponent";
@@ -92,19 +92,15 @@ export function CheecksheetPage() {
         );
 
         setLoading(false);
+        let fileName = `Finishing Checksheet A4_${selectedChecklist}.pdf`; // default fallback
 
-        // Buat URL dari Blob
-        const fileURL = window.URL.createObjectURL(
-          new Blob([res.data], { type: "application/pdf" })
-        );
+        // Simpan file dengan nama dari server
+        saveAs(new Blob([res.data], { type: "application/pdf" }), fileName);
 
         AddLog(
-          `User ${userLogin?.username} Export Finishing Checksheet`,
+          `User ${userLogin?.username} Export Finishing Checksheet A4_${selectedChecklist}`,
           "SUCCESSFULLY"
         );
-
-        // Buka di tab baru
-        window.open(fileURL, "_blank");
       } catch (e) {
         AddLog(
           `User ${userLogin?.username} Export Finishing Checksheet`,
@@ -124,18 +120,16 @@ export function CheecksheetPage() {
 
       setLoading(false);
 
-      // Buat URL dari Blob
-      const fileURL = window.URL.createObjectURL(
-        new Blob([res.data], { type: "application/pdf" })
-      );
+      setLoading(false);
+      let fileName = `Finishing Checksheet A2_${selectedChecklist}.pdf`; // default fallback
+
+      // Simpan file dengan nama dari server
+      saveAs(new Blob([res.data], { type: "application/pdf" }), fileName);
 
       AddLog(
-        `User ${userLogin?.username} Export Finishing Checksheet`,
+        `User ${userLogin?.username} Export Finishing Checksheet A2_${selectedChecklist}`,
         "SUCCESSFULLY"
       );
-
-      // Buka di tab baru
-      window.open(fileURL, "_blank");
     } catch (e) {
       AddLog(
         `User ${userLogin?.username} Export Finishing Checksheet`,
@@ -152,28 +146,56 @@ export function CheecksheetPage() {
       setLoading(false);
       return;
     }
+    if (!isA2) {
+      try {
+        // Menggunakan `responseType: 'blob'` agar menerima file PDF dalam bentuk binary
+        let res = await axios.get(
+          `${baseUrl}/master/qc-checksheet/${selectedChecklist}`,
+          { responseType: "blob" }
+        );
+
+        setLoading(false);
+
+        // Buat URL dari Blob
+        let fileName = `QC Checksheet A4_${selectedChecklist}.pdf`; // default fallback
+
+        // Simpan file dengan nama dari server
+        saveAs(new Blob([res.data], { type: "application/pdf" }), fileName);
+
+        AddLog(
+          `User ${userLogin?.username} Export QC Checksheet`,
+          "SUCCESSFULLY"
+        );
+      } catch (e) {
+        AddLog(`User ${userLogin?.username} Export QC Checksheet`, "FAILED");
+        console.error("Error exporting PDF:", e);
+      }
+    }
 
     try {
       // Menggunakan `responseType: 'blob'` agar menerima file PDF dalam bentuk binary
       let res = await axios.get(
-        `${baseUrl}/master/qc-checksheet/${selectedChecklist}`,
+        `${baseUrl}/master/qc-checksheet-a2/${selectedChecklist}`,
         { responseType: "blob" }
       );
 
       setLoading(false);
 
       // Buat URL dari Blob
-      const fileURL = window.URL.createObjectURL(
-        new Blob([res.data], { type: "application/pdf" })
-      );
+      let fileName = `QC Checksheet A2_${selectedChecklist}.pdf`; // default fallback
+
+      // Simpan file dengan nama dari server
+      saveAs(new Blob([res.data], { type: "application/pdf" }), fileName);
+
       AddLog(
-        `User ${userLogin?.username} Export QC Checksheet`,
+        `User ${userLogin?.username} Export Finishing Checksheet`,
         "SUCCESSFULLY"
       );
-      // Buka di tab baru
-      window.open(fileURL, "_blank");
     } catch (e) {
-      AddLog(`User ${userLogin?.username} Export QC Checksheet`, "FAILED");
+      AddLog(
+        `User ${userLogin?.username} Export Finishing Checksheet`,
+        "FAILED"
+      );
       console.error("Error exporting PDF:", e);
     }
   };

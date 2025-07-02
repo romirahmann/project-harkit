@@ -96,12 +96,23 @@ const addScanCandra = async (req, res) => {
       data.kode_checklist,
       data.idproses
     );
+
     if (existingCandra) {
       return api.error(
         res,
         `Proses ${data.idproses} dengan Kode Checklist ${data.kode_checklist} sudah ada`,
         400
       );
+    }
+
+    if (data.idproses === "1009") {
+      await model.createCandraFromScan(data);
+
+      const io = getIO();
+
+      io.emit("scan_created", { message: "SCAN NEW CREATED!" });
+
+      return api.ok(res, "Candra created successfully");
     }
 
     // Ambil informasi urutan dari tblproses berdasarkan idproses

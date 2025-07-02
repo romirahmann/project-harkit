@@ -375,9 +375,9 @@ const generateFinishinCheecksheet = async (req, res) => {
 
     const docDefinition = {
       pageSize: "A4",
-      pageMargins: [10, 20, 10, 20],
+      pageMargins: [20, 30, 20, 30],
       content: [
-        { text: "FINISHING CHECK SHEET", style: "header" },
+        { text: "FINISHING CHECK SHEET A4", style: "header" },
 
         {
           table: {
@@ -453,7 +453,7 @@ const generateFinishinCheecksheet = async (req, res) => {
 
         {
           table: {
-            widths: ["7%", "7%", "20%", "7%", "8%", "44%", "7%"],
+            widths: ["7%", "7%", "19%", "8%", "8%", "44%", "7%"],
             body: tableBody,
           },
           margin: [0, 10, 0, 0],
@@ -486,11 +486,12 @@ const generateFinishinCheecksheet = async (req, res) => {
 
     const printer = new PdfPrinter(fonts);
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="Finishing_Checklist_${kode_checklist}.pdf"`
-    );
+    const filename = `Finishing Checksheet A4 ${kode_checklist}.pdf`;
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
     res.setHeader("Content-Type", "application/pdf");
+
+    // Ini penting agar frontend bisa membaca header-nya
+    res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     pdfDoc.pipe(res);
     pdfDoc.end();
     console.log("Exports Successfully");
@@ -611,9 +612,9 @@ const generateQcChecksheet = async (req, res) => {
 
     const docDefinition = {
       pageSize: "A4",
-      pageMargins: [10, 20, 10, 20],
+      pageMargins: [20, 30, 20, 30],
       content: [
-        { text: "QC CHECK SHEET", style: "header" },
+        { text: "QC CHECK SHEET A4", style: "header" },
 
         {
           table: {
@@ -691,7 +692,7 @@ const generateQcChecksheet = async (req, res) => {
         // 📌 Table Utama (Data)
         {
           table: {
-            widths: ["7%", "7%", "20%", "7%", "9%", "40%", "5%", "5%"],
+            widths: ["7%", "7%", "19%", "8%", "9%", "40%", "5%", "5%"],
             body: tableBody,
           },
           margin: [0, 10, 0, 0], //
@@ -1035,9 +1036,9 @@ const generateFinishinCheecksheetA2 = async (req, res) => {
 
     const docDefinition = {
       pageSize: "A4",
-      pageMargins: [10, 20, 10, 20],
+      pageMargins: [20, 30, 20, 30],
       content: [
-        { text: "FINISHING CHECK SHEET", style: "header" },
+        { text: "FINISHING CHECK SHEET A2", style: "header" },
 
         {
           table: {
@@ -1113,7 +1114,7 @@ const generateFinishinCheecksheetA2 = async (req, res) => {
 
         {
           table: {
-            widths: ["7%", "7%", "20%", "7%", "8%", "44%", "7%"],
+            widths: ["7%", "7%", "19%", "8%", "8%", "44%", "7%"],
             body: tableBody,
           },
           margin: [0, 10, 0, 0],
@@ -1271,9 +1272,9 @@ const generateQcChecksheetA2 = async (req, res) => {
 
     const docDefinition = {
       pageSize: "A4",
-      pageMargins: [10, 20, 10, 20],
+      pageMargins: [20, 30, 20, 30],
       content: [
-        { text: "QC CHECK SHEET", style: "header" },
+        { text: "QC CHECK SHEET A2", style: "header" },
 
         {
           table: {
@@ -1351,7 +1352,7 @@ const generateQcChecksheetA2 = async (req, res) => {
         // 📌 Table Utama (Data)
         {
           table: {
-            widths: ["7%", "7%", "20%", "7%", "9%", "40%", "5%", "5%"],
+            widths: ["7%", "7%", "19%", "8%", "9%", "40%", "5%", "5%"],
             body: tableBody,
           },
           margin: [0, 10, 0, 0], //
