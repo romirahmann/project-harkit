@@ -266,6 +266,11 @@
     "controller": "MrController.exportCSVMRt3"
   },
   {
+    "path": "/export-mrt3-a2",
+    "method": "post",
+    "controller": "MrController.exportCSVMRt3A2"
+  },
+  {
     "path": "/log",
     "method": "post",
     "controller": "LogController.addLog"

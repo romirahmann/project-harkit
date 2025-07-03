@@ -44,7 +44,7 @@ export function KcpA2Page() {
     const exportCsv = async () => {
       try {
         const response = await axios.post(
-          `${baseUrl}/master/export-mrt3`,
+          `${baseUrl}/master/export-mrt3-a2`,
           filteredData,
           {
             responseType: "blob",

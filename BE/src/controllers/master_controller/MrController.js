@@ -759,70 +759,89 @@ const removeMRt3 = async (req, res) => {
 };
 
 const exportCSVMRt3 = async (req, res) => {
-  // const { Kode_Checklist } = req.params;
   try {
-    let data = req.body;
-
+    const data = req.body;
+    console.log(data);
     if (!data || data.length === 0) {
-      return api.error(res, "Data Not Found!", 400);
+      return res.status(400).json({ message: "Data Not Found!" });
     }
 
-    // **Buat Workbook dan Worksheet**
+    // Buat Workbook dan Worksheet
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Data MRt3");
 
-    // **Definisikan Header**
-    const headers = [
-      "No Urut",
-      "Period Ranap",
-      "No MR",
-      "Kode Checklist",
-      "Nama Pasien",
-      "Tanggal",
-
-      "Nama Dokumen",
+    // Definisikan kolom
+    worksheet.columns = [
+      { header: "Test", key: "NoUrut", width: 15 },
+      { header: "Period Ranap", key: "Periode_Ranap", width: 20 },
+      { header: "No MR", key: "NoMR", width: 15 },
+      { header: "Kode Checklist", key: "Kode_Checklist", width: 20 },
+      { header: "Nama Pasien", key: "NamaPasien", width: 25 },
+      {
+        header: "Tanggal",
+        key: "Tanggal",
+        width: 15,
+        style: { numFmt: "dd/mm/yyyy" }, // Format Excel
+      },
+      { header: "Nama Dokumen", key: "namadokumen", width: 30 },
     ];
-    worksheet.addRow(headers);
 
-    // **Tambahkan Data**
+    // Tambahkan data
     data.forEach((row) => {
-      worksheet.addRow([
-        row.NoUrut || "-",
-        row.Periode_Ranap || "-",
-        row.NoMR || "-",
-        row.Kode_Checklist || "-",
-        row.NamaPasien || "-",
-        row.Tanggal || "-",
+      const tanggalMoment = moment(row.Tanggal, "DDMMYYYY");
 
-        row.namadokumen || "-",
-      ]);
+      const newRow = {
+        NoUrut: row.NoUrut || "-",
+        Periode_Ranap: row.Periode_Ranap || "-",
+        NoMR: row.NoMR || "-",
+        Kode_Checklist: row.Kode_Checklist || "-",
+        NamaPasien: row.NamaPasien || "-",
+        Tanggal: row.Tanggal
+          ? moment(row.Tanggal, "DDMMYYYY").format("DD/MM/YYYY")
+          : null,
+        namadokumen: row.namadokumen || "-",
+      };
+
+      worksheet.addRow(newRow);
     });
 
-    // **Format Header Agar Tebal**
+    // Styling header
     worksheet.getRow(1).eachCell((cell) => {
       cell.font = { bold: true };
       cell.alignment = { horizontal: "center" };
     });
 
-    // **Buat Path File Excel**
-    const filePath = path.join(__dirname, "../../exports/MRt3_export.xlsx");
+    // Terapkan format tanggal ke seluruh kolom (untuk jaga-jaga)
+    worksheet.getColumn("Tanggal").eachCell({ includeEmpty: false }, (cell) => {
+      if (cell.value instanceof Date) {
+        cell.numFmt = "dd/mm/yyyy";
+      }
+    });
 
-    // **Simpan File**
+    // Buat path file sementara unik
+    const filename = `MRt3_export_${Date.now()}.xlsx`;
+    const filePath = path.join(__dirname, `../../exports/${filename}`);
+
+    // Simpan file
     await workbook.xlsx.writeFile(filePath);
 
-    // **Kirim File Excel ke Client**
+    // Kirim file ke client
     res.download(filePath, "data_MRt3.xlsx", (err) => {
       if (err) {
-        console.error("Error saat mengirim file:", err);
-        res.status(500).json({ message: "Gagal mengunduh file" });
+        console.error("❌ Gagal mengirim file:", err);
+        return res.status(500).json({ message: "Gagal mengunduh file" });
       }
 
-      // **Hapus File Setelah Dikirim (Opsional)**
-      fs.unlinkSync(filePath);
+      // Hapus file setelah dikirim
+      fs.unlink(filePath, (unlinkErr) => {
+        if (unlinkErr) {
+          console.warn("⚠️ Gagal menghapus file sementara:", unlinkErr);
+        }
+      });
     });
   } catch (error) {
     console.error("❌ Error exporting Excel:", error);
-    return api.error(res, "Failed to export Excel", 500);
+    return res.status(500).json({ message: "Failed to export Excel" });
   }
 };
 
@@ -875,68 +894,69 @@ const removeMRt3A2 = async (req, res) => {
 
 const exportCSVMRt3A2 = async (req, res) => {
   try {
-    let data = req.body;
-
+    const data = req.body;
     if (!data || data.length === 0) {
-      return api.error(res, "Data Not Found!", 400);
+      return res.status(400).json({ message: "Data Not Found!" });
     }
-
-    // **Buat Workbook dan Worksheet**
+    // Buat Workbook dan Worksheet
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Data MRt3");
-
-    // **Definisikan Header**
-    const headers = [
-      "No Urut",
-      "Period Ranap",
-      "No MR",
-      "Kode Checklist",
-      "Nama Pasien",
-      "Tanggal",
-
-      "Nama Dokumen",
+    // Definisikan kolom
+    worksheet.columns = [
+      { header: "No Urut", key: "NoUrut", width: 15 },
+      { header: "Period Ranap", key: "Periode_Ranap", width: 20 },
+      { header: "No MR", key: "NoMR", width: 15 },
+      { header: "Kode Checklist", key: "Kode_Checklist", width: 20 },
+      { header: "Nama Pasien", key: "NamaPasien", width: 25 },
+      {
+        header: "Tanggal",
+        key: "Tanggal",
+        width: 15,
+        style: { numFmt: "dd/mm/yyyy" }, // Excel date format
+      },
+      { header: "Nama Dokumen", key: "namadokumen", width: 30 },
     ];
-    worksheet.addRow(headers);
-
-    // **Tambahkan Data**
+    // Tambahkan data ke worksheet
     data.forEach((row) => {
-      worksheet.addRow([
-        row.NoUrut || "-",
-        row.Periode_Ranap || "-",
-        row.NoMR || "-",
-        row.Kode_Checklist || "-",
-        row.NamaPasien || "-",
-        row.Tanggal || "-",
-
-        row.namadokumen || "-",
-      ]);
+      worksheet.addRow({
+        NoUrut: row.NoUrut || "-",
+        Periode_Ranap: row.Periode_Ranap || "-",
+        NoMR: row.NoMR || "-",
+        Kode_Checklist: row.Kode_Checklist || "-",
+        NamaPasien: row.NamaPasien || "-",
+        Tanggal: row.Tanggal
+          ? moment(row.Tanggal, "DDMMYYYY").format("DD/MM/YYYY")
+          : null,
+        namadokumen: row.namadokumen || "-",
+      });
     });
-
-    // **Format Header Agar Tebal**
+    // Format header: bold dan center
     worksheet.getRow(1).eachCell((cell) => {
       cell.font = { bold: true };
       cell.alignment = { horizontal: "center" };
     });
-
-    // **Buat Path File Excel**
-    const filePath = path.join(__dirname, "../../exports/MRt3_export.xlsx");
-
-    // **Simpan File**
+    // Buat path file sementara
+    const timestamp = Date.now();
+    const filename = `MRt3_A2_export_${timestamp}.xlsx`;
+    const filePath = path.join(__dirname, `../../exports/${filename}`);
+    // Simpan file Excel
     await workbook.xlsx.writeFile(filePath);
-
-    // **Kirim File Excel ke Client**
-    res.download(filePath, "data_MRt3.xlsx", (err) => {
+    // Kirim file ke client
+    res.download(filePath, "data_MRt3_A2.xlsx", (err) => {
       if (err) {
-        console.error("Error saat mengirim file:", err);
-        res.status(500).json({ message: "Gagal mengunduh file" });
+        console.error("❌ Error saat mengirim file:", err);
+        return res.status(500).json({ message: "Gagal mengunduh file" });
       }
-
-      // **Hapus File Setelah Dikirim (Opsional)**
-      fs.unlinkSync(filePath);
+      // Hapus file setelah dikirim
+      fs.unlink(filePath, (unlinkErr) => {
+        if (unlinkErr) {
+          console.warn("⚠️ Gagal menghapus file sementara:", unlinkErr);
+        }
+      });
     });
   } catch (error) {
     console.error("❌ Error exporting Excel:", error);
-    return api.error(res, "Failed to export Excel", 500);
+    return res.status(500).json({ message: "Failed to export Excel" });
   }
 };
 
