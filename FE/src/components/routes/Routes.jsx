@@ -21,6 +21,7 @@ import { NonaktifPage } from "../pages/NonaktifPage";
 import { LogPage } from "../pages/LogPage";
 import { BoxPage } from "../pages/BoxPage";
 import { KcpA2Page } from "../pages/KcpA2Page";
+import { NamaDokumenPage } from "../pages/NamaDokumenPage";
 
 const rootRoute = createRootRoute();
 
@@ -88,6 +89,15 @@ const mrPage = createRoute({
   component: () => (
     <ProtectedRoute>
       <MrPage />
+    </ProtectedRoute>
+  ),
+});
+const dokumenPage = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/data-nama-dokumen",
+  component: () => (
+    <ProtectedRoute>
+      <NamaDokumenPage />
     </ProtectedRoute>
   ),
 });
@@ -196,6 +206,7 @@ const routeTree = rootRoute.addChildren([
     logPage,
     boxPage,
     kcpA2Page,
+    dokumenPage,
   ]),
   loginRoute,
 ]);

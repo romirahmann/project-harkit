@@ -15,6 +15,7 @@ const UploadController = require("../../controllers/master_controller/UpdateCont
 const DashboardController = require("../../controllers/master_controller/DashboardController");
 const LogController = require("../../controllers/master_controller/LogController");
 const BoxController = require("../../controllers/master_controller/BoxController");
+const DocumentController = require("../../controllers/master_controller/DokumenController");
 
 // Import Middleware Upload
 const { upload } = require("../../services/upload");
@@ -30,6 +31,7 @@ const controllers = {
   DashboardController,
   LogController,
   BoxController,
+  DocumentController,
 };
 
 const middlewares = {

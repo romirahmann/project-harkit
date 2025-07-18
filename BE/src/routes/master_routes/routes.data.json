@@ -369,5 +369,35 @@
     "path": "/filter-mrt3/:query",
     "method": "get",
     "controller": "MrController.getFilterMRt3"
+  },
+  {
+    "path": "/dokumens",
+    "method": "get",
+    "controller": "DocumentController.getAllDokumen"
+  },
+  {
+    "path": "/filter-dokumen/:query",
+    "method": "get",
+    "controller": "DocumentController.getFilterDokumen"
+  },
+  {
+    "path": "/dokumen/:kodedok",
+    "method": "get",
+    "controller": "DocumentController.getDokumenByKode"
+  },
+  {
+    "path": "/dokumen",
+    "method": "post",
+    "controller": "DocumentController.createDokumen"
+  },
+  {
+    "path": "/dokumen/:kodedok",
+    "method": "put",
+    "controller": "DocumentController.updateDokumen"
+  },
+  {
+    "path": "/dokumen/:kodedok",
+    "method": "delete",
+    "controller": "DocumentController.deleteDokumen"
   }
 ]
