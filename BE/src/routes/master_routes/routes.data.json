@@ -329,5 +329,45 @@
     "path": "/dataMRt3A2/:NoUrut/:Kode_Checklist",
     "method": "delete",
     "controller": "MrController.removeMRt3A2"
+  },
+  {
+    "path": "/user-filter/:query",
+    "method": "get",
+    "controller": "UserController.getUserFilter"
+  },
+  {
+    "path": "/employee-filter/:query",
+    "method": "get",
+    "controller": "EmployeeController.getSearchEmployee"
+  },
+  {
+    "path": "/target-proses/:query",
+    "method": "get",
+    "controller": "ProsesController.getFilterProses"
+  },
+  {
+    "path": "/target-filter/:query",
+    "method": "get",
+    "controller": "TargetController.getTargetFilter"
+  },
+  {
+    "path": "/filter-datamr/:query",
+    "method": "get",
+    "controller": "MrController.getFilterDataMR"
+  },
+  {
+    "path": "/filter-nonaktif-mr/:query",
+    "method": "get",
+    "controller": "MrController.getNonactiveMRFilter"
+  },
+  {
+    "path": "/filter-candra/:query",
+    "method": "get",
+    "controller": "CandraController.getFilterCandra"
+  },
+  {
+    "path": "/filter-mrt3/:query",
+    "method": "get",
+    "controller": "MrController.getFilterMRt3"
   }
 ]

@@ -1,13 +1,15 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import api from "../../services/axios.service";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { ApiUrl } from "../../context/Urlapi";
 import { TbTargetArrow } from "react-icons/tb";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function TargetChart() {
+  // State untuk persentase scan dan harian
   const [persentaseScan, setPersentaseScan] = useState(0);
   const [persentaseHarian, setPersentaseHarian] = useState(0);
   const [totalScan, setTotalScan] = useState(0);
@@ -16,6 +18,8 @@ export function TargetChart() {
   const [targetHarian, setTargetHarian] = useState(0);
   const [summary, setSummary] = useState([]);
 
+  const baseUrl = useContext(ApiUrl);
+
   useEffect(() => {
     fecthTarget();
     fecthSummary();
@@ -23,8 +27,8 @@ export function TargetChart() {
 
   const fecthTarget = async () => {
     try {
-      let res = await api.get(`/master/data-pie`);
-      // console.log(res.data.data);
+      let res = await axios.get(`${baseUrl}/master/data-pie`);
+
       let data = res.data.data;
       setTargetHarian(data.targetHarian);
       setTargetScan(data.targetImage);
@@ -34,7 +38,7 @@ export function TargetChart() {
   };
   const fecthSummary = async () => {
     try {
-      let res = await api.get(`/master/data-summary`);
+      let res = await axios.get(`${baseUrl}/master/data-summary`);
       let data = res.data.data;
       setSummary(data);
       setTotalHarian(data.dates);
@@ -95,45 +99,42 @@ export function TargetChart() {
       },
     },
   };
+
   return (
-    <>
-      <div className="flex md:flex-wrap justify-center gap-6 ">
-        <span className="bg-white px-4 py-3 rounded-md w-full text-center font-bold text-gray-500">
-          Estimasi Penyelesaian Proyek
+    <div className="flex md:flex-wrap justify-center gap-6 ">
+      <span className="bg-white px-4 py-3 rounded-md w-full text-center font-bold text-gray-500">
+        Estimasi Penyelesaian Proyek
+      </span>
+      {/* Pie Chart Target Scan */}
+      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[8em] lg:w-[16em]">
+        <span className=" text-md md:text-lg text-center text-red-800 flex items-center mb-4">
+          <TbTargetArrow />
+          <h3 className=" text-gray-500 font-semibold ms-1 md:ms-2">
+            Target Image
+          </h3>
         </span>
-        {/* Pie Chart Target Scan */}
-        <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[8em] lg:w-[16em]">
-          <span className=" text-md md:text-lg text-center text-red-800 flex items-center mb-4">
-            <TbTargetArrow />
-            <h3 className=" text-gray-500 font-semibold ms-1 md:ms-2">
-              Target Image
-            </h3>
-          </span>
 
-          <div className="relative w-full">
-            <Doughnut data={dataScan} options={options} />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-xl font-bold">{persentaseScan}%</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Pie Chart Target Harian */}
-        <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[8em] lg:w-[16em]">
-          <span className="text-md md:text-lg text-center text-red-800 flex items-center mb-4">
-            <TbTargetArrow />
-            <h3 className=" font-semibold text-gray-500 ms-2 ">
-              Target Harian
-            </h3>
-          </span>
-          <div className="relative w-full">
-            <Doughnut data={dataHarian} options={options} />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-xl font-bold">{persentaseHarian}%</span>
-            </div>
+        <div className="relative w-full">
+          <Doughnut data={dataScan} options={options} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-xl font-bold">{persentaseScan}%</span>
           </div>
         </div>
       </div>
-    </>
+
+      {/* Pie Chart Target Harian */}
+      <div className="flex flex-col items-center p-5 bg-white shadow-lg rounded-lg w-[8em] lg:w-[16em]">
+        <span className="text-md md:text-lg text-center text-red-800 flex items-center mb-4">
+          <TbTargetArrow />
+          <h3 className=" font-semibold text-gray-500 ms-2 ">Target Harian</h3>
+        </span>
+        <div className="relative w-full">
+          <Doughnut data={dataHarian} options={options} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-xl font-bold">{persentaseHarian}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

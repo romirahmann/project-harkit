@@ -47,6 +47,17 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getUserFilter = async (req, res) => {
+  const { query } = req.params;
+  try {
+    const users = await model.getAllUsers(query);
+    return api.ok(res, users);
+  } catch (error) {
+    console.error("❌ Error fetching users:", error);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -92,4 +103,5 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
+  getUserFilter,
 };

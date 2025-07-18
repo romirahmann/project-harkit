@@ -11,6 +11,16 @@ const getAllEmployee = async (req, res) => {
     return api.error(res, "Failed to get employees", 500);
   }
 };
+const getSearchEmployee = async (req, res) => {
+  let { query } = req.params;
+  try {
+    const data = await model.getAllKaryawan(query);
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting employees:", error);
+    return api.error(res, "Failed to get employees", 500);
+  }
+};
 
 const getEmployeeById = async (req, res) => {
   const { id } = req.params;
@@ -123,4 +133,5 @@ module.exports = {
   updateEmployee,
   deleteEmployee,
   getEmployeeByNIK,
+  getSearchEmployee,
 };

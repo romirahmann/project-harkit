@@ -50,6 +50,7 @@ export function Candrapage() {
 
       if (query.trim() === "") {
         res = await api.get("/master/candras");
+        console.log(api);
       } else {
         res = await api.get(`/master/filter-candra/${query}`);
       }

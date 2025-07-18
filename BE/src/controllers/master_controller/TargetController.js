@@ -11,6 +11,17 @@ const getAllTargets = async (req, res) => {
   }
 };
 
+const getTargetFilter = async (req, res) => {
+  const { query } = req.params;
+  try {
+    const targets = await model.getAllTargets(query);
+    return api.ok(res, targets);
+  } catch (error) {
+    console.error("❌ Error fetching users:", error);
+    return api.error(res, "Internal Server Error", 500);
+  }
+};
+
 const getTargetById = async (req, res) => {
   const { id } = req.params;
   if (!id) {
@@ -87,4 +98,5 @@ module.exports = {
   createTarget,
   updateTarget,
   deleteTarget,
+  getTargetFilter,
 };

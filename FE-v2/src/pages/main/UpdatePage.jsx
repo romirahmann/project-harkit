@@ -8,6 +8,8 @@ import { TableUpdate } from "../../components/update/TableUpdate";
 
 export function UpdatePage() {
   const [query, setQuery] = useState("");
+  const [fileCandra, setFileCandra] = useState(null);
+  const [fileQty, setFileQty] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const [candraNotComplete, setCandraNotComplete] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState({
@@ -44,7 +46,7 @@ export function UpdatePage() {
 
     // Optionally: Upload langsung atau simpan ke FormData
   };
-  const handleUpload = () => {};
+  const handleUpload = async (type) => {};
 
   return (
     <>

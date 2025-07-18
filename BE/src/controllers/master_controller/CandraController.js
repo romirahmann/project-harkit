@@ -18,6 +18,17 @@ const getAllCandra = async (req, res) => {
     return api.error(res, "Failed to get Candra", 500);
   }
 };
+const getFilterCandra = async (req, res) => {
+  let { query } = req.params;
+  console.log(query);
+  try {
+    let data = await model.getAllCandra(query);
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting all Candra:", error);
+    return api.error(res, "Failed to get Candra", 500);
+  }
+};
 const getAllCandraDayNow = async (req, res) => {
   try {
     const data = await model.getAllByDateNow();
@@ -413,4 +424,5 @@ module.exports = {
   getAllCandraDayNow,
   finishedProsesScan,
   validate1007,
+  getFilterCandra,
 };

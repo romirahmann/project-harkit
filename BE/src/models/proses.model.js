@@ -1,8 +1,15 @@
 const { getDB } = require("../database/db.config");
 
-const getAllProses = async () => {
-  const db = getDB();
-  const result = await db.query("SELECT * FROM tblproses ORDER BY urutan ASC");
+const getAllProses = async (q) => {
+  let db = getDB();
+  let query = "SELECT * FROM tblproses";
+  if (q) {
+    const safeQ = q.replace(/'/g, "''");
+    query += ` WHERE idproses LIKE '${safeQ}%' OR nama_proses LIKE '${safeQ}%' `;
+  }
+  query += " ORDER BY urutan ASC";
+
+  const result = await db.query(query);
   return result;
 };
 

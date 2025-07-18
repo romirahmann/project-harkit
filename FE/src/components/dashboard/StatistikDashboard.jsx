@@ -1,28 +1,34 @@
 /* eslint-disable no-unused-vars */
-import moment from "moment";
-import { useEffect, useState } from "react";
-import { FaCalendar, FaNotesMedical, FaUsers } from "react-icons/fa";
-import { GoChecklist } from "react-icons/go";
+import { FaCalendar, FaNotesMedical } from "react-icons/fa";
 import { GrDocumentImage } from "react-icons/gr";
-import { HiOutlineDocumentDuplicate } from "react-icons/hi";
-import api from "../../services/axios.service";
+import { HiOutlineDocumentDuplicate } from "react-icons/hi2";
+import { FaUsers } from "react-icons/fa";
+import { GoChecklist } from "react-icons/go";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { ApiUrl } from "../../context/Urlapi";
+import moment from "moment";
 
-export function Statistik() {
+export function StatistikDashboard() {
   const [statistikData, setStatistikData] = useState([]);
   const [selectionDate, setSelectionDate] = useState(
     moment().format("YYYY-MM-DD")
   );
+  const baseUrl = useContext(ApiUrl);
 
   useEffect(() => {
-    fetchStatistikData();
+    fecthStatistikData();
   }, [statistikData, selectionDate]);
 
-  const fetchStatistikData = async () => {
+  const fecthStatistikData = async () => {
     try {
-      let res = await api.get(`/master/data-statistik/${selectionDate}`);
+      let res = await axios.get(
+        `${baseUrl}/master/data-statistik/${selectionDate}`
+      );
+
       setStatistikData(res.data.data);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -30,12 +36,13 @@ export function Statistik() {
     let value = e.target.value;
     setSelectionDate(moment(value).format("YYYY-MM-DD"));
   };
+
   return (
     <>
-      <div className="countContent bg-gradient-to-r from-cyan-500 to-blue-500 p-10 rounded-md">
+      <div className="countContent bg-gradient-to-r from-cyan-500 to-blue-500 p-10 rounded-xl">
         <div className="headerChart lg:flex items-center">
           <h1 className="text-2xl font-bold text-white uppercase">
-            Statistik Proses Padaprima RS Melania
+            Statistik Proses Padaprima RS Harapan Kita
           </h1>
           <div className="flex flex-col mt-5 lg:mt-0 space-y-1 ms-auto">
             <div className="relative ">
@@ -45,16 +52,15 @@ export function Statistik() {
                 onChange={(e) => handleChange(e)}
                 className="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-gray-700 bg-white"
               />
-              <FaCalendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
         </div>
         <div className="dashboard-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mt-10 gap-3">
           {/* Kode Checklist */}
-          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm ">
+          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <GoChecklist className="text-2xl mb-3 text-gray-600" />
             <span>
-              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 ">
+              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
                 Kode Checklist
               </h5>
             </span>
@@ -63,10 +69,10 @@ export function Statistik() {
             </p>
           </div>
           {/* No MR */}
-          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm ">
+          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <FaNotesMedical className="text-2xl mb-3 text-gray-600" />
             <span>
-              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 ">
+              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
                 No Medical Record
               </h5>
             </span>
@@ -75,10 +81,10 @@ export function Statistik() {
             </p>
           </div>
           {/* Image */}
-          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm ">
+          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <GrDocumentImage className="text-2xl mb-3 text-gray-600" />
             <span>
-              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 ">
+              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
                 Image
               </h5>
             </span>
@@ -89,10 +95,10 @@ export function Statistik() {
             </p>
           </div>
           {/* Karyawan */}
-          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm ">
+          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <FaUsers className="text-2xl mb-3 text-gray-600" />
             <span>
-              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 ">
+              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
                 Karyawan
               </h5>
             </span>
@@ -101,10 +107,10 @@ export function Statistik() {
             </p>
           </div>
           {/* Lembar Scan */}
-          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm ">
+          <div className="max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <HiOutlineDocumentDuplicate className="text-3xl mb-3 text-gray-600" />
             <span>
-              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 ">
+              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
                 Lembar Scan
               </h5>
             </span>

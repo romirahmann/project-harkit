@@ -1,8 +1,13 @@
 const { getDB } = require("../database/db.config");
 
-const getAllKaryawan = async () => {
+const getAllKaryawan = async (q) => {
   const db = getDB();
-  const result = await db.query("SELECT * FROM tblkaryawan");
+  let query = "SELECT * FROM tblkaryawan";
+  if (q) {
+    const safeQ = q.replace(/'/g, "''");
+    query += ` WHERE nama_karyawan LIKE '${safeQ}%' OR nik LIKE '${safeQ}%' `;
+  }
+  const result = await db.query(query);
   return result;
 };
 

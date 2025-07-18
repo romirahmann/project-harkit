@@ -1,11 +1,16 @@
 const { getDB } = require("../database/db.config");
 const moment = require("moment");
 
-const getAllDataMR = async () => {
+const getAllDataMR = async (q) => {
   const db = getDB();
-  return await db.query(
-    "SELECT NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, Selesai, rumahsakit, nobox, FilePath FROM tblDataMR"
-  );
+  let query =
+    "SELECT NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, Selesai, rumahsakit, nobox, FilePath FROM tblDataMR";
+  if (q) {
+    const safeQ = q.replace(/'/g, "''");
+    query += ` WHERE NoUrut LIKE '${safeQ}%' OR NoMR LIKE '${safeQ}%' OR NamaPasien LIKE '${safeQ}%' OR Kode_Checklist LIKE '${safeQ}%' OR FilePath LIKE '${safeQ}%' `;
+  }
+
+  return await db.query(query);
 };
 
 const getAllNonaktifMR = async () => {

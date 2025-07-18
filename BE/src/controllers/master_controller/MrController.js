@@ -213,7 +213,42 @@ const exportCsv = async (req, res) => {
     return api.error(res, "Failed to export Excel", 500);
   }
 };
+const getFilterDataMR = async (req, res) => {
+  let { query } = req.params;
+  try {
+    const data = await model.getAllDataMR(query);
+    // data.sort((a, b) => {
+    //   const getNumber = (str) => parseInt(str.replace("PBL-", ""), 10);
+    //   return getNumber(a.NoUrut) - getNumber(b.NoUrut);
+    // });
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting DataMR:", error);
+    return api.error(res, "Failed to get DataMR", 500);
+  }
+};
+const getNonactiveMRFilter = async (req, res) => {
+  let { query } = req.params;
+  try {
+    const data = await model.getAllNonaktifMR(query);
+    data.sort((a, b) => {
+      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
 
+      // Urutkan berdasarkan angka setelah "PBL-"
+      if (aParts[1] !== bParts[1]) {
+        return aParts[1] - bParts[1];
+      }
+
+      // Jika sama, urutkan berdasarkan angka terakhir setelah "PBL-X-"
+      return aParts[2] - bParts[2];
+    });
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting DataMR:", error);
+    return api.error(res, "Failed to get DataMR", 500);
+  }
+};
 const nonaktifMR = async (req, res) => {
   const data = req.body;
   try {
@@ -258,6 +293,31 @@ const aktifkanMR = async (req, res) => {
 const getAllDataMRt3 = async (req, res) => {
   try {
     let data = await model.getAllMRt3();
+
+    // Sorting berdasarkan angka di NoUrut (PBL-1-X)
+    data.sort((a, b) => {
+      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
+
+      // Urutkan berdasarkan angka setelah "PBL-"
+      if (aParts[1] !== bParts[1]) {
+        return aParts[1] - bParts[1];
+      }
+
+      // Jika sama, urutkan berdasarkan angka terakhir setelah "PBL-X-"
+      return aParts[2] - bParts[2];
+    });
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting DataMR:", error);
+    return api.error(res, "Failed to get DataMR", 500);
+  }
+};
+
+const getFilterMRt3 = async (req, res) => {
+  let { query } = req.params;
+  try {
+    let data = await model.getAllMRt3(query);
 
     // Sorting berdasarkan angka di NoUrut (PBL-1-X)
     data.sort((a, b) => {
@@ -1438,4 +1498,7 @@ module.exports = {
   generateQcChecksheetA2,
   updateMRt3A2,
   removeMRt3A2,
+  getFilterDataMR,
+  getNonactiveMRFilter,
+  getFilterMRt3,
 };

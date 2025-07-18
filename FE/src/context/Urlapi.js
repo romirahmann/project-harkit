@@ -22,5 +22,4 @@ export const ApiUrl = createContext(dynamicBaseAPI);
 
 export const UrlBaseBackend = createContext(dynamicBaseURL);
 export const api = dynamicBaseAPI;
-export const baseApi = dynamicBaseAPI;
 export const baseUrl = dynamicBaseURL;

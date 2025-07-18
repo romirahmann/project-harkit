@@ -11,6 +11,18 @@ const getAllProses = async (req, res) => {
   }
 };
 
+const getFilterProses = async (req, res) => {
+  let { query } = req.params;
+  try {
+    console.log(query);
+    let data = await model.getAllProses(query || "");
+    return api.ok(res, data);
+  } catch (error) {
+    console.error("❌ Error getting proses:", error);
+    return api.error(res, "Failed to get proses", 500);
+  }
+};
+
 const getProsesById = async (req, res) => {
   const { idproses } = req.params;
   if (!idproses) {
@@ -103,4 +115,5 @@ module.exports = {
   createProses,
   updateProses,
   deleteProses,
+  getFilterProses,
 };
