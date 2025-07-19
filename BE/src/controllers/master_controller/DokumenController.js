@@ -1,6 +1,11 @@
 const model = require("../../models/dokumen.model");
 const api = require("../../tools/common");
+
+const fs = require("fs");
+const path = require("path");
+
 const moment = require("moment");
+const ExcelJS = require("exceljs");
 
 // 🔍 GET semua dokumen
 const getAllDokumen = async (req, res) => {
@@ -51,15 +56,21 @@ const createDokumen = async (req, res) => {
     return api.error(res, "Field Kodedok dan namadok harus diisi", 400);
   }
 
+  const kodeDokUpper = kodedok.toUpperCase();
+
   try {
     // Cek apakah sudah ada
-    const existing = await model.getByKode(kodedok);
+    const existing = await model.getByKode(kodeDokUpper);
     if (existing) {
-      return api.error(res, `Dokumen dengan kode '${kodedok}' sudah ada`, 400);
+      return api.error(
+        res,
+        `Dokumen dengan kode '${kodeDokUpper}' sudah ada`,
+        400
+      );
     }
 
     const created = await model.createDokumen({
-      kodedok,
+      kodedok: kodeDokUpper,
       namadok,
       kategori,
     });
@@ -109,6 +120,51 @@ const deleteDokumen = async (req, res) => {
   }
 };
 
+const exportCsv = async (req, res) => {
+  const { query = "" } = req.params;
+  try {
+    const data = await model.getAllDokumen(query);
+
+    // **Buat Workbook dan Worksheet**
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Data Nama Dokumen");
+
+    // **Definisikan Header**
+    const headers = ["kodedok", "namadok", "kategori"];
+
+    // **Tambahkan Header ke Worksheet**
+    worksheet.addRow(headers);
+
+    // **Tambahkan Data**
+    data.forEach((row) => {
+      worksheet.addRow([row.kodedok, row.namadok, row.kategori]);
+    });
+
+    // **Buat Path File Excel**
+    const filePath = path.join(
+      __dirname,
+      "../../exports/namadokumen_export.xlsx"
+    );
+
+    // **Simpan File**
+    await workbook.xlsx.writeFile(filePath);
+
+    // **Kirim File Excel ke Client**
+    res.download(filePath, `namadokumen_${query}.xlsx`, (err) => {
+      if (err) {
+        console.error("Error saat mengirim file:", err);
+        res.status(500).json({ message: "Gagal mengunduh file" });
+      }
+
+      // **Hapus File Setelah Dikirim (Opsional)**
+      fs.unlinkSync(filePath);
+    });
+  } catch (error) {
+    console.error("❌ Error exporting Excel:", error);
+    return api.error(res, "Failed to export Excel", 500);
+  }
+};
+
 module.exports = {
   getAllDokumen,
   getFilterDokumen,
@@ -116,4 +172,5 @@ module.exports = {
   createDokumen,
   updateDokumen,
   deleteDokumen,
+  exportCsv,
 };

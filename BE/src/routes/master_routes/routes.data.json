@@ -399,5 +399,10 @@
     "path": "/dokumen/:kodedok",
     "method": "delete",
     "controller": "DocumentController.deleteDokumen"
+  },
+  {
+    "path": "/export-csv/dokumen/:query?",
+    "method": "get",
+    "controller": "DocumentController.exportCsv"
   }
 ]

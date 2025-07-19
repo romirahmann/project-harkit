@@ -27,6 +27,11 @@ export function AddDokumen({ isOpen, onClose, addDokumen }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.kodedok.length !== 4) {
+      setErrorMessage("Kode Dokumen hanya bisa 4 character");
+      return;
+    }
+
     try {
       await axios.post(`${baseUrl}/master/dokumen`, formData);
       setSuccessMessage("Dokumen berhasil ditambahkan!");
@@ -38,10 +43,11 @@ export function AddDokumen({ isOpen, onClose, addDokumen }) {
         onClose();
       }, 1500);
     } catch (err) {
+      console.log(err);
       setFormData({ kodedok: "", namadok: "", kategori: "" });
       AddLog(`${userData.username} menambahkan dokumen`, "FAILED");
       setErrorMessage(
-        err?.response?.data?.message || "Gagal menambahkan dokumen!"
+        err?.response?.data?.data?.message || "Gagal menambahkan dokumen!"
       );
       setTimeout(() => {
         setErrorMessage("");

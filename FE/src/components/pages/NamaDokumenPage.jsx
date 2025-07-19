@@ -8,8 +8,16 @@ import { RemoveModal } from "../reuse/RemoveModal";
 import { ApiUrl } from "../../context/Urlapi";
 import { AddDokumen } from "../reuse/modals/AddDokumen";
 import { EditDokumen } from "../reuse/modals/EditDokumen";
-import { FaCircle, FaEdit, FaFolderOpen, FaTrash } from "react-icons/fa";
+import {
+  FaCircle,
+  FaEdit,
+  FaFileCsv,
+  FaFolderOpen,
+  FaTrash,
+} from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
+import { AddLog } from "../../context/Log";
+import moment from "moment";
 export function NamaDokumenPage() {
   const [dokumen, setDokumen] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,6 +33,12 @@ export function NamaDokumenPage() {
   // STATUS
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [userLogin, setUserLogin] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("userData"));
+    setUserLogin(user);
+  }, []);
 
   useEffect(() => {
     getDokumen();
@@ -70,6 +84,36 @@ export function NamaDokumenPage() {
     setQuery(val);
   };
 
+  const handleExportCsv = async () => {
+    try {
+      const res = await axios.get(
+        `${baseUrl}/master/export-csv/dokumen/${query}`,
+        {
+          responseType: "blob",
+        }
+      );
+      const url = window.URL.createObjectURL(
+        new Blob([res.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        })
+      );
+
+      AddLog(`${userLogin.username} Export Data Dokumen`);
+      let dateNow = moment().format("YYYYMMDD HH:mm:ss");
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `data_namadokumen_${query !== null ? query : dateNow}.xlsx`
+      );
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="container-fluid p-4">
@@ -99,6 +143,12 @@ export function NamaDokumenPage() {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center"
           >
             <FaCirclePlus /> <span className="ms-2">Tambah</span>
+          </button>
+          <button
+            onClick={() => handleExportCsv()}
+            className="bg-blue-500 ms-2 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center"
+          >
+            <FaFileCsv /> <span className="ms-2">Export Excell</span>
           </button>
           <div className="dark:bg-gray-900 ms-auto">
             <SearchComponent
