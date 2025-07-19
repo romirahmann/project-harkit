@@ -75,7 +75,7 @@ export function Layout() {
     <div className="flex h-screen">
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full transition-all duration-500 bg-gradient-to-b from-blue-800 to-blue-900 shadow-lg ${
+        className={`fixed top-0 left-0 h-full overflow-y-auto transition-all duration-500 bg-gradient-to-b from-blue-800 to-blue-900 shadow-lg ${
           isSidebarOpen ? "w-64" : "w-16"
         }`}
       >
