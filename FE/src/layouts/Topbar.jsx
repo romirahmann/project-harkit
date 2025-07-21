@@ -9,7 +9,7 @@ export function Topbar({
   onLogout,
 }) {
   return (
-    <div className="flex relative z-[50] justify-between items-center p-4 bg-white shadow-md backdrop-blur-sm">
+    <div className="flex relative z-50 justify-between items-center p-4 bg-white shadow-md backdrop-blur-sm">
       <span className="flex items-center font-semibold">
         <img
           src="/RSAB-HARAPAN-KITA/images/logo_candra.png"

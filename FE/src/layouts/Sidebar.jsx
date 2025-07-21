@@ -35,8 +35,8 @@ export function Sidebar({ isSidebarOpen, setIsSidebarOpen, userLogin }) {
 
   return (
     <div
-      className={`fixed top-0 left-0 h-full transition-all duration-500 bg-gradient-to-b from-blue-800 to-blue-900 shadow-lg z-50 ${
-        isSidebarOpen ? "w-64" : "w-16"
+      className={` transition-all duration-500 bg-gradient-to-b from-blue-800 to-blue-900 shadow-lg z-50 ${
+        isSidebarOpen ? "w-[13em]" : "w-[4em]"
       }`}
     >
       <div className="flex items-center justify-between p-4 text-white">
