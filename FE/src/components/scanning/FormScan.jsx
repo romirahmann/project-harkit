@@ -127,6 +127,21 @@ export function FormScan({ onAdd }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (
+      !formData.kode_checklist ||
+      !formData.idproses ||
+      !formData.nama_proses ||
+      !formData.nik ||
+      !formData.nama_karyawan
+    ) {
+      setAlert({
+        show: true,
+        message: "Lengkapi inputan sebelum melanjutkan",
+        type: "error",
+      });
+      return;
+    }
+
     const dateNow = moment().format("YYYY-MM-DD");
     const timestamp = moment().format("HH:mm:ss");
     const submittedByUser = user?.username || "";
