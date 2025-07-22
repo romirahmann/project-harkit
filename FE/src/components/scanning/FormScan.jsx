@@ -154,6 +154,8 @@ export function FormScan({ onAdd }) {
       tanggal: dateNow,
     };
 
+    console.log(newFormData);
+
     try {
       await api.post(`/master/add-scan`, newFormData);
       onAdd("Add Proses Scanning Successfully!");

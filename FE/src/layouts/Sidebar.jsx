@@ -152,11 +152,11 @@ export function Sidebar({ isSidebarOpen, setIsSidebarOpen, userLogin }) {
                     label="Data Proses"
                     icon={<FaTasks />}
                   />
-                  {/* <SidebarSubItem
+                  <SidebarSubItem
                     to="/box-page"
                     label="Data Box"
                     icon={<FaBoxes />}
-                  /> */}
+                  />
                   <SidebarSubItem
                     to="/targets"
                     label="Data Targets"

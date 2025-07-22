@@ -43,6 +43,7 @@ export function ScanningPage() {
   };
 
   const handleAdd = (val) => {
+    console.log(val);
     fetchDataScanning();
     setAlert({
       show: true,

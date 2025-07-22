@@ -141,6 +141,7 @@ const routeTree = rootRoute.addChildren([
     scanpage,
     cheeksheetpage,
     updatepage,
+    boxpage,
   ]),
   authLayout,
 ]);

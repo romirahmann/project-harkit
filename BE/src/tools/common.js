@@ -5,7 +5,7 @@ const ok = (res, data) => {
   });
 };
 
-const error = (res, message, code) => {
+const error = (res, message, code = 500) => {
   return res.status(code).json({
     status: false,
     data: {

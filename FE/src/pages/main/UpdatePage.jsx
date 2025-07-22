@@ -5,18 +5,21 @@ import { useEffect, useState } from "react";
 import { LazyComponent } from "../../shared/LazyComponent";
 import api from "../../services/axios.service";
 import { TableUpdate } from "../../components/update/TableUpdate";
+import { AlertMessage } from "../../shared/AlertMessage";
 
 export function UpdatePage() {
   const [query, setQuery] = useState("");
-  const [fileCandra, setFileCandra] = useState(null);
-  const [fileQty, setFileQty] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const [candraNotComplete, setCandraNotComplete] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState({
     candra: null,
     qty: null,
   });
-
+  const [alert, setAlert] = useState({
+    show: false,
+    message: "",
+    type: "warning",
+  });
   useEffect(() => {
     fetchCandra();
   }, []);
@@ -41,12 +44,51 @@ export function UpdatePage() {
 
     setSelectedFiles((prev) => ({
       ...prev,
-      [type]: file.name,
+      [type]: file,
     }));
 
     // Optionally: Upload langsung atau simpan ke FormData
   };
-  const handleUpload = async (type) => {};
+  const handleUpload = async (type) => {
+    // console.log(selectedFiles);
+    if (!type) {
+      setAlert({
+        show: true,
+        message: "Pilih file terlebih dahulu",
+        type: "warning",
+      });
+    }
+    let file;
+    const formData = new FormData();
+    if (type === "candra") {
+      file = selectedFiles.candra;
+    }
+    if (type === "qty") {
+      file = selectedFiles.qty;
+    }
+
+    formData.append("file", file);
+
+    try {
+      let res = await api.post(`/master/upload-mdb`, formData);
+      setAlert({
+        show: true,
+        message: "File berhasil diupload",
+        type: "success",
+      });
+      setSelectedFiles({
+        candra: "",
+        qty: "",
+      });
+    } catch (error) {
+      console.log(error);
+      setAlert({
+        show: true,
+        message: "Gagal mengupload file",
+        type: "error",
+      });
+    }
+  };
 
   return (
     <>
@@ -85,7 +127,7 @@ export function UpdatePage() {
                       Choose File
                     </div>
                     <p className="ms-5 text-sm text-gray-700 truncate">
-                      {selectedFiles.candra || "No file selected"}
+                      {selectedFiles?.candra?.name || "No file selected"}
                     </p>
                   </label>
                 </div>
@@ -160,7 +202,7 @@ export function UpdatePage() {
                       Choose File
                     </div>
                     <p className="ms-5 text-sm text-gray-700 truncate">
-                      {selectedFiles.qty || "No file selected"}
+                      {selectedFiles?.qty?.name || "No file selected"}
                     </p>
                   </label>
                 </div>
@@ -215,6 +257,21 @@ export function UpdatePage() {
         <div className="max-w-full mt-5 bg-white p-5 ">
           <TableUpdate data={candraNotComplete} />
         </div>
+      </div>
+      <div>
+        {alert.show && (
+          <AlertMessage
+            type={alert.type}
+            message={alert.message}
+            onClose={() =>
+              setAlert({
+                show: false,
+                type: "",
+                message: "",
+              })
+            }
+          />
+        )}
       </div>
     </>
   );

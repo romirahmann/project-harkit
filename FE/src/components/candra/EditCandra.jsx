@@ -7,16 +7,11 @@ import { useAuth } from "../../store/AuthContext";
 
 export function EditCandra({ onEdit, data, onClose }) {
   const [formData, setFormData] = useState({
-    kode_checklist: "",
-    idproses: "",
-    nama_proses: "",
-    nik: "",
-    qty_image: "",
-    nama_karyawan: "",
-    tanggal: "",
-    mulai: "",
-    selesai: "",
-    editby: "",
+    id: 0,
+    NoMR: "",
+    NamaPasien: "",
+    Kode_Checklist: "",
+    NoBox: "",
   });
   const { user } = useAuth();
 
