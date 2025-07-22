@@ -1,8 +1,12 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import api from "../../services/axios.service";
 import { AlertMessage } from "../../shared/AlertMessage";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function EditEmployee({ onEdit, onClose, data }) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     nik: "",
     nama_karyawan: "",
@@ -38,6 +42,7 @@ export function EditEmployee({ onEdit, onClose, data }) {
     try {
       await api.put(`/master/employee/${data.id}`, formData);
       onEdit("Edit Employee Successfully!");
+      AddLog(`${user.username} berhasil edit data karyawan!`, "SUCCESSFULLY");
     } catch (error) {
       console.log(error);
       setAlert({
@@ -45,6 +50,7 @@ export function EditEmployee({ onEdit, onClose, data }) {
         message: "Failed to edit employee",
         type: "error",
       });
+      AddLog(`${user.username} gagal edit data karyawan!`, "FAILED");
     }
   };
   return (

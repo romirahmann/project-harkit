@@ -5,6 +5,8 @@ import { AnimatePresence } from "motion/react";
 import api from "../../services/axios.service";
 import { AlertMessage } from "../../shared/AlertMessage";
 import { useState } from "react";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function NonActive({ data, onAction, onClose }) {
   const [alert, setAlert] = useState({
@@ -12,6 +14,7 @@ export function NonActive({ data, onAction, onClose }) {
     message: "",
     type: "warning",
   });
+  const { user } = useAuth();
   const handleInActive = async () => {
     if (!data) {
       setAlert({
@@ -25,12 +28,17 @@ export function NonActive({ data, onAction, onClose }) {
     try {
       await api.post(`/master/nonaktif-mr`, data);
       onAction(`InActive ${data.NoMR} Successfully!`);
+      AddLog(
+        `${user.username} berhasil Inactive data MR ${data.NoMR}!`,
+        "SUCCESSFULLY"
+      );
     } catch (error) {
       setAlert({
         show: true,
         message: "Failed to InActive MR",
         type: "error",
       });
+      AddLog(`${user.username} gagal Inactive data MR ${data.NoMR}!`, "FAILED");
       console.log(error);
     }
   };

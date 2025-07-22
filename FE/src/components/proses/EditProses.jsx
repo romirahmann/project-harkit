@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import api from "../../services/axios.service";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function EditProses({ data, onEdit }) {
   const [formData, setFormData] = useState({
@@ -9,6 +11,7 @@ export function EditProses({ data, onEdit }) {
     urutan: 0,
     trn_date: null,
   });
+  const { user } = useAuth();
 
   useEffect(() => {
     setFormData({
@@ -32,7 +35,9 @@ export function EditProses({ data, onEdit }) {
     try {
       await api.put(`/master/proses/${data.id}`, formData);
       onEdit("Edit Proses Successfully!");
+      AddLog(`${user.username} berhasil edit data proses!`, "SUCCESSFULLY");
     } catch (error) {
+      AddLog(`${user.username} gagal edit data proses!`, "FAILED");
       console.log(error);
     }
   };

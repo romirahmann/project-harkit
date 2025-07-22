@@ -1,17 +1,22 @@
 /* eslint-disable no-unused-vars */
 import api from "../../services/axios.service";
+import { AddLog } from "../../services/log.service";
 import { Modal } from "../../shared/Modal";
 import { ModalDelete } from "../../shared/ModalDeleted";
+import { useAuth } from "../../store/AuthContext";
 import { AddProses } from "./AddProses";
 import { EditProses } from "./EditProses";
 
 export function ProsesAction({ isOpen, type, data, onClose, onAction }) {
+  const { user } = useAuth();
   const handleDeleted = async () => {
     try {
       await api.delete(`/master/proses/${data.id}`);
       onAction("Deleted Proses Successfully!");
+      AddLog(`${user.username} berhasil delete data proses!`, "SUCCESSFULLY");
     } catch (error) {
       console.log(error);
+      AddLog(`${user.username} gagal delete data proses!`, "FAILED");
     }
   };
   return (

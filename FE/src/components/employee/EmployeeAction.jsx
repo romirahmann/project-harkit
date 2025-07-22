@@ -1,16 +1,36 @@
+import { useState } from "react";
 import api from "../../services/axios.service";
+import { AddLog } from "../../services/log.service";
+import { AlertMessage } from "../../shared/AlertMessage";
 import { Modal } from "../../shared/Modal";
 import { ModalDelete } from "../../shared/ModalDeleted";
+import { useAuth } from "../../store/AuthContext";
 import { AddEmployee } from "./AddEmployee";
 import { EditEmployee } from "./EditEmployee";
 
 /* eslint-disable no-unused-vars */
 export function EmployeeAction({ isOpen, type, data, onClose, onAction }) {
+  const { user } = useAuth();
+  const [alert, setAlert] = useState({
+    show: false,
+    message: "",
+    type: "warning",
+  });
   const handleDeleted = async () => {
     try {
       await api.delete(`/master/employee/${data.id}`);
       onAction("Deleted Proses Successfully!");
+      AddLog(
+        `${user.username} berhasil menghapus data karyawan!`,
+        "SUCCESSFULLY"
+      );
     } catch (error) {
+      setAlert({
+        show: true,
+        message: "Failed to delete Employee",
+        type: "error",
+      });
+      AddLog(`${user.username} gagal menghapus data karyawan!`, "FAILED");
       console.log(error);
     }
   };
@@ -27,6 +47,21 @@ export function EmployeeAction({ isOpen, type, data, onClose, onAction }) {
           />
         )}
       </Modal>
+      <div>
+        {alert.show && (
+          <AlertMessage
+            type={alert.type}
+            message={alert.message}
+            onClose={() =>
+              setAlert({
+                show: false,
+                type: "",
+                message: "",
+              })
+            }
+          />
+        )}
+      </div>
     </>
   );
 }

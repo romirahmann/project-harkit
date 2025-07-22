@@ -6,8 +6,11 @@ import api from "../../services/axios.service";
 import { AlertMessage } from "../../shared/AlertMessage";
 import { useState } from "react";
 import { FcProcess } from "react-icons/fc";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function Activated({ data, onAction, onClose }) {
+  const { user } = useAuth();
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -26,12 +29,17 @@ export function Activated({ data, onAction, onClose }) {
     try {
       await api.post(`/master/aktif-mr`, data);
       onAction(`Active ${data.NoMR} Successfully!`);
+      AddLog(
+        `${user.username} berhasil Activate MR ${data.NoMR}!`,
+        "SUCCESSFULLY"
+      );
     } catch (error) {
       setAlert({
         show: true,
         message: "Failed to Active MR",
         type: "error",
       });
+      AddLog(`${user.username} gagal Activate MR ${data.NoMR}!`, "FAILED");
       console.log(error);
     }
   };

@@ -3,6 +3,8 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import api from "../../services/axios.service";
 import { AlertMessage } from "../../shared/AlertMessage";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function EditMR({ onEdit, data, onClose }) {
   const [formData, setFormData] = useState({
@@ -18,6 +20,7 @@ export function EditMR({ onEdit, data, onClose }) {
     message: "",
     type: "warning",
   });
+  const { user } = useAuth();
   useEffect(() => {
     setFormData({
       NoUrut: data.NoUrut,
@@ -43,7 +46,17 @@ export function EditMR({ onEdit, data, onClose }) {
     try {
       await api.put(`/master/datamr/${data?.NoUrut}/${data?.Kode_Checklist}`);
       onEdit("Edit MR Successfully!");
+      AddLog(
+        `${user.username} berhasil edit data MR ${data.NoMR}!`,
+        "SUCCESSFULLY"
+      );
     } catch (error) {
+      setAlert({
+        show: true,
+        message: `Failed to Edit MR ${data.NoMR}`,
+        type: "error",
+      });
+      AddLog(`${user.username} gagal edit data MR ${data.NoMR}!`, "FAILED");
       console.log(error);
     }
   };

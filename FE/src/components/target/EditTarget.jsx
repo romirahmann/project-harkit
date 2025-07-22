@@ -1,13 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import api from "../../services/axios.service";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function EditTarget({ data, onEdit }) {
   const [formData, setFormData] = useState({
     nama: "",
     nilai: 0,
   });
-
+  const { user } = useAuth();
   useEffect(() => {
     setFormData({
       nama: data.nama,
@@ -29,11 +31,13 @@ export function EditTarget({ data, onEdit }) {
     try {
       await api.put(`/master/target/${data.id}`, formData);
       onEdit("Edit Target Successfully!");
+      AddLog(`${user.username} berhasil edit data target!`, "SUCCESSFULLY");
       setFormData({
         nama: "",
         nilai: 0,
       });
     } catch (error) {
+      AddLog(`${user.username} gagal menambahkan data proses!`, "FAILED");
       console.log(error);
     }
   };

@@ -1,15 +1,21 @@
+/* eslint-disable no-unused-vars */
 import api from "../../services/axios.service";
+import { AddLog } from "../../services/log.service";
 import { Modal } from "../../shared/Modal";
 import { ModalDelete } from "../../shared/ModalDeleted";
+import { useAuth } from "../../store/AuthContext";
 
 import { EditBox } from "./EditBox";
 
 export function BoxAction({ isOpen, type, data, onClose, onAction }) {
+  const { user } = useAuth();
   const handleDeleted = async () => {
     try {
       await api.delete(`/master/box/${data.id}`);
       onAction("Deleted Proses Successfully!");
+      AddLog(`${user.username} berhasil delete data box!`, "SUCCESSFULLY");
     } catch (error) {
+      AddLog(`${user.username} gagal delete data box!`, "FAILED");
       console.log(error);
     }
   };

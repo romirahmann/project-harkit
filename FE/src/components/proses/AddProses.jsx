@@ -1,14 +1,24 @@
 import { useState } from "react";
 import api from "../../services/axios.service";
 import moment from "moment";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
+import { AlertMessage } from "../../shared/AlertMessage";
 
 /* eslint-disable no-unused-vars */
 export function AddProses({ onAdd, onClose }) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     idproses: "",
     nama_proses: "",
     urutan: 0,
     trn_date: moment().format("YYYY-MM-DD"),
+  });
+
+  const [alert, setAlert] = useState({
+    show: false,
+    message: "",
+    type: "warning",
   });
 
   const handleChange = (e) => {
@@ -23,7 +33,17 @@ export function AddProses({ onAdd, onClose }) {
     try {
       await api.post(`/master/proses`, formData);
       onAdd("Add Proses Successfully!");
+      AddLog(
+        `${user.username} berhasil menambahkan data proses!`,
+        "SUCCESSFULLY"
+      );
     } catch (error) {
+      setAlert({
+        show: true,
+        message: "Gagal add proses!",
+        type: "error",
+      });
+      AddLog(`${user.username} gagal menambahkan data proses!`, "FAILED");
       console.log(error);
     }
   };
@@ -97,6 +117,21 @@ export function AddProses({ onAdd, onClose }) {
           </button>
         </div>
       </form>
+      <div>
+        {alert.show && (
+          <AlertMessage
+            type={alert.type}
+            message={alert.message}
+            onClose={() =>
+              setAlert({
+                show: false,
+                type: "",
+                message: "",
+              })
+            }
+          />
+        )}
+      </div>
     </>
   );
 }

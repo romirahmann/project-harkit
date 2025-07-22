@@ -2,13 +2,15 @@
 /* eslint-disable no-undef */
 import { useState } from "react";
 import api from "../../services/axios.service";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function AddTarget({ onAdd }) {
   const [formData, setFormData] = useState({
     nama: "",
     nilai: 0,
   });
-
+  const { user } = useAuth();
   const handleChange = (e) => {
     setFormData((formData) => ({
       ...formData,
@@ -22,11 +24,16 @@ export function AddTarget({ onAdd }) {
     try {
       await api.post("/master/target", formData);
       onAdd("Add data target successfully!");
+      AddLog(
+        `${user.username} berhasil menambahkan data target!`,
+        "SUCCESSFULLY"
+      );
       setFormData({
         nama: "",
         nilai: 0,
       });
     } catch (error) {
+      AddLog(`${user.username} gagal menambahkan data proses!`, "FAILED");
       console.log(error);
     }
   };

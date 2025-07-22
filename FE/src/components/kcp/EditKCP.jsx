@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
+import { useAuth } from "../../store/AuthContext";
 
 export function EditKCP({ onEdit, data, onClose }) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     NoUrut: "",
     NoMR: "",

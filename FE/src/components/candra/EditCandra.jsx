@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "../../services/axios.service";
 import { AlertMessage } from "../../shared/AlertMessage";
 import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function EditCandra({ onEdit, data, onClose }) {
   const [formData, setFormData] = useState({
@@ -38,15 +39,22 @@ export function EditCandra({ onEdit, data, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(formData);
+
     try {
       await api.put(
         `/master/candra/${data.kode_checklist}/${data.idproses}`,
         formData
       );
       onEdit("Edit Successfully!");
+      AddLog(`${user.username} berhasil edit data candra!`, "SUCCESSFULLY");
     } catch (error) {
       console.log(error);
+      AddLog(`${user.username} gagal edit data candra!`, "FAILED");
+      setAlert({
+        show: true,
+        message: "Gagal Edit Candra!",
+        type: "error",
+      });
     }
   };
   const handleChange = (e) => {

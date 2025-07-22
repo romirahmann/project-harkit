@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../services/axios.service";
 import { AlertMessage } from "../../shared/AlertMessage";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function AddEmployee({ onAdd, onClose }) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     nik: "",
     nama_karyawan: "",
@@ -37,6 +40,10 @@ export function AddEmployee({ onAdd, onClose }) {
     try {
       await api.post(`/master/employee`, formData);
       onAdd("Add Employee Successfully!");
+      AddLog(
+        `${user.username} berhasil menambahkan data karyawan!`,
+        "SUCCESSFULLY"
+      );
     } catch (error) {
       console.log(error);
       setAlert({
@@ -44,6 +51,7 @@ export function AddEmployee({ onAdd, onClose }) {
         message: "Failed to add employee",
         type: "error",
       });
+      AddLog(`${user.username} gagal menambahkan data karyawan!`, "FAILED");
     }
   };
 

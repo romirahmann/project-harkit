@@ -7,6 +7,7 @@ import api from "../../services/axios.service";
 import moment from "moment";
 import { useAuth } from "../../store/AuthContext";
 import { Modal } from "../../shared/Modal";
+import { AddLog } from "../../services/log.service";
 
 export function TableScan({ data = [], selectedProses, onAlert }) {
   const [countShow, setCountShow] = useState(10);
@@ -85,11 +86,19 @@ export function TableScan({ data = [], selectedProses, onAlert }) {
         formQty
       );
       onAlert("Berhasil menambahkan qty!");
+      AddLog(
+        `${user.username} berhasil menambahkan qty: ${formQty} untuk checklist: ${kode_checklist}!`,
+        "SUCCESSFULLY"
+      );
       setOpenModal({
         isOpen: false,
         title: "",
       });
     } catch (error) {
+      AddLog(
+        `${user.username} gagal menambahkan qty: ${formQty} untuk checklist: ${kode_checklist}!`,
+        "FAILED"
+      );
       console.log(error);
     }
   };

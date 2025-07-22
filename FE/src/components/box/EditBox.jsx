@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import api from "../../services/axios.service";
 import { AlertMessage } from "../../shared/AlertMessage";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function EditBox({ data, onEdit, onClose }) {
   const [formEdit, setFormEdit] = useState({
@@ -16,6 +18,7 @@ export function EditBox({ data, onEdit, onClose }) {
     message: "",
     type: "warning",
   });
+  const { user } = useAuth();
 
   useEffect(() => {
     setFormEdit({
@@ -31,13 +34,10 @@ export function EditBox({ data, onEdit, onClose }) {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log("data: ", data);
-    console.log("formEdit: ", formEdit);
-
     try {
       await api.put(`/master/box/${formEdit.id}`, formEdit);
       onEdit("Update Data Box Successfully!");
+      AddLog(`${user.username} berhasil edit data box!`, "SUCCESSFULLY");
     } catch (error) {
       console.log(error);
       setAlert({
@@ -45,6 +45,7 @@ export function EditBox({ data, onEdit, onClose }) {
         message: "Error Update Data Box",
         type: "error",
       });
+      AddLog(`${user.username} gagal menambahkan data box!`, "FAILED");
     }
   };
   return (

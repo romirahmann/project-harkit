@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../store/AuthContext";
 import api from "../../services/axios.service";
 import { AlertMessage } from "../../shared/AlertMessage";
+import { AddLog } from "../../services/log.service";
 
 export function FormScan({ onAdd }) {
   const [formData, setFormData] = useState({
@@ -159,10 +160,17 @@ export function FormScan({ onAdd }) {
     try {
       await api.post(`/master/add-scan`, newFormData);
       onAdd("Add Proses Scanning Successfully!");
+      AddLog(
+        `${user.username} berhasil menambahkan proses scan kode checklist ${newFormData.kode_checklist}!`,
+        "SUCCESSFULLY"
+      );
       resetForm(); // gunakan resetForm saat sukses
     } catch (error) {
       console.log(error?.response?.data?.data || error);
-
+      AddLog(
+        `${user.username} gagal menambahkan proses scan kode checklist ${newFormData.kode_checklist}!`,
+        "FAILED"
+      );
       const message =
         error?.response?.data?.data?.message || "Gagal menambahkan data scan.";
 
