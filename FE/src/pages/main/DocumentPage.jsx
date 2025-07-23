@@ -7,6 +7,8 @@ import { LazyComponent } from "../../shared/LazyComponent";
 import { MdDeleteForever } from "react-icons/md";
 import api from "../../services/axios.service";
 import { TableDokumen } from "../../components/dokumen/TableDokumen";
+import { DokumenAction } from "../../components/dokumen/DokumenAction";
+import { AlertMessage } from "../../shared/AlertMessage";
 
 export function DocumentPage() {
   const [isLoading, setLoading] = useState(true);
@@ -32,7 +34,7 @@ export function DocumentPage() {
     try {
       const res = await api.get("/master/dokumens");
       setDokumen(res.data.data);
-      console.log(res.data.data);
+      // console.log(res.data.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -165,8 +167,36 @@ export function DocumentPage() {
                 }
                 resetChecklist={resetChecklist}
               />
+              <DokumenAction
+                isOpen={showModal.show}
+                type={showModal.type}
+                data={showModal.data}
+                onClose={() =>
+                  setShowModal({
+                    show: false,
+                    type: "",
+                    data: null,
+                  })
+                }
+                onAction={handleOnAction}
+              />
             </div>
           </div>
+        )}
+      </div>
+      <div>
+        {alert.show && (
+          <AlertMessage
+            type={alert.type}
+            message={alert.message}
+            onClose={() =>
+              setAlert({
+                show: false,
+                type: "",
+                message: "",
+              })
+            }
+          />
         )}
       </div>
     </>

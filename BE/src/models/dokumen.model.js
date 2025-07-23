@@ -5,7 +5,7 @@ const getAllDokumen = async (q) => {
   let query = "SELECT * FROM tbldokumen";
   if (q) {
     const safeQ = q.replace(/'/g, "''");
-    query += ` WHERE nama_karyawan LIKE '${safeQ}%' OR nik LIKE '${safeQ}%' `;
+    query += ` WHERE kodedok LIKE '${safeQ}%' OR namadok LIKE '${safeQ}%' `;
   }
   const result = await db.query(query);
   return result;

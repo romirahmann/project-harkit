@@ -20,11 +20,13 @@ export function TableDokumen({
   const handleSelected = (row, checked) => {
     if (checked) {
       setSelectedRows((prev) => {
-        const isExist = prev.some((item) => item.id === row.id);
+        const isExist = prev.some((item) => item.kodedok === item.kodedok);
         return isExist ? prev : [...prev, row];
       });
     } else {
-      setSelectedRows((prev) => prev.filter((item) => item.id !== row.id));
+      setSelectedRows((prev) =>
+        prev.filter((item) => item.kodedok !== row.kodedok)
+      );
     }
   };
   const columns = [
@@ -43,6 +45,7 @@ export function TableDokumen({
     },
     { header: "Kode Dokumen", key: "kodedok" },
     { header: "Nama Dokumen", key: "namadok" },
+    { header: "Kategori", key: "Kategori" },
   ];
   return (
     <>
