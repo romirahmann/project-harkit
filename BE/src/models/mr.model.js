@@ -221,7 +221,11 @@ const createDataMRt3 = async (data) => {
   const query = `
     INSERT INTO tblDataMRt3 
     (NoUrut, NoMR, NamaPasien, Tanggal, [Layanan], Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen,Periode_Ranap) 
-    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', '${Tanggal}','${layanan}', ${Qty_Image}, '${Kode_Checklist}', '${Mulai}', '${Selesai}', '${namadokumen}', '${Periode_Ranap}')`;
+    VALUES ('${NoUrut}', '${NoMR}', '${NamaPasien}', '${Tanggal}','${
+    layanan || ""
+  }', ${Qty_Image}, '${Kode_Checklist}', '${Mulai || ""}', '${
+    Selesai || ""
+  }', '${namadokumen}', '${Periode_Ranap}')`;
 
   const result = db.query(query);
   return result;

@@ -10,6 +10,7 @@ import { AlertMessage } from "../../shared/AlertMessage";
 export function UpdatePage() {
   const [query, setQuery] = useState("");
   const [isLoading, setLoading] = useState(true);
+  const [isUpload, setIsUpload] = useState(false);
   const [candraNotComplete, setCandraNotComplete] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState({
     candra: null,
@@ -46,11 +47,8 @@ export function UpdatePage() {
       ...prev,
       [type]: file,
     }));
-
-    // Optionally: Upload langsung atau simpan ke FormData
   };
   const handleUpload = async (type) => {
-    // console.log(selectedFiles);
     if (!type) {
       setAlert({
         show: true,
@@ -58,6 +56,7 @@ export function UpdatePage() {
         type: "warning",
       });
     }
+    setIsUpload(true);
     let file;
     const formData = new FormData();
     if (type === "candra") {
@@ -80,6 +79,7 @@ export function UpdatePage() {
         candra: "",
         qty: "",
       });
+      setIsUpload(false);
     } catch (error) {
       console.log(error);
       setAlert({
@@ -87,6 +87,7 @@ export function UpdatePage() {
         message: "Gagal mengupload file",
         type: "error",
       });
+      setIsUpload(false);
     }
   };
 
@@ -145,7 +146,7 @@ export function UpdatePage() {
                       : "bg-gray-300 "
                   } focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5`}
                 >
-                  {isLoading ? (
+                  {isUpload ? (
                     <div role="status">
                       <svg
                         aria-hidden="true"
@@ -220,7 +221,7 @@ export function UpdatePage() {
                       : "bg-gray-300"
                   } focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5`}
                 >
-                  {isLoading ? (
+                  {isUpload ? (
                     <div role="status flex">
                       <svg
                         aria-hidden="true"
