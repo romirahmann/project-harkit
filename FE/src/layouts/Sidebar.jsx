@@ -8,12 +8,13 @@ import {
   FaUsers,
   FaBoxes,
   FaUserCog,
+  FaFolderOpen,
 } from "react-icons/fa";
 import { MdOutlineLibraryAddCheck, MdDocumentScanner } from "react-icons/md";
 import { AiFillStop } from "react-icons/ai";
 import { BsClipboardData } from "react-icons/bs";
 import { TbTargetArrow } from "react-icons/tb";
-import { IoDocumentsSharp } from "react-icons/io5";
+import { IoDocuments, IoDocumentsSharp } from "react-icons/io5";
 
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
@@ -131,6 +132,11 @@ export function Sidebar({ isSidebarOpen, setIsSidebarOpen, userLogin }) {
                     to="/data-candra"
                     label="Data Candra"
                     icon={<FaDatabase />}
+                  />
+                  <SidebarSubItem
+                    to="/data-dokumen"
+                    label="Data Dokumen"
+                    icon={<IoDocuments />}
                   />
                   <SidebarSubItem
                     to="/data-kcp"

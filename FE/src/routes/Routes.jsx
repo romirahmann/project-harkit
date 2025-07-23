@@ -22,6 +22,7 @@ import { MRpage } from "../pages/main/MRpage";
 import { ScanningPage } from "../pages/main/ScanningPage";
 import { ChecksheetPage } from "../pages/main/ChecksheetPage";
 import { UpdatePage } from "../pages/main/UpdatePage";
+import { DocumentPage } from "../pages/main/DocumentPage";
 
 const rootRoute = createRootRoute({
   notFoundComponent: NotFound,
@@ -125,6 +126,12 @@ const updatepage = createRoute({
   component: UpdatePage,
 });
 
+const dokumenpage = createRoute({
+  getParentRoute: () => mainLayout,
+  path: "/data-dokumen",
+  component: DocumentPage,
+});
+
 const routeTree = rootRoute.addChildren([
   protectedLayout,
   mainLayout.addChildren([
@@ -142,6 +149,7 @@ const routeTree = rootRoute.addChildren([
     cheeksheetpage,
     updatepage,
     boxpage,
+    dokumenpage,
   ]),
   authLayout,
 ]);
