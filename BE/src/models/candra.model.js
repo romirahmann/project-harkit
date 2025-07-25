@@ -114,19 +114,46 @@ const createCandra = async (data) => {
     submittedby,
   } = data;
 
-  const formattedTanggal = moment(tanggal, "YYYY-MM-DD").format("yyyy-MM-DD");
+  // Format tanggal MM/DD/YYYY untuk Access
+  const formattedTanggal = moment(tanggal, "YYYY-MM-DD").format("MM/DD/YYYY");
+
+  // Escape petik satu
+  const escapeString = (str) => (str ? String(str).replace(/'/g, "''") : "");
+
+  // Format waktu
+  const mulai = mulai_formatted
+    ? `#${moment(mulai_formatted, "HH:mm:ss").format("HH:mm:ss")}#`
+    : "NULL";
+  const selesai = selesai_formatted
+    ? `#${moment(selesai_formatted, "HH:mm:ss").format("HH:mm:ss")}#`
+    : "NULL";
 
   const query = `
-    INSERT INTO tblcandra (kode_checklist, idproses, nik, qty_image, nama_proses, nama_karyawan, tanggal, mulai, selesai, submittedby)
-    VALUES ('${kode_checklist}', '${idproses}', '${nik}', ${parseInt(
-    qty_image || 0
-  )}, '${nama_proses}', '${nama_karyawan}', #${formattedTanggal}#, '${
-    mulai_formatted || ""
-  }', '${selesai_formatted || ""}', '${submittedby}')
+    INSERT INTO tblcandra (
+      kode_checklist, idproses, nik, qty_image, nama_proses, nama_karyawan,
+      [tanggal], [mulai], [selesai], submittedby
+    )
+    VALUES (
+      '${escapeString(kode_checklist)}',
+      '${escapeString(idproses)}',
+      '${escapeString(nik)}',
+      ${parseInt(qty_image || 0)},
+      '${escapeString(nama_proses)}',
+      '${escapeString(nama_karyawan)}',
+      #${formattedTanggal}#,
+      ${mulai},
+      ${selesai},
+      '${escapeString(submittedby)}'
+    )
   `;
 
-  const result = await db.query(query);
-  return result; // ✅ Return jumlah baris yang ditambahkan
+  try {
+    const result = await db.query(query);
+    return result;
+  } catch (err) {
+    console.error("❌ Error inserting into tblcandra:", err);
+    throw err;
+  }
 };
 
 const createCandraFromScan = async (data) => {

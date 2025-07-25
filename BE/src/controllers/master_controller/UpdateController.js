@@ -61,7 +61,13 @@ const uploadFile = async (req, res) => {
         );
 
         if (!existing) {
-          await modelCandra.createCandra(candra);
+          try {
+            await modelCandra.createCandra(candra);
+            // console.log("DATA CANDRA UPDATE SUCCESSFULLY!");
+          } catch (error) {
+            console.log(error);
+            return api.error(res, "Failed To Update Candra!", 401);
+          }
         }
       }
 
@@ -73,7 +79,13 @@ const uploadFile = async (req, res) => {
         );
 
         if (!existing) {
-          await modelMR.createDataMR(dataMR);
+          try {
+            await modelMR.createDataMR(dataMR);
+            // console.log("DATA MR UPDATE SUCCESSFULLY!");
+          } catch (error) {
+            console.log(error);
+            return api.error(res, "Failed To Update MR!", 401);
+          }
         }
       }
 
@@ -85,7 +97,13 @@ const uploadFile = async (req, res) => {
         );
 
         if (!existing) {
-          await modelMR.createDataMRt3(dataMR3);
+          try {
+            await modelMR.createDataMRt3(dataMR3);
+            // console.log("DATA MRT3 UPDATE SUCCESSFULLY!");
+          } catch (error) {
+            console.log(error);
+            return api.error(res, "Failed To Update MRT3!", 401);
+          }
         }
       }
 
