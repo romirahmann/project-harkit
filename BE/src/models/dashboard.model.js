@@ -54,6 +54,7 @@ const totalLembar = async (date) => {
                              AND t1.idproses = '1001'
                              AND t2.idproses = '1003'`;
   const result = await db.query(query);
+
   return result[0].total_lembar;
 };
 
@@ -153,8 +154,19 @@ const getQtyImage = async (idproses, tanggal) => {
       WHERE idproses = '${idproses}'
       GROUP BY tanggal`;
   const result = await db.query(query);
-  // console.log("qty image: ", result);
+
   return result;
+};
+const totalLembarGrafik = async (date) => {
+  const db = await getDB();
+  const query = `SELECT t1.tanggal, SUM(t2.qty_image) AS total_qty
+    FROM tblcandra AS t1
+    INNER JOIN tblcandra AS t2 ON t1.kode_checklist = t2.kode_checklist
+    WHERE t1.idproses = '1001'
+      AND t2.idproses = '1003'
+    GROUP BY t1.tanggal`;
+  const result = await db.query(query);
+  return result; // ✅
 };
 
 module.exports = {
@@ -175,4 +187,5 @@ module.exports = {
   getAllTarget,
   getQtyImage,
   totalMR,
+  totalLembarGrafik,
 };
