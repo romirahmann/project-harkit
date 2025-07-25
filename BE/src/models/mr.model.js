@@ -183,9 +183,14 @@ const deleteMRDouble = async (NoUrut, Kode_Checklist) => {
 };
 
 // MR T3
-const getAllMRt3 = async () => {
+const getAllMRt3 = async (q) => {
   const db = getDB();
-  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3 `;
+  let query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3 `;
+  if (q) {
+    const safeQ = q.replace(/'/g, "''");
+    query += ` WHERE Kode_Checklist LIKE '${safeQ}%'  `;
+  }
+
   const result = await db.query(query);
   return result;
 };

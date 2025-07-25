@@ -37,12 +37,13 @@ export function ChartUtama() {
 
   useEffect(() => {
     fecthDataChart();
-  }, [chartData]);
+  }, []);
 
   const fecthDataChart = async () => {
     try {
       let res = await api.get(`/master/primary-chart/${selectionDate}`);
       let data = res.data.data;
+      console.log(res.data.data);
       setChartData(data);
       setTarget(data.targets);
     } catch (err) {

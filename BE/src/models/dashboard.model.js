@@ -153,7 +153,7 @@ const getQtyImage = async (idproses, tanggal) => {
       WHERE idproses = '${idproses}'
       GROUP BY tanggal`;
   const result = await db.query(query);
-
+  // console.log("qty image: ", result);
   return result;
 };
 

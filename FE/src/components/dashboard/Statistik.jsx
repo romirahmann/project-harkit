@@ -15,12 +15,13 @@ export function Statistik() {
 
   useEffect(() => {
     fetchStatistikData();
-  }, [statistikData, selectionDate]);
+  }, [selectionDate]);
 
   const fetchStatistikData = async () => {
     try {
       let res = await api.get(`/master/data-statistik/${selectionDate}`);
       setStatistikData(res.data.data);
+      console.log(res.data.data);
     } catch (error) {
       console.log(error);
     }
