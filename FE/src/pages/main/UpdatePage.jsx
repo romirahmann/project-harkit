@@ -64,12 +64,13 @@ export function UpdatePage() {
     }
     if (type === "qty") {
       file = selectedFiles.qty;
+      console.log(file);
     }
 
     formData.append("file", file);
 
     try {
-      let res = await api.post(`/master/upload-mdb`, formData);
+      await api.post(`/master/upload-mdb`, formData);
       setAlert({
         show: true,
         message: "File berhasil diupload",
