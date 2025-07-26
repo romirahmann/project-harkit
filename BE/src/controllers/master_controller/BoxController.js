@@ -47,7 +47,7 @@ const updateBox = async (req, res) => {
   const data = req.body;
   try {
     if (!id || !data) return api.error(res, "ID and data are required", 400);
-    console.log(data);
+
     let result = await modelBox.update(id, data);
     return api.ok(res, result);
   } catch (error) {

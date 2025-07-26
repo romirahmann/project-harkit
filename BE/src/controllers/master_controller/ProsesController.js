@@ -14,7 +14,6 @@ const getAllProses = async (req, res) => {
 const getFilterProses = async (req, res) => {
   let { query } = req.params;
   try {
-    console.log(query);
     let data = await model.getAllProses(query || "");
     return api.ok(res, data);
   } catch (error) {

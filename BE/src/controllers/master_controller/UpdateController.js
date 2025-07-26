@@ -131,7 +131,12 @@ const uploadFile = async (req, res) => {
 
       return api.ok(res, "UPDATE QTY SUCCESFULLY!");
     }
-
+    try {
+      await modelUpdate.clearData();
+    } catch (error) {
+      api.error(res, "Delete Data Failed!", 401);
+      console.log(error);
+    }
     return api.error(res, "Please Upload File dbData.mdb or dbQty.mdb");
   } catch (err) {
     console.log(err);

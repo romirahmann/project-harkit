@@ -222,48 +222,27 @@ const createDataMRt3 = async (data) => {
     Periode_Ranap,
   } = data;
 
-  const escapeString = (str) => (str ? String(str).replace(/'/g, "''") : "");
-
-  // Validasi Tanggal
-  const formattedTanggal = moment(Tanggal, "YYYY-MM-DD", true).isValid()
-    ? `#${moment(Tanggal, "YYYY-MM-DD").format("MM/DD/YYYY")}#`
-    : "NULL";
-
-  // Validasi Jam
-  const formattedMulai = moment(Mulai, "HH:mm:ss", true).isValid()
-    ? `#${moment(Mulai, "HH:mm:ss").format("HH:mm:ss")}#`
-    : "NULL";
-
-  const formattedSelesai = moment(Selesai, "HH:mm:ss", true).isValid()
-    ? `#${moment(Selesai, "HH:mm:ss").format("HH:mm:ss")}#`
-    : "NULL";
-
   const query = `
     INSERT INTO tblDataMRt3 (
       NoUrut, NoMR, NamaPasien, [Tanggal], [Layanan], Qty_Image,
       Kode_Checklist, [Mulai], [Selesai], namadokumen, Periode_Ranap
     ) VALUES (
-      '${escapeString(NoUrut)}',
-      '${escapeString(NoMR)}',
-      '${escapeString(NamaPasien)}',
-      ${formattedTanggal},
-      '${escapeString(layanan || "")}',
-      ${parseInt(Qty_Image || 0)},
-      '${escapeString(Kode_Checklist)}',
-      ${formattedMulai},
-      ${formattedSelesai},
-      '${escapeString(namadokumen)}',
-      '${escapeString(Periode_Ranap)}'
+      '${NoUrut}',
+      '${NoMR}',
+      '${NamaPasien}',
+      '${Tanggal}',
+      '${layanan || ""}',
+      '${Qty_Image || ""}',
+      '${Kode_Checklist}',
+      '${Mulai || ""}',
+      '${Selesai || ""}',
+      '${namadokumen}',
+      '${Periode_Ranap}'
     )
   `;
 
-  try {
-    const result = await db.query(query);
-    return result;
-  } catch (err) {
-    console.error("❌ Error inserting into tblDataMRt3:", err);
-    throw err;
-  }
+  const result = await db.query(query);
+  return result;
 };
 
 const dataExistingT3 = async (NoUrut, Kode_Checklist) => {
@@ -277,13 +256,8 @@ const dataExistingT3 = async (NoUrut, Kode_Checklist) => {
       AND Kode_Checklist = '${escapeString(Kode_Checklist)}'
   `;
 
-  try {
-    const result = await db.query(query);
-    return result[0].total_count > 0;
-  } catch (err) {
-    console.error("❌ Error checking existing T3:", err);
-    throw err;
-  }
+  const result = await db.query(query);
+  return result[0].total_count > 0;
 };
 
 const updateDataMRt3 = async (data) => {

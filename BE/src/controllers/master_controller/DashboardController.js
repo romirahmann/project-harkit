@@ -164,12 +164,14 @@ const getDatesInMonth = (params) => {
 const getDataPrimaryChart = async (req, res) => {
   try {
     const { monthSelected } = req.params;
+    let month = moment(monthSelected).format("MM");
+    let year = moment(monthSelected).format("YYYY");
 
     let targets = await model.getAllTarget();
     let dates = getDatesInMonth(monthSelected);
-    const data1 = await model.getQtyImage(1001, monthSelected);
-    const data2 = await model.totalLembarGrafik(1003, monthSelected);
-
+    const data1 = await model.getQtyImage(1001, month, year);
+    const data2 = await model.totalLembarGrafik(month, year);
+    // console.log(data2);
     // Konversi data1 dan data2 menjadi object dengan tanggal sebagai key
     const data1Map = Object.fromEntries(
       data1.map((item) => [

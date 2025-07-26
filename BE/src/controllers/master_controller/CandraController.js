@@ -20,7 +20,7 @@ const getAllCandra = async (req, res) => {
 };
 const getFilterCandra = async (req, res) => {
   let { query } = req.params;
-  console.log(query);
+
   try {
     let data = await model.getAllCandra(query);
     return api.ok(res, data);
@@ -382,11 +382,6 @@ const validate1007 = async (req, res) => {
           const selesai = item?.selesai?.trim();
 
           if (!item || !selesai || selesai === "00:00:00") {
-            // console.log(
-            //   `kode: ${kode} | idproses: ${id} | nama_proses: ${
-            //     item?.nama_proses || prosesMap[id]
-            //   }`
-            // );
             return {
               idproses: id,
               nama_proses: item?.nama_proses || prosesMap[id] || `Proses ${id}`,

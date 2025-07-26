@@ -147,13 +147,8 @@ const createCandra = async (data) => {
     )
   `;
 
-  try {
-    const result = await db.query(query);
-    return result;
-  } catch (err) {
-    console.error("❌ Error inserting into tblcandra:", err);
-    throw err;
-  }
+  const result = await db.query(query);
+  return result;
 };
 
 const createCandraFromScan = async (data) => {

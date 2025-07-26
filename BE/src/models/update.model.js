@@ -1,4 +1,8 @@
-const { getDBData, getDBQty } = require("../database/update.config");
+const {
+  getDBData,
+  getDBQty,
+  getDbRealQty,
+} = require("../database/update.config");
 
 const getAllCandra = async () => {
   const db = getDBData();
@@ -53,4 +57,17 @@ const getQty = async () => {
   return result;
 };
 
-module.exports = { getAllCandra, getQty, getAllDataMR, getAllDataMR3 };
+const clearData = async () => {
+  const db = getDbRealQty();
+  let query = `DELETE FROM ExportTable;`;
+  const result = await db.query(query);
+  return result;
+};
+
+module.exports = {
+  getAllCandra,
+  getQty,
+  getAllDataMR,
+  getAllDataMR3,
+  clearData,
+};

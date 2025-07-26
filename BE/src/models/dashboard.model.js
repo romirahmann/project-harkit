@@ -147,26 +147,36 @@ const getProsesData = async () => {
   return db.query(query);
 };
 
-const getQtyImage = async (idproses, tanggal) => {
+const getQtyImage = async (idproses, month, year) => {
   const db = await getDB();
-  const query = `SELECT tanggal, SUM(qty_image) AS total_qty
-      FROM tblcandra
-      WHERE idproses = '${idproses}'
-      GROUP BY tanggal`;
-  const result = await db.query(query);
 
+  const query = `
+    SELECT tanggal, SUM(qty_image) AS total_qty
+    FROM tblcandra
+    WHERE idproses = '${idproses}'
+      AND FORMAT(CDate(tanggal), 'mm') = '${month}'
+      AND FORMAT(CDate(tanggal), 'yyyy') = '${year}'
+    GROUP BY tanggal
+  `;
+
+  const result = await db.query(query);
   return result;
 };
-const totalLembarGrafik = async (date) => {
+const totalLembarGrafik = async (month, year) => {
   const db = await getDB();
-  const query = `SELECT t1.tanggal, SUM(t2.qty_image) AS total_qty
+
+  const query = `
+    SELECT t1.tanggal, SUM(t2.qty_image) AS total_qty
     FROM tblcandra AS t1
     INNER JOIN tblcandra AS t2 ON t1.kode_checklist = t2.kode_checklist
-    WHERE t1.idproses = '1001'
-      AND t2.idproses = '1003'
-    GROUP BY t1.tanggal`;
+    WHERE t1.idproses = '1001' AND t2.idproses = '1003'
+      AND FORMAT(CDate(t1.tanggal), 'mm') = '${month}'
+      AND FORMAT(CDate(t1.tanggal), 'yyyy') = '${year}'
+    GROUP BY t1.tanggal
+  `;
+
   const result = await db.query(query);
-  return result; // ✅
+  return result;
 };
 
 module.exports = {

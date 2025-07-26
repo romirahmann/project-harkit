@@ -37,7 +37,7 @@ export function ChartUtama() {
 
   useEffect(() => {
     fecthDataChart();
-  }, []);
+  }, [selectionDate]);
 
   const fecthDataChart = async () => {
     try {
