@@ -41,8 +41,10 @@ export function AddDokumen({ onAdd, onClose }) {
     try {
       await api.post(`/master/dokumen`, formData);
       AddLog(
-        `${user.username} berhasil menambahkan data dokumen!`,
-        "SUCCESSFULLY"
+        user.username,
+        `Menambahkan Dokumen dengan kode ${formData.kodedok}!`,
+        1,
+        "ADD"
       );
       onAdd("Berhasil Menambahakan dokumen!");
       setFormData({
@@ -57,7 +59,12 @@ export function AddDokumen({ onAdd, onClose }) {
         type: "error",
       });
     }
-    AddLog(`${user.username} gagal menghapus data dokumen!`, "FAILED");
+    AddLog(
+      user.username,
+      `Menambahkan Dokumen dengan kode ${formData.kodedok}!`,
+      0,
+      "ADD"
+    );
     console.log(formData);
   };
   return (

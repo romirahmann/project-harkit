@@ -20,17 +20,14 @@ export function EmployeeAction({ isOpen, type, data, onClose, onAction }) {
     try {
       await api.delete(`/master/employee/${data.id}`);
       onAction("Deleted Proses Successfully!");
-      AddLog(
-        `${user.username} berhasil menghapus data karyawan!`,
-        "SUCCESSFULLY"
-      );
+      AddLog(user.username, `Delete Data Karyawan`, 1, "DELETE");
     } catch (error) {
       setAlert({
         show: true,
         message: "Failed to delete Employee",
         type: "error",
       });
-      AddLog(`${user.username} gagal menghapus data karyawan!`, "FAILED");
+      AddLog(user.username, `Delete Data Karyawan`, 0, "DELETE");
       console.log(error);
     }
   };

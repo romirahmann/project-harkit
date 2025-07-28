@@ -21,14 +21,15 @@ export function MRAction({ isOpen, type, data, onClose, onAction }) {
     try {
       await api.delete(`/master/datamr/${data.NoUrut}/${data.Kode_Checklist}`);
       onAction("Deleted Proses Successfully!");
-      AddLog(`${user.username} berhasil menghapus data MR!`, "SUCCESSFULLY");
+
+      AddLog(user.username, `Delete No MR ${data.NoMR} !`, 1, "DELETE");
     } catch (error) {
       setAlert({
         show: true,
         message: "Failed to delete Employee",
         type: "error",
       });
-      AddLog(`${user.username} gagal menghapus data MR!`, "FAILED");
+      AddLog(user.username, `Delete No MR ${data.NoMR} !`, 0, "DELETE");
       console.log(error);
     }
   };

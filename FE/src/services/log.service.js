@@ -3,15 +3,17 @@ import axios from "axios";
 import { baseApi } from "./api.service";
 
 /* eslint-disable no-unused-vars */
-export function AddLog(messege, level) {
+export function AddLog(username, description, status, action) {
   let url = baseApi;
   let log = async () => {
     try {
       let data = {
-        messege: messege,
-        level: level,
+        username,
+        description,
+        status,
+        action,
       };
-      let result = await axios.post(`${url}/master/log`, data);
+      await axios.post(`${url}/master/log`, data);
     } catch (err) {
       console.log(err);
     }

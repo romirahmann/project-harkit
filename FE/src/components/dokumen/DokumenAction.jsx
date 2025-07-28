@@ -20,8 +20,10 @@ export function DokumenAction({ isOpen, type, data, onClose, onAction }) {
       await api.delete(`/master/dokumen/${data.kodedok}`);
       onAction("Deleted dokumen Successfully!");
       AddLog(
-        `${user.username} berhasil menghapus data dokumen!`,
-        "SUCCESSFULLY"
+        user.username,
+        `Delete Data Dokumen dengan kode ${data.kodedok}`,
+        1,
+        "DELETE"
       );
     } catch (error) {
       setAlert({
@@ -29,7 +31,12 @@ export function DokumenAction({ isOpen, type, data, onClose, onAction }) {
         message: "Failed to delete Employee",
         type: "error",
       });
-      AddLog(`${user.username} gagal menghapus data dokumen!`, "FAILED");
+      AddLog(
+        user.username,
+        `Delete Data Dokumen dengan kode ${data.kodedok}`,
+        0,
+        "DELETE"
+      );
       console.log(error);
     }
   };

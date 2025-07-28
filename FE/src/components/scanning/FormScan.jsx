@@ -160,16 +160,22 @@ export function FormScan({ onAdd }) {
     try {
       await api.post(`/master/add-scan`, newFormData);
       onAdd("Add Proses Scanning Successfully!");
+
       AddLog(
-        `${user.username} berhasil menambahkan proses scan kode checklist ${newFormData.kode_checklist}!`,
-        "SUCCESSFULLY"
+        user.username,
+        `Menambahkan Proses Scan Kode Checklist ${newFormData.kode_checklist}!`,
+        1,
+        "ADD"
       );
       resetForm(); // gunakan resetForm saat sukses
     } catch (error) {
       console.log(error?.response?.data?.data || error);
+
       AddLog(
-        `${user.username} gagal menambahkan proses scan kode checklist ${newFormData.kode_checklist}!`,
-        "FAILED"
+        user.username,
+        `Menambahkan Proses Scan Kode Checklist ${newFormData.kode_checklist}!`,
+        0,
+        "ADD"
       );
       const message =
         error?.response?.data?.data?.message || "Gagal menambahkan data scan.";

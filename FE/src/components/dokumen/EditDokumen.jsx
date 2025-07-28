@@ -49,7 +49,7 @@ export function EditDokumen({ onEdit, data, onClose }) {
     try {
       await api.put(`/master/dokumen/${formData.kodedok}`, formData);
       onEdit("Berhasil Edit dokumen!");
-      AddLog(`${user.username} berhasil edit data dokumen!`, "SUCCESSFULLY");
+      AddLog(user.username, `Edit Data Dokumen} !`, 1, "EDIT");
       setFormData({
         kodedok: "",
         namadok: "",
@@ -62,7 +62,7 @@ export function EditDokumen({ onEdit, data, onClose }) {
         type: "error",
       });
     }
-    AddLog(`${user.username} gagal edit data dokumen!`, "FAILED");
+    AddLog(user.username, `Edit Data Dokumen} !`, 0, "EDIT");
     console.log(formData);
   };
   return (

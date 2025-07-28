@@ -6,6 +6,8 @@ import { LazyComponent } from "../../shared/LazyComponent";
 import api from "../../services/axios.service";
 import { TableUpdate } from "../../components/update/TableUpdate";
 import { AlertMessage } from "../../shared/AlertMessage";
+import { useAuth } from "../../store/AuthContext";
+import { AddLog } from "../../services/log.service";
 
 export function UpdatePage() {
   const [query, setQuery] = useState("");
@@ -21,6 +23,7 @@ export function UpdatePage() {
     message: "",
     type: "warning",
   });
+  const { user } = useAuth();
   useEffect(() => {
     fetchCandra();
   }, []);
@@ -81,6 +84,7 @@ export function UpdatePage() {
         qty: "",
       });
       setIsUpload(false);
+      AddLog(user.username, `update database `, 1, "UPDATE");
     } catch (error) {
       console.log(error);
       setAlert({
@@ -89,6 +93,7 @@ export function UpdatePage() {
         type: "error",
       });
       setIsUpload(false);
+      AddLog(user.username, `update database `, 0, "UPDATE");
     }
   };
 

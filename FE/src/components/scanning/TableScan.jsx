@@ -65,8 +65,20 @@ export function TableScan({ data = [], selectedProses, onAlert }) {
           `/master/finish-proses/${row.kode_checklist}/${row.idproses}`,
           newData
         );
+        AddLog(
+          user.username,
+          `Menyelesaikan proses dengan ID ${row.idproses}`,
+          1,
+          "SCAN SELESAI"
+        );
         onAlert(`${row.kode_checklist} telah selesai dikerjakan!`);
       } catch (error) {
+        AddLog(
+          user.username,
+          `Menyelesaikan proses dengan ID ${row.idproses}`,
+          0,
+          "SCAN SELESAI"
+        );
         console.log(error);
       }
     }
@@ -86,9 +98,12 @@ export function TableScan({ data = [], selectedProses, onAlert }) {
         formQty
       );
       onAlert("Berhasil menambahkan qty!");
+
       AddLog(
-        `${user.username} berhasil menambahkan qty: ${formQty} untuk checklist: ${kode_checklist}!`,
-        "SUCCESSFULLY"
+        user.username,
+        `Menambahkan Qty: ${formQty} untuk Checklist: ${kode_checklist}`,
+        1,
+        "ADD"
       );
       setOpenModal({
         isOpen: false,
@@ -96,8 +111,10 @@ export function TableScan({ data = [], selectedProses, onAlert }) {
       });
     } catch (error) {
       AddLog(
-        `${user.username} gagal menambahkan qty: ${formQty} untuk checklist: ${kode_checklist}!`,
-        "FAILED"
+        user.username,
+        `Menambahkan Qty: ${formQty} untuk Checklist: ${kode_checklist}`,
+        0,
+        "ADD"
       );
       console.log(error);
     }

@@ -271,11 +271,6 @@
     "controller": "MrController.exportCSVMRt3A2"
   },
   {
-    "path": "/log",
-    "method": "post",
-    "controller": "LogController.addLog"
-  },
-  {
     "path": "/validate-proses",
     "method": "get",
     "controller": "CandraController.validate1007"
@@ -404,5 +399,20 @@
     "path": "/export-csv/dokumen/:query?",
     "method": "get",
     "controller": "DocumentController.exportCsv"
+  },
+  {
+    "path": "/logs/:query?",
+    "method": "get",
+    "controller": "LogController.getAllLog"
+  },
+  {
+    "path": "/logs/:status?",
+    "method": "get",
+    "controller": "LogController.getByStatus"
+  },
+  {
+    "path": "/log",
+    "method": "post",
+    "controller": "LogController.addLog"
   }
 ]

@@ -24,16 +24,13 @@ export function AddTarget({ onAdd }) {
     try {
       await api.post("/master/target", formData);
       onAdd("Add data target successfully!");
-      AddLog(
-        `${user.username} berhasil menambahkan data target!`,
-        "SUCCESSFULLY"
-      );
+      AddLog(user.username, `Menambahkan data target `, 1, "ADD");
       setFormData({
         nama: "",
         nilai: 0,
       });
     } catch (error) {
-      AddLog(`${user.username} gagal menambahkan data proses!`, "FAILED");
+      AddLog(user.username, `Menambahkan data target `, 0, "ADD");
       console.log(error);
     }
   };

@@ -40,9 +40,12 @@ export function AddEmployee({ onAdd, onClose }) {
     try {
       await api.post(`/master/employee`, formData);
       onAdd("Add Employee Successfully!");
+
       AddLog(
-        `${user.username} berhasil menambahkan data karyawan!`,
-        "SUCCESSFULLY"
+        user.username,
+        `Menambahkan Karyawan ${formData.nama_karyawan}!`,
+        1,
+        "ADD"
       );
     } catch (error) {
       console.log(error);
@@ -51,7 +54,12 @@ export function AddEmployee({ onAdd, onClose }) {
         message: "Failed to add employee",
         type: "error",
       });
-      AddLog(`${user.username} gagal menambahkan data karyawan!`, "FAILED");
+      AddLog(
+        user.username,
+        `Menambahkan Karyawan ${formData.nama_karyawan}!`,
+        0,
+        "ADD"
+      );
     }
   };
 

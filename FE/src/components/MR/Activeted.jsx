@@ -29,17 +29,15 @@ export function Activated({ data, onAction, onClose }) {
     try {
       await api.post(`/master/aktif-mr`, data);
       onAction(`Active ${data.NoMR} Successfully!`);
-      AddLog(
-        `${user.username} berhasil Activate MR ${data.NoMR}!`,
-        "SUCCESSFULLY"
-      );
+
+      AddLog(user.username, `Activate No MR ${data.NoMR} !`, 1, "ACTIVATED");
     } catch (error) {
       setAlert({
         show: true,
         message: "Failed to Active MR",
         type: "error",
       });
-      AddLog(`${user.username} gagal Activate MR ${data.NoMR}!`, "FAILED");
+      AddLog(user.username, `Activate No MR ${data.NoMR} !`, 0, "ACTIVATED");
       console.log(error);
     }
   };

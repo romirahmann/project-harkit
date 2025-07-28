@@ -14,6 +14,7 @@ import { AddModalUser } from "../../components/modal/AddModalUser";
 import { AddLog } from "../../services/log.service";
 import { EditModalUser } from "../../components/modal/EditModalUser";
 import { ModalDelete } from "../../shared/ModalDeleted";
+import { useAuth } from "../../store/AuthContext";
 
 export function Userpage() {
   const [users, setUsers] = useState([]);
@@ -29,6 +30,8 @@ export function Userpage() {
     type: "",
     data: null,
   });
+
+  const { user } = useAuth();
 
   const [resetChecklist, setResetChecklist] = useState(false);
 
@@ -134,13 +137,16 @@ export function Userpage() {
         message: "User added successfully",
         type: "success",
       });
-      AddLog(`${formData.username} menambahkan user ${formData.username} !`);
+
+      AddLog(user.username, `menambahkan user ${formData.username}`, 1, "ADD");
+      // AddLog(`${formData.username} menambahkan user ${formData.username} !`);
     } catch (error) {
       setAlert({
         show: true,
         message: "User added failure!",
         type: "error",
       });
+      AddLog(user.username, ` menambahkan user ${formData.username}`, 0, "ADD");
       console.log(error);
     }
   };
@@ -160,13 +166,15 @@ export function Userpage() {
         message: "User edit successfully",
         type: "success",
       });
-      AddLog(`${formData.username} menambahkan user ${formData.username} !`);
+      AddLog(user.username, ` edit user ${formData.username}`, 1, "EDIT");
+      // AddLog(`${formData.username} menambahkan user ${formData.username} !`);
     } catch (error) {
       setAlert({
         show: true,
         message: "User added failure!",
         type: "error",
       });
+      AddLog(user.username, ` edit user ${formData.username}`, 0, "EDIT");
       console.log(error);
     }
   };
@@ -186,13 +194,15 @@ export function Userpage() {
         message: "User Deleted successfully",
         type: "success",
       });
-      AddLog(`${formData.username} deleted user ${formData.username} !`);
+      AddLog(user.username, ` deleted user ${formData.username}`, 1, "DELETE");
+      // AddLog(`${formData.username} deleted user ${formData.username} !`);
     } catch (error) {
       setAlert({
         show: true,
         message: "User deleted failure!",
         type: "error",
       });
+      AddLog(user.username, ` deleted user ${formData.username}`, 0, "DELETE");
       console.log(error);
     }
   };

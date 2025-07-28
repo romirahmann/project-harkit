@@ -21,7 +21,12 @@ export function KcpAction({ isOpen, type, data, onClose, onAction }) {
         `/master/dataMRt3/${data.NoUrut}/${data.Kode_Checklist}`
       );
       onAction("Deleted Proses Successfully!");
-      AddLog(`${user.username} berhasil menghapus data KCP!`, "SUCCESSFULLY");
+      AddLog(
+        user.username,
+        `Delete Data KCP dengan No Urut ${data.NoUrut} dan Kode Checklist ${data.Kode_Checklist} !`,
+        1,
+        "DELETE"
+      );
     } catch (error) {
       console.log(error);
       setAlert({
@@ -29,7 +34,12 @@ export function KcpAction({ isOpen, type, data, onClose, onAction }) {
         message: "Failed to delete data",
         type: "error",
       });
-      AddLog(`${user.username} gagal menghapus data KCP!`, "FAILED");
+      AddLog(
+        user.username,
+        `Delete Data KCP dengan No Urut ${data.NoUrut} dan Kode Checklist ${data.Kode_Checklist} !`,
+        0,
+        "DELETE"
+      );
     }
   };
   return (

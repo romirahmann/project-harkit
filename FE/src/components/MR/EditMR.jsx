@@ -50,13 +50,15 @@ export function EditMR({ onEdit, data, onClose }) {
         `${user.username} berhasil edit data MR ${data.NoMR}!`,
         "SUCCESSFULLY"
       );
+      AddLog(user.username, ` Edit No MR ${data.NoMR} !`, 1, "EDIT");
     } catch (error) {
       setAlert({
         show: true,
         message: `Failed to Edit MR ${data.NoMR}`,
         type: "error",
       });
-      AddLog(`${user.username} gagal edit data MR ${data.NoMR}!`, "FAILED");
+      AddLog(user.username, ` Edit No MR ${data.NoMR} !`, 0, "EDIT");
+
       console.log(error);
     }
   };

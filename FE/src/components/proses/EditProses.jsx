@@ -35,9 +35,10 @@ export function EditProses({ data, onEdit }) {
     try {
       await api.put(`/master/proses/${data.id}`, formData);
       onEdit("Edit Proses Successfully!");
-      AddLog(`${user.username} berhasil edit data proses!`, "SUCCESSFULLY");
+
+      AddLog(user.username, ` Edit Data Proses!`, 1, "EDIT");
     } catch (error) {
-      AddLog(`${user.username} gagal edit data proses!`, "FAILED");
+      AddLog(user.username, ` Edit Data Proses!`, 0, "EDIT");
       console.log(error);
     }
   };

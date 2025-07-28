@@ -13,10 +13,11 @@ export function ProsesAction({ isOpen, type, data, onClose, onAction }) {
     try {
       await api.delete(`/master/proses/${data.id}`);
       onAction("Deleted Proses Successfully!");
-      AddLog(`${user.username} berhasil delete data proses!`, "SUCCESSFULLY");
+
+      AddLog(user.username, ` Delete Data Proses!`, 1, "DELETE");
     } catch (error) {
       console.log(error);
-      AddLog(`${user.username} gagal delete data proses!`, "FAILED");
+      AddLog(user.username, ` Delete Data Proses!`, 0, "DELETE");
     }
   };
   return (

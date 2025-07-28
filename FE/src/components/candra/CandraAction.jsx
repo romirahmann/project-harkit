@@ -20,10 +20,10 @@ export function CandraAction({ isOpen, type, data, onClose, onAction }) {
     try {
       await api.delete(`/master/candra/${data.id}`);
       onAction("Deleted Proses Successfully!");
-      AddLog(`${user.username} berhasil delete data candra!`, "SUCCESSFULLY");
+      AddLog(user.username, `Delete Data Candra`, 1, "DELETE");
     } catch (error) {
       console.log(error);
-      AddLog(`${user.username} gagal delete data candra!`, "FAILED");
+      AddLog(user.username, `Delete Data Candra`, 0, "DELETE");
       setAlert({
         show: true,
         message: "Gagal menghapus data candra",

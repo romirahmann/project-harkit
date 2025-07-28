@@ -31,13 +31,13 @@ export function EditTarget({ data, onEdit }) {
     try {
       await api.put(`/master/target/${data.id}`, formData);
       onEdit("Edit Target Successfully!");
-      AddLog(`${user.username} berhasil edit data target!`, "SUCCESSFULLY");
+      AddLog(user.username, `Edit Data Target `, 1, "EDIT");
       setFormData({
         nama: "",
         nilai: 0,
       });
     } catch (error) {
-      AddLog(`${user.username} gagal menambahkan data proses!`, "FAILED");
+      AddLog(user.username, `Edit Data Target `, 0, "EDIT");
       console.log(error);
     }
   };

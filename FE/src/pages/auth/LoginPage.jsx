@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../../store/AuthContext";
 import api from "../../services/axios.service";
 import { AlertMessage } from "../../shared/AlertMessage";
+import { AddLog } from "../../services/log.service";
 
 /* eslint-disable no-unused-vars */
 export function LoginPage() {
@@ -50,6 +51,7 @@ export function LoginPage() {
           message: "Login Successfully!",
           type: "success",
         });
+        AddLog(formLogin.username, `Login to Candra `, 1, "LOGIN");
         setTimeout(() => {
           router.navigate({ to: "/" });
         }, 1500);
@@ -62,6 +64,7 @@ export function LoginPage() {
         type: "error",
       });
     } catch (error) {
+      AddLog(formLogin.username, `Login to Candra `, 0, "LOGIN");
       setAlert({
         show: true,
         message: `${error.response.data.data}`,

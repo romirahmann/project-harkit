@@ -42,7 +42,7 @@ export function EditEmployee({ onEdit, onClose, data }) {
     try {
       await api.put(`/master/employee/${data.id}`, formData);
       onEdit("Edit Employee Successfully!");
-      AddLog(`${user.username} berhasil edit data karyawan!`, "SUCCESSFULLY");
+      AddLog(user.username, `Edit Karyawan ${data.NoMR} !`, 1, "EDIT");
     } catch (error) {
       console.log(error);
       setAlert({
@@ -50,7 +50,7 @@ export function EditEmployee({ onEdit, onClose, data }) {
         message: "Failed to edit employee",
         type: "error",
       });
-      AddLog(`${user.username} gagal edit data karyawan!`, "FAILED");
+      AddLog(user.username, `Edit Karyawan ${data.NoMR} !`, 0, "EDIT");
     }
   };
   return (

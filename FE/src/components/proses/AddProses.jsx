@@ -33,9 +33,12 @@ export function AddProses({ onAdd, onClose }) {
     try {
       await api.post(`/master/proses`, formData);
       onAdd("Add Proses Successfully!");
+
       AddLog(
-        `${user.username} berhasil menambahkan data proses!`,
-        "SUCCESSFULLY"
+        user.username,
+        ` Menambahkan Data Proses ${formData.idproses}!`,
+        1,
+        "EDIT"
       );
     } catch (error) {
       setAlert({
@@ -43,7 +46,7 @@ export function AddProses({ onAdd, onClose }) {
         message: "Gagal add proses!",
         type: "error",
       });
-      AddLog(`${user.username} gagal menambahkan data proses!`, "FAILED");
+      AddLog(user.username, ` Menambahkan Data Proses!`, 0, "EDIT");
       console.log(error);
     }
   };

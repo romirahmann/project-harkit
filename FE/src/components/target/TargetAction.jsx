@@ -16,9 +16,9 @@ export function TargetAction({ isOpen, type, data, onClose, onAction }) {
     try {
       await api.delete(`/master/target/${data.id}`);
       onAction("Deleted Target Successfully!");
-      AddLog(`${user.username} berhasil delete data target!`, "SUCCESSFULLY");
+      AddLog(user.username, `Delete Data Target `, 1, "DELETE");
     } catch (error) {
-      AddLog(`${user.username} gagal delete data target!`, "FAILED");
+      AddLog(user.username, `Delete Data Target `, 0, "DELETE");
       console.log(error);
     }
   };

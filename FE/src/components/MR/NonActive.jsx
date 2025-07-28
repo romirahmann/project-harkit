@@ -28,17 +28,14 @@ export function NonActive({ data, onAction, onClose }) {
     try {
       await api.post(`/master/nonaktif-mr`, data);
       onAction(`InActive ${data.NoMR} Successfully!`);
-      AddLog(
-        `${user.username} berhasil Inactive data MR ${data.NoMR}!`,
-        "SUCCESSFULLY"
-      );
+      AddLog(user.username, `Inactive No MR ${data.NoMR} !`, 1, "INACTIVE");
     } catch (error) {
       setAlert({
         show: true,
         message: "Failed to InActive MR",
         type: "error",
       });
-      AddLog(`${user.username} gagal Inactive data MR ${data.NoMR}!`, "FAILED");
+      AddLog(user.username, `Inactive No MR ${data.NoMR} !`, 0, "INACTIVE");
       console.log(error);
     }
   };

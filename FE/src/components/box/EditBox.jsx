@@ -37,7 +37,7 @@ export function EditBox({ data, onEdit, onClose }) {
     try {
       await api.put(`/master/box/${formEdit.id}`, formEdit);
       onEdit("Update Data Box Successfully!");
-      AddLog(`${user.username} berhasil edit data box!`, "SUCCESSFULLY");
+      AddLog(user.username, `Edit Data Box `, 1, "EDIT");
     } catch (error) {
       console.log(error);
       setAlert({
@@ -45,7 +45,7 @@ export function EditBox({ data, onEdit, onClose }) {
         message: "Error Update Data Box",
         type: "error",
       });
-      AddLog(`${user.username} gagal menambahkan data box!`, "FAILED");
+      AddLog(user.username, `Edit Data Box `, 0, "EDIT");
     }
   };
   return (

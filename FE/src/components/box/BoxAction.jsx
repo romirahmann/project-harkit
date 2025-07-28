@@ -13,9 +13,9 @@ export function BoxAction({ isOpen, type, data, onClose, onAction }) {
     try {
       await api.delete(`/master/box/${data.id}`);
       onAction("Deleted Proses Successfully!");
-      AddLog(`${user.username} berhasil delete data box!`, "SUCCESSFULLY");
+      AddLog(user.username, `Delete Data Box `, 1, "DELETE");
     } catch (error) {
-      AddLog(`${user.username} gagal delete data box!`, "FAILED");
+      AddLog(user.username, `Delete Data Box `, 0, "DELETE");
       console.log(error);
     }
   };

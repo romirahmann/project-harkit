@@ -46,10 +46,20 @@ export function EditCandra({ onEdit, data, onClose }) {
         formData
       );
       onEdit("Edit Successfully!");
-      AddLog(`${user.username} berhasil edit data candra!`, "SUCCESSFULLY");
+      AddLog(
+        user.username,
+        `Edit Data Candra dengan Checklist ${data.kode_checklist} dan ID Proses ${data.idproses}`,
+        1,
+        "EDIT"
+      );
     } catch (error) {
       console.log(error);
-      AddLog(`${user.username} gagal edit data candra!`, "FAILED");
+      AddLog(
+        user.username,
+        `Edit Data Candra dengan Checklist ${data.kode_checklist} dan ID Proses ${data.idproses}`,
+        0,
+        "EDIT"
+      );
       setAlert({
         show: true,
         message: "Gagal Edit Candra!",
