@@ -28,8 +28,6 @@ const addLog = async (req, res) => {
   let newData = req.body;
   try {
     newData.createAt = moment().format("YYYY-MM-DD HH:mm:ss");
-
-    console.log(newData);
     await LogModel.create(newData);
     return api.ok(res, "Log added successfully");
   } catch (error) {
