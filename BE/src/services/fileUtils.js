@@ -2,7 +2,7 @@ import fg from "fast-glob";
 import path from "path";
 
 export async function countPdfFiles(
-  dirPath = "\\\\192.168.9.251\\padaprima\\BANK VICTORIA\\.OLD DOCUMENTS"
+  dirPath = "\\\\192.168.9.251\\padaprima\\RSAB HARAPAN KITA\\QC IMAGE"
 ) {
   try {
     const normalizedPath = dirPath.replace(/\\/g, "/").replace(/\/+$/, "");

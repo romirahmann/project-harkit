@@ -18,7 +18,12 @@ const fileFilter = (req, file, cb) => {
 // Konfigurasi penyimpanan file
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../uploads")); // Simpan di folder uploads
+    cb(
+      null,
+      path.join(
+        "\\\\192.168.9.251\\padaprima\\DBASE\\RSAB. HARAPAN KITA\\DBASE\\dbTemp"
+      )
+    ); // Simpan di folder uploads
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);

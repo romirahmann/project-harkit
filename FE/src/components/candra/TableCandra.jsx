@@ -53,7 +53,7 @@ export function TableCandra({
     {
       header: "Tanggal",
       key: "tanggal",
-      render: (val) => moment(val.tanggal).format("YYYY-MM-DD"),
+      render: (val) => moment(val, "YYYY-MM-DD HH:mm:ss").format("DD-MM-YYYY"),
     },
     { header: "Mulai", key: "mulai_formatted" },
     { header: "Selesai", key: "selesai_formatted" },
