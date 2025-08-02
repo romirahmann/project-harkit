@@ -10,17 +10,15 @@ require("dotenv").config();
 // Fungsi backup file MDB
 const backupMDB = (sourceFile) => {
   try {
-    const backupDir = path.join(__dirname, "../../database/backupDB");
+    const backupDir = path.join("X:\\DBASE\\dbBackup");
     if (!fs.existsSync(sourceFile)) {
       throw new Error(`File sumber tidak ditemukan: ${sourceFile}`);
     }
 
-    // Buat folder backup jika belum ada
     if (!fs.existsSync(backupDir)) {
       fs.mkdirSync(backupDir, { recursive: true });
     }
 
-    // Nama file backup dengan timestamp + random 4 char
     const timestamp = moment().format("YYYYMMDD");
     const randomChar = Math.random().toString(36).substring(2, 6);
     const backupFileName = `Backup_${path.basename(
@@ -29,7 +27,6 @@ const backupMDB = (sourceFile) => {
     )}_${timestamp}_${randomChar}.mdb`;
     const backupFilePath = path.join(backupDir, backupFileName);
 
-    // Salin file MDB ke folder backup
     fs.copyFileSync(sourceFile, backupFilePath);
   } catch (err) {
     console.error("❌ Gagal membackup database:", err.message);
@@ -37,6 +34,72 @@ const backupMDB = (sourceFile) => {
   }
 };
 
+// Fungsi bantu: jalankan async dalam batch paralel
+const runInBatches = async (dataArray, batchSize, callback) => {
+  for (let i = 0; i < dataArray.length; i += batchSize) {
+    const batch = dataArray.slice(i, i + batchSize);
+    await Promise.all(batch.map(callback));
+  }
+};
+
+// Modular update CANDRA
+const updateCandra = async (data) => {
+  console.log("PROSES UPLOAD CANDRA");
+  const inserted = [];
+
+  await runInBatches(data, 10, async (candra) => {
+    const existing = await modelCandra.dataExisting(
+      candra.kode_checklist,
+      candra.idproses
+    );
+    if (!existing) {
+      await modelCandra.createCandra(candra);
+      inserted.push(candra);
+    }
+  });
+
+  console.log("✅ DATA CANDRA UPDATED:", inserted.length);
+  return inserted;
+};
+
+// Modular update MR
+const updateMR = async (data) => {
+  console.log("PROSES UPLOAD MR");
+  const inserted = [];
+
+  await runInBatches(data, 10, async (mr) => {
+    const existing = await modelMR.dataExisting(mr.NoUrut, mr.Kode_Checklist);
+    if (!existing) {
+      await modelMR.createDataMR(mr);
+      inserted.push(mr);
+    }
+  });
+
+  console.log("✅ DATA MR UPDATED:", inserted.length);
+  return inserted;
+};
+
+// Modular update MR3
+const updateMR3 = async (data) => {
+  console.log("PROSES UPLOAD MRT3");
+  const inserted = [];
+
+  await runInBatches(data, 10, async (mr3) => {
+    const existing = await modelMR.dataExistingT3(
+      mr3.NoUrut,
+      mr3.Kode_Checklist
+    );
+    if (!existing) {
+      await modelMR.createDataMRt3(mr3);
+      inserted.push(mr3);
+    }
+  });
+
+  console.log("✅ DATA MR3 UPDATED:", inserted.length);
+  return inserted;
+};
+
+// Main uploadFile
 const uploadFile = async (req, res) => {
   try {
     if (!req.file) {
@@ -48,98 +111,57 @@ const uploadFile = async (req, res) => {
 
     backupMDB(mdbFilePath);
 
+    // === Proses file dbData.mdb ===
     if (filename === "dbData.mdb") {
-      let newDataCandra = await modelUpdate.getAllCandra();
-      let newDataMR = await modelUpdate.getAllDataMR();
-      let newDataMR3 = await modelUpdate.getAllDataMR3();
+      const [dataCandra, dataMR, dataMR3] = await Promise.all([
+        modelUpdate.getAllCandra(),
+        modelUpdate.getAllDataMR(),
+        modelUpdate.getAllDataMR3(),
+      ]);
 
-      // UPDATE DATA CANDRA
-      for (const candra of newDataCandra) {
-        const existing = await modelCandra.dataExisting(
-          candra.kode_checklist,
-          candra.idproses
-        );
+      const [insertedCandra, insertedMR, insertedMR3] = await Promise.all([
+        updateCandra(dataCandra),
+        updateMR(dataMR),
+        updateMR3(dataMR3),
+      ]);
 
-        if (!existing) {
-          try {
-            await modelCandra.createCandra(candra);
-            // console.log("DATA CANDRA UPDATE SUCCESSFULLY!");
-          } catch (error) {
-            console.log(error);
-            return api.error(res, "Failed To Update Candra!", 401);
-          }
-        }
-      }
-
-      // UPDATE DATA MR
-      for (const dataMR of newDataMR) {
-        const existing = await modelMR.dataExisting(
-          dataMR.NoUrut,
-          dataMR.Kode_Checklist
-        );
-
-        if (!existing) {
-          try {
-            await modelMR.createDataMR(dataMR);
-            // console.log("DATA MR UPDATE SUCCESSFULLY!");
-          } catch (error) {
-            console.log(error);
-            return api.error(res, "Failed To Update MR!", 401);
-          }
-        }
-      }
-
-      // UPDATE MRT3
-      for (const dataMR3 of newDataMR3) {
-        const existing = await modelMR.dataExistingT3(
-          dataMR3.NoUrut,
-          dataMR3.Kode_Checklist
-        );
-
-        if (!existing) {
-          try {
-            await modelMR.createDataMRt3(dataMR3);
-            // console.log("DATA MRT3 UPDATE SUCCESSFULLY!");
-          } catch (error) {
-            console.log(error);
-            return api.error(res, "Failed To Update MRT3!", 401);
-          }
-        }
-      }
-
-      return api.ok(res, "Update All Data Successfully!");
+      return api.ok(res, {
+        inserted: {
+          candra: insertedCandra,
+          mr: insertedMR,
+          mr3: insertedMR3,
+        },
+      });
     }
 
+    // === Proses file dbQty.mdb ===
     if (filename === "dbQty.mdb") {
-      let newData = await modelUpdate.getQty();
-      // console.log(newData);
-      for (const data of newData) {
-        let existing = await modelMR.dataExistingByMR(data.NoMR);
+      const newData = await modelUpdate.getQty();
+
+      await runInBatches(newData, 20, async (data) => {
+        const existing = await modelMR.dataExistingByMR(data.NoMR);
         if (existing) {
-          let result = await modelMR.updateQtyMR(data);
+          await modelMR.updateQtyMR(data);
         }
-      }
+      });
+
       const dataQTY = await modelMR.getQtyByMR();
-      // console.log(dataQTY);
       if (!dataQTY) {
         return api.error(res, "No Data on Table MR", 400);
       }
 
-      for (const qty of dataQTY) {
-        let res = await modelCandra.updateCandraByMR(qty);
-      }
+      await runInBatches(dataQTY, 20, async (qty) => {
+        await modelCandra.updateCandraByMR(qty);
+      });
 
-      return api.ok(res, "UPDATE QTY SUCCESFULLY!");
+      return api.ok(res, "UPDATE QTY SUCCESSFULLY!");
     }
-    try {
-      await modelUpdate.clearData();
-    } catch (error) {
-      api.error(res, "Delete Data Failed!", 401);
-      console.log(error);
-    }
+
+    // Jika bukan file yang valid
+    // await modelUpdate.clearData();
     return api.error(res, "Please Upload File dbData.mdb or dbQty.mdb");
   } catch (err) {
-    console.log(err);
+    console.error("❌ Internal Error:", err);
     return api.error(res, "Internal Server Error", 500);
   }
 };

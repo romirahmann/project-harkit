@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
 
   const login = async (userData, token) => {
     try {
-      console.log("Dari AUTH: ", userData, token);
+      // console.log("Dari AUTH: ", userData, token);
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("user", JSON.stringify(userData));
       setUser(userData); // ✅ tambahkan ini

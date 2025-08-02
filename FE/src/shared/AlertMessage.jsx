@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { useEffect } from "react";
 import {
   FaCheckCircle,
   FaExclamationTriangle,
   FaTimesCircle,
 } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function AlertMessage({ type = "success", message, onClose }) {
   useEffect(() => {
@@ -29,11 +31,17 @@ export function AlertMessage({ type = "success", message, onClose }) {
   };
 
   return (
-    <div
-      className={`fixed top-10 left-1/2 transform -translate-x-1/2 z-50 ${baseStyle} ${typeStyle[type]}`}
-    >
-      {icons[type]}
-      <span className="flex-1">{message}</span>
-    </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}
+        className={`fixed top-10 left-1/2 transform -translate-x-1/2 z-50 ${baseStyle} ${typeStyle[type]}`}
+      >
+        {icons[type]}
+        <span className="flex-1">{message}</span>
+      </motion.div>
+    </AnimatePresence>
   );
 }
