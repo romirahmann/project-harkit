@@ -317,6 +317,7 @@ const getAllDataMRt3 = async (req, res) => {
 
 const getFilterMRt3 = async (req, res) => {
   let { query } = req.params;
+  console.log(query);
   try {
     let data = await model.getAllMRt3(query);
 
