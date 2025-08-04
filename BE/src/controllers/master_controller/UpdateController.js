@@ -47,7 +47,7 @@ const updateCandra = async (data) => {
   console.log("PROSES UPLOAD CANDRA");
   const inserted = [];
 
-  await runInBatches(data, 10, async (candra) => {
+  await runInBatches(data, 25, async (candra) => {
     const existing = await modelCandra.dataExisting(
       candra.kode_checklist,
       candra.idproses
@@ -67,7 +67,7 @@ const updateMR = async (data) => {
   console.log("PROSES UPLOAD MR");
   const inserted = [];
 
-  await runInBatches(data, 10, async (mr) => {
+  await runInBatches(data, 25, async (mr) => {
     const existing = await modelMR.dataExisting(mr.NoUrut, mr.Kode_Checklist);
     if (!existing) {
       await modelMR.createDataMR(mr);
@@ -82,17 +82,13 @@ const updateMR = async (data) => {
 // Modular update MR3
 const updateMR3 = async (data) => {
   console.log("PROSES UPLOAD MRT3");
+
+  await modelMR.deletAllRowMrt3();
   const inserted = [];
 
-  await runInBatches(data, 10, async (mr3) => {
-    const existing = await modelMR.dataExistingT3(
-      mr3.NoUrut,
-      mr3.Kode_Checklist
-    );
-    if (!existing) {
-      await modelMR.createDataMRt3(mr3);
-      inserted.push(mr3);
-    }
+  await runInBatches(data, 25, async (mr3) => {
+    await modelMR.createDataMRt3(mr3);
+    inserted.push(mr3);
   });
 
   console.log("✅ DATA MR3 UPDATED:", inserted.length);

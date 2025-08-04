@@ -49,7 +49,7 @@ export function TableKCP({
     { header: "No Urut", key: "NoUrut" },
     { header: "Kode Checklist", key: "Kode_Checklist" },
     { header: "No MR", key: "NoMR" },
-    { header: "Layanan", key: "layanan" },
+
     { header: "Nama Pasien", key: "NamaPasien" },
     { header: "Tanggal", key: "Tanggal" },
     { header: "Periode Ranap", key: "Periode_Ranap" },

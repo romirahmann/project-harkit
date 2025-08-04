@@ -53,4 +53,31 @@ async function connectDB2() {
   }
 }
 
-module.exports = { connectDB2 };
+const getDBData = () => {
+  if (!dbData) {
+    throw new Error(
+      "Database dbData.mdb not connected. Call connectDB2() first."
+    );
+  }
+  return dbData;
+};
+
+const getDBQty = () => {
+  if (!dbQty) {
+    throw new Error(
+      "Database dbQty.mdb not connected. Call connectDB2() first."
+    );
+  }
+  return dbQty;
+};
+
+const getDbRealQty = () => {
+  if (!realQty) {
+    throw new Error(
+      "Database realQty.mdb not connected. Call connectDB2() first."
+    );
+  }
+  return realQty;
+};
+
+module.exports = { connectDB2, getDBData, getDBQty, getDbRealQty };

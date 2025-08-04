@@ -341,7 +341,7 @@ const deleteMRt3 = async (data) => {
 // MRt3 A2
 const getAllMRt3A2 = async () => {
   const db = getDB();
-  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3_A2 `;
+  const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3_A2 `;
   const result = await db.query(query);
   return result;
 };
@@ -386,6 +386,13 @@ const deleteMRt3A2 = async (data) => {
   return result;
 };
 
+const deletAllRowMrt3 = async () => {
+  const db = getDB();
+  const query = `DELETE FROM tblDataMRt3;`;
+  const result = await db.query(query);
+  return result;
+};
+
 module.exports = {
   getAllDataMR,
   getDataMRByKeys,
@@ -410,4 +417,5 @@ module.exports = {
   getMRt3ByKodeChecklistA2,
   updateDataMRt3A2,
   deleteMRt3A2,
+  deletAllRowMrt3,
 };
