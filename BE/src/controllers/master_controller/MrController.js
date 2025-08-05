@@ -317,24 +317,9 @@ const getAllDataMRt3 = async (req, res) => {
 
 const getFilterMRt3 = async (req, res) => {
   let { query } = req.params;
-  console.log(query);
   try {
     let data = await model.getAllMRt3(query);
-
-    // Sorting berdasarkan angka di NoUrut (PBL-1-X)
-    data.sort((a, b) => {
-      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
-      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
-
-      // Urutkan berdasarkan angka setelah "PBL-"
-      if (aParts[1] !== bParts[1]) {
-        return aParts[1] - bParts[1];
-      }
-
-      // Jika sama, urutkan berdasarkan angka terakhir setelah "PBL-X-"
-      return aParts[2] - bParts[2];
-    });
-    return api.ok(res, data);
+    return api.ok(res, data); // Sorting sudah dilakukan di SQL
   } catch (error) {
     console.error("❌ Error getting DataMR:", error);
     return api.error(res, "Failed to get DataMR", 500);

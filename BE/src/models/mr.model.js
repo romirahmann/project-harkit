@@ -198,40 +198,23 @@ const deleteMRDouble = async (NoUrut, Kode_Checklist) => {
 // };
 const getAllMRt3 = async (q) => {
   const db = getDB();
-  let query = `
-    SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, 
-           Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap
-    FROM tblDataMRt3
+  let query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3
   `;
 
-  if (q) {
-    const safeQ = q.replace(/'/g, "''"); // escape single quote
-
-    if (safeQ.length >= 6) {
-      // Exact match
-      query += `
-        WHERE NoUrut = '${safeQ}' 
-           OR NoMR = '${safeQ}' 
-           OR NamaPasien = '${safeQ}' 
-           OR Kode_Checklist = '${safeQ}' 
-           OR Layanan = '${safeQ}' 
-           OR namadokumen = '${safeQ}'
-      `;
-    } else {
-      // Pencarian awalan
-      query += `
-        WHERE NoUrut LIKE '${safeQ}%' 
-           OR NoMR LIKE '${safeQ}%' 
-           OR NamaPasien LIKE '${safeQ}%' 
-           OR Kode_Checklist LIKE '${safeQ}%' 
-           OR Layanan LIKE '${safeQ}%' 
-           OR namadokumen LIKE '${safeQ}%'
-      `;
-    }
+  if (q && q.trim() !== "") {
+    let safeQ = q.replace(/'/g, "''");
+    query += ` WHERE Kode_Checklist LIKE '${safeQ}%'`;
   }
+
+  // Sorting selalu dijalankan, baik ada filter atau tidak
+  // query += ` ORDER BY
+  //     Val(Mid(NoUrut, InStr(NoUrut, "-") + 1, InStrRev(NoUrut, "-") - InStr(NoUrut, "-") - 1)),
+  //     Val(Mid(NoUrut, InStrRev(NoUrut, "-") + 1))
+  // `;
 
   return db.query(query);
 };
+
 const getMRt3ByKodeChecklist = async (kode_checklist) => {
   const db = getDB();
   const query = `SELECT NoUrut, Periode_Ranap, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen FROM tblDataMRt3 WHERE Kode_Checklist = '${kode_checklist}'`;
