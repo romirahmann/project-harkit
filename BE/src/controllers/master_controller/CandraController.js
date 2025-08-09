@@ -344,7 +344,7 @@ const exportCsv = async (req, res) => {
 
 const validate1007 = async (req, res) => {
   try {
-    let fourDaysAgo = moment().subtract(4, "days").format("YYYY-MM-DD");
+    let fourDaysAgo = moment().subtract(6, "days").format("YYYY-MM-DD");
     let dataCandra = await model.getCandraByDate1001(fourDaysAgo);
 
     if (dataCandra.length === 0) {
