@@ -8,6 +8,8 @@ const PdfPrinter = require("pdfmake");
 
 const moment = require("moment");
 const ExcelJS = require("exceljs");
+const dayjs = require("dayjs");
+const MAX_ROWS_PER_PDF = 2000;
 
 const getAllDataMR = async (req, res) => {
   try {
@@ -332,18 +334,19 @@ const generateFinishinCheecksheet = async (req, res) => {
     if (!kode_checklist)
       return res.status(400).json({ message: "Kode checklist diperlukan!" });
 
-    let data = await model.getMRt3ByKodeChecklist(kode_checklist);
-    if (!data || data.length === 0)
+    // Ambil data
+    const data = await model.getMRt3ByKodeChecklist(kode_checklist);
+    if (!data?.length)
       return res.status(404).json({ message: "Data tidak ditemukan!" });
 
+    // Sorting lebih efisien
     data.sort((a, b) => {
-      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
-      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
-
-      if (aParts[1] !== bParts[1]) return aParts[1] - bParts[1];
-      return aParts[2] - bParts[2];
+      const [_, a1, a2] = a.NoUrut.split("-").map(Number);
+      const [__, b1, b2] = b.NoUrut.split("-").map(Number);
+      return a1 - b1 || a2 - b2;
     });
 
+    // Load font sekali
     const fonts = {
       Roboto: {
         normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
@@ -353,7 +356,8 @@ const generateFinishinCheecksheet = async (req, res) => {
       },
     };
 
-    let barcodeBase64 = null;
+    // Generate barcode sekali
+    let barcodeImage;
     try {
       const barcodeBuffer = await bwipJs.toBuffer({
         bcid: "code39",
@@ -363,37 +367,38 @@ const generateFinishinCheecksheet = async (req, res) => {
         includetext: true,
         textxalign: "center",
       });
-
-      barcodeBase64 = `data:image/png;base64,${barcodeBuffer.toString(
-        "base64"
-      )}`;
-    } catch (err) {
-      console.error("⚠️ Gagal membuat barcode:", err);
+      barcodeImage = {
+        image: `data:image/png;base64,${barcodeBuffer.toString("base64")}`,
+        width: 150,
+        alignment: "right",
+      };
+    } catch {
+      barcodeImage = {
+        text: "Barcode tidak tersedia",
+        style: "subheader",
+        alignment: "right",
+      };
     }
 
-    const barcodeImage = barcodeBase64
-      ? { image: barcodeBase64, width: 150, alignment: "right" }
-      : {
-          text: "Barcode tidak tersedia",
-          style: "subheader",
-          alignment: "right",
-        };
-
+    // Build table body lebih hemat
     const displayedEntries = new Set();
-
     const tableBody = [
       [
         { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
         { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
         { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
         { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
-
         { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
         { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
         { text: "Cheked", bold: true, fillColor: "#D3D3D3" },
       ],
       ...data.map((item) => {
-        const key = `${item.NamaPasien}-${item.NoMR}-${item.Tanggal}`;
+        const key = `${item.NamaPasien || "-"}-${item.NoMR || "-"}-${
+          item.Tanggal || "-"
+        }`;
+        const dateFormatted = item.Tanggal
+          ? dayjs(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY")
+          : "-";
 
         if (displayedEntries.has(key)) {
           return [
@@ -405,27 +410,27 @@ const generateFinishinCheecksheet = async (req, res) => {
             item.namadokumen || "-",
             "",
           ];
-        } else {
-          displayedEntries.add(key);
-          return [
-            item.NoUrut || "-",
-            item.NoMR || "-",
-            item.NamaPasien || "-",
-            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
-            item.Periode_Ranap || "-",
-            item.namadokumen || "-",
-            "",
-          ];
         }
+
+        displayedEntries.add(key);
+        return [
+          item.NoUrut || "-",
+          item.NoMR || "-",
+          item.NamaPasien || "-",
+          dateFormatted,
+          item.Periode_Ranap || "-",
+          item.namadokumen || "-",
+          "",
+        ];
       }),
     ];
 
+    // PDF definition
     const docDefinition = {
       pageSize: "A4",
       pageMargins: [20, 30, 20, 30],
       content: [
         { text: "FINISHING CHECK SHEET A4", style: "header" },
-
         {
           table: {
             widths: ["70%", "30%"],
@@ -442,7 +447,6 @@ const generateFinishinCheecksheet = async (req, res) => {
           layout: "noBorders",
           margin: [0, 10, 0, 0],
         },
-
         {
           table: {
             widths: ["45%", "15%", "40%"],
@@ -452,43 +456,18 @@ const generateFinishinCheecksheet = async (req, res) => {
                   table: {
                     widths: ["*", "*", "*", "*", "*"],
                     body: [
-                      [
-                        {
-                          text: "Proses",
+                      ["Proses", "Nama", "Tanggal", "Mulai", "Selesai"].map(
+                        (t) => ({
+                          text: t,
                           bold: true,
                           fillColor: "#D3D3D3",
                           fontSize: 6,
-                        },
-                        {
-                          text: "Nama",
-                          bold: true,
-                          fillColor: "#D3D3D3",
-                          fontSize: 6,
-                        },
-                        {
-                          text: "Tanggal",
-                          bold: true,
-                          fillColor: "#D3D3D3",
-                          fontSize: 6,
-                        },
-                        {
-                          text: "Mulai",
-                          bold: true,
-                          fillColor: "#D3D3D3",
-                          fontSize: 6,
-                        },
-                        {
-                          text: "Selesai",
-                          bold: true,
-                          fillColor: "#D3D3D3",
-                          fontSize: 6,
-                        },
-                      ],
+                        })
+                      ),
                       [{ text: "QC Image", fontSize: 6 }, "", "", "", ""],
                     ],
-                    alignment: "left",
-                    style: "table",
                   },
+                  style: "table",
                 },
                 "",
                 barcodeImage,
@@ -497,7 +476,6 @@ const generateFinishinCheecksheet = async (req, res) => {
           },
           layout: "noBorders",
         },
-
         {
           table: {
             widths: ["7%", "7%", "19%", "8%", "8%", "44%", "7%"],
@@ -507,7 +485,6 @@ const generateFinishinCheecksheet = async (req, res) => {
           style: "table",
         },
       ],
-
       styles: {
         header: {
           fontSize: 15,
@@ -515,36 +492,30 @@ const generateFinishinCheecksheet = async (req, res) => {
           alignment: "center",
           margin: [0, 0, 0, 10],
         },
-        table: {
-          fontSize: 6,
-        },
+        table: { fontSize: 6 },
       },
-
-      // ✨ Tambahkan Footer Halaman
-      footer: function (currentPage, pageCount) {
-        return {
-          text: `Page ${currentPage} of ${pageCount}`,
-          alignment: "right",
-          margin: [0, 10, 20, 0],
-          fontSize: 8,
-        };
-      },
+      footer: (currentPage, pageCount) => ({
+        text: `Page ${currentPage} of ${pageCount}`,
+        alignment: "right",
+        margin: [0, 10, 20, 0],
+        fontSize: 8,
+      }),
     };
 
+    // Stream PDF langsung ke response
     const printer = new PdfPrinter(fonts);
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
-    const filename = `Finishing Checksheet A4 ${kode_checklist}.pdf`;
-    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="Finishing_Checksheet_A4_${kode_checklist}.pdf"`
+    );
     res.setHeader("Content-Type", "application/pdf");
-
-    // Ini penting agar frontend bisa membaca header-nya
     res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     pdfDoc.pipe(res);
     pdfDoc.end();
-    console.log("Exports Successfully");
   } catch (err) {
     console.error("❌ Error generate Finishing Checksheet:", err);
-    return res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -554,21 +525,19 @@ const generateQcChecksheet = async (req, res) => {
     if (!kode_checklist)
       return res.status(400).json({ message: "Kode checklist diperlukan!" });
 
-    // 🔍 Ambil data dari database
+    // Ambil data dari DB
     let data = await model.getMRt3ByKodeChecklist(kode_checklist);
     if (!data || data.length === 0)
       return res.status(404).json({ message: "Data tidak ditemukan!" });
 
-    // Urutakan Berdasarkan No URUT
+    // Sort data sekali saja
     data.sort((a, b) => {
-      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
-      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
-
-      if (aParts[1] !== bParts[1]) return aParts[1] - bParts[1];
-      return aParts[2] - bParts[2];
+      const [_, a1, a2] = a.NoUrut.split("-").map(Number);
+      const [__, b1, b2] = b.NoUrut.split("-").map(Number);
+      return a1 - b1 || a2 - b2;
     });
 
-    // 🖋️ Definisi font yang benar
+    // Fonts (load sekali saja)
     const fonts = {
       Roboto: {
         normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
@@ -577,12 +546,10 @@ const generateQcChecksheet = async (req, res) => {
         bolditalics: path.resolve("src/fonts/Roboto-BoldItalic.ttf"),
       },
     };
-
-    // 🖨️ Inisialisasi PdfPrinter
     const printer = new PdfPrinter(fonts);
 
-    // 🏷️ Generate Barcode
-    let barcodeBase64 = null;
+    // Generate barcode sekali
+    let barcodeImage;
     try {
       const barcodeBuffer = await bwipJs.toBuffer({
         bcid: "code39",
@@ -592,94 +559,86 @@ const generateQcChecksheet = async (req, res) => {
         includetext: true,
         textxalign: "center",
       });
-
-      barcodeBase64 = `data:image/png;base64,${barcodeBuffer.toString(
-        "base64"
-      )}`;
-    } catch (err) {
-      console.error("⚠️ Gagal membuat barcode:", err);
+      barcodeImage = {
+        image: `data:image/png;base64,${barcodeBuffer.toString("base64")}`,
+        width: 150,
+        alignment: "right",
+      };
+    } catch {
+      barcodeImage = {
+        text: "Barcode tidak tersedia",
+        style: "subheader",
+        alignment: "right",
+      };
     }
 
-    // Pastikan barcode valid, jika tidak, tampilkan teks alternatif
-    const barcodeImage = barcodeBase64
-      ? { image: barcodeBase64, width: 150, alignment: "right" }
-      : {
-          text: "Barcode tidak tersedia",
-          style: "subheader",
-          alignment: "right",
-        };
+    // Fungsi membuat tabel per batch
+    const buildTableBody = (rows) => {
+      const displayedEntries = new Set();
+      return [
+        [
+          { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
+          { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
+          { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
+          { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
+          { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
+          { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
+          { text: "Cek Output", bold: true, fillColor: "#D3D3D3" },
+          { text: "Cek QC", bold: true, fillColor: "#D3D3D3" },
+        ],
+        ...rows.map((item) => {
+          const key = `${item.NamaPasien || "-"}-${item.NoMR || "-"}-${
+            item.Tanggal || "-"
+          }`;
+          const dateFormatted = item.Tanggal
+            ? dayjs(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY")
+            : "-";
 
-    const displayedEntries = new Set();
-    const tableBody = [
-      [
-        { text: "No Urut", bold: true, fillColor: "#D3D3D3" },
-        { text: "NO MR", bold: true, fillColor: "#D3D3D3" },
-        { text: "Nama Pasien", bold: true, fillColor: "#D3D3D3" },
-        { text: "Tanggal", bold: true, fillColor: "#D3D3D3" },
-
-        { text: "Periode Ranap", bold: true, fillColor: "#D3D3D3" },
-
-        { text: "Nama Dokumen", bold: true, fillColor: "#D3D3D3" },
-        { text: "Cek Ouput", bold: true, fillColor: "#D3D3D3" },
-        { text: "Cek QC", bold: true, fillColor: "#D3D3D3" },
-      ],
-      ...data.map((item) => {
-        const key = `${item.NamaPasien || "-"}-${item.NoMR || "-"}-${
-          item.Tanggal || "-"
-        }`;
-
-        if (displayedEntries.has(key)) {
-          return [
-            item.NoUrut || "-",
-            "",
-            "",
-            "",
-
-            item.Periode_Ranap || "-",
-            item.namadokumen || "-",
-            "",
-            "",
-          ];
-        } else {
+          if (displayedEntries.has(key)) {
+            return [
+              item.NoUrut || "-",
+              "",
+              "",
+              "",
+              item.Periode_Ranap || "-",
+              item.namadokumen || "-",
+              "",
+              "",
+            ];
+          }
           displayedEntries.add(key);
           return [
             item.NoUrut || "-",
             item.NoMR || "-",
             item.NamaPasien || "-",
-            moment(item.Tanggal, "DDMMYYYY").format("DD-MM-YYYY") || "-",
-
+            dateFormatted,
             item.Periode_Ranap || "-",
             item.namadokumen || "-",
             "",
             "",
           ];
-        }
-      }),
-    ];
+        }),
+      ];
+    };
+
+    // Ambil batch pertama (MAX_ROWS_PER_PDF)
+    const firstBatch = data.slice(0, MAX_ROWS_PER_PDF);
 
     const docDefinition = {
       pageSize: "A4",
       pageMargins: [20, 30, 20, 30],
       content: [
         { text: "QC CHECK SHEET A4", style: "header" },
-
         {
           table: {
             widths: ["70%", "30%"],
             body: [
-              [
-                {
-                  text: `Kode Checklist: ${kode_checklist}`,
-                  style: "table",
-                  alignment: "left",
-                },
-              ],
+              [{ text: `Kode Checklist: ${kode_checklist}`, style: "table" }],
             ],
           },
           layout: "noBorders",
           margin: [0, 10, 0, 0],
         },
-
         {
           table: {
             widths: ["45%", "15%", "40%"],
@@ -689,43 +648,17 @@ const generateQcChecksheet = async (req, res) => {
                   table: {
                     widths: ["*", "*", "*", "*", "*"],
                     body: [
-                      [
-                        {
-                          text: "Proses",
+                      ["Proses", "Nama", "Tanggal", "Mulai", "Selesai"].map(
+                        (txt) => ({
+                          text: txt,
                           bold: true,
                           fillColor: "#D3D3D3",
                           fontSize: 6,
-                        },
-                        {
-                          text: "Nama",
-                          bold: true,
-                          fillColor: "#D3D3D3",
-                          fontSize: 6,
-                        },
-                        {
-                          text: "Tanggal",
-                          bold: true,
-                          fillColor: "#D3D3D3",
-                          fontSize: 6,
-                        },
-                        {
-                          text: "Mulai",
-                          bold: true,
-                          fillColor: "#D3D3D3",
-                          fontSize: 6,
-                        },
-                        {
-                          text: "Selesai",
-                          bold: true,
-                          fillColor: "#D3D3D3",
-                          fontSize: 6,
-                        },
-                      ],
+                        })
+                      ),
                       [{ text: "Output", fontSize: 6 }, "", "", "", ""],
                       [{ text: "QC", fontSize: 6 }, "", "", "", ""],
                     ],
-                    alignment: "left",
-                    style: "table",
                   },
                 },
                 "",
@@ -735,14 +668,12 @@ const generateQcChecksheet = async (req, res) => {
           },
           layout: "noBorders",
         },
-
-        // 📌 Table Utama (Data)
         {
           table: {
             widths: ["7%", "7%", "19%", "8%", "9%", "40%", "5%", "5%"],
-            body: tableBody,
+            body: buildTableBody(firstBatch),
           },
-          margin: [0, 10, 0, 0], //
+          margin: [0, 10, 0, 0],
           style: "table",
         },
       ],
@@ -753,32 +684,27 @@ const generateQcChecksheet = async (req, res) => {
           alignment: "center",
           margin: [0, 0, 0, 10],
         },
-        table: {
-          fontSize: 6,
-        },
+        table: { fontSize: 6 },
       },
-      // ✨ Tambahkan Footer Halaman
-      footer: function (currentPage, pageCount) {
-        return {
-          text: `Page ${currentPage} of ${pageCount}`,
-          alignment: "right",
-          margin: [0, 10, 20, 0],
-          fontSize: 8,
-        };
-      },
+      footer: (currentPage, pageCount) => ({
+        text: `Page ${currentPage} of ${pageCount}`,
+        alignment: "right",
+        margin: [0, 10, 20, 0],
+        fontSize: 8,
+      }),
     };
 
-    // 📄 Generate PDF dan kirim langsung ke response
+    // Stream PDF ke response
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="Finishing_Checklist_${kode_checklist}.pdf"`
+      `attachment; filename="QC_Checksheet_${kode_checklist}.pdf"`
     );
     res.setHeader("Content-Type", "application/pdf");
     pdfDoc.pipe(res);
     pdfDoc.end();
   } catch (err) {
-    console.error("❌ Error generate Finishing Checksheet:", err);
+    console.error("❌ Error generate QC Checksheet:", err);
     return api.error(res, "Internal Server Error", 500);
   }
 };
