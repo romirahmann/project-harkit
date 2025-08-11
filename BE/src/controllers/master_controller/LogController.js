@@ -3,7 +3,7 @@ const LogModel = require("../../models/log.model");
 const api = require("../../tools/common");
 
 const getAllLog = async (req, res) => {
-  const query = req.params;
+  const { query } = req.params;
   try {
     let result = await LogModel.getAllLog(query);
     return api.ok(res, result);
@@ -14,7 +14,7 @@ const getAllLog = async (req, res) => {
 };
 
 const getByStatus = async (req, res) => {
-  const status = req.params;
+  const { status } = req.params;
   try {
     let result = await LogModel.getByStatus(status);
     return api.ok(res, result);

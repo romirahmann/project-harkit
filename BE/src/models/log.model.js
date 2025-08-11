@@ -1,6 +1,6 @@
 const { getDB } = require("../database/db.config");
 
-const getAllLog = async (q) => {
+const getAllLog = async (q = "") => {
   const db = getDB();
   let query = "SELECT * FROM tblLog";
   if (q) {
