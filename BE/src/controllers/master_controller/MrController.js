@@ -10,6 +10,15 @@ const moment = require("moment");
 const ExcelJS = require("exceljs");
 const dayjs = require("dayjs");
 const MAX_ROWS_PER_PDF = 2000;
+// Load font sekali
+const fonts = {
+  Roboto: {
+    normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
+    bold: path.resolve("src/fonts/Roboto-Bold.ttf"),
+    italics: path.resolve("src/fonts/Roboto-Italic.ttf"),
+    bolditalics: path.resolve("src/fonts/Roboto-BoldItalic.ttf"),
+  },
+};
 
 const getAllDataMR = async (req, res) => {
   try {
@@ -296,19 +305,19 @@ const aktifkanMR = async (req, res) => {
 const getAllDataMRt3 = async (req, res) => {
   try {
     let data = await model.getAllMRt3();
-
-    // Sorting berdasarkan angka di NoUrut (PBL-1-X)
     data.sort((a, b) => {
-      const aParts = a.NoUrut.split("-").map((num) => parseInt(num, 10));
-      const bParts = b.NoUrut.split("-").map((num) => parseInt(num, 10));
+      const parseNoUrut = (noUrut) => {
+        if (!noUrut) return [0, 0];
+        const parts = noUrut.split("-");
+        return parts.length >= 3
+          ? [parseInt(parts[1], 10) || 0, parseInt(parts[2], 10) || 0]
+          : [0, 0];
+      };
 
-      // Urutkan berdasarkan angka setelah "PBL-"
-      if (aParts[1] !== bParts[1]) {
-        return aParts[1] - bParts[1];
-      }
+      const [aX, aY] = parseNoUrut(a.NoUrut);
+      const [bX, bY] = parseNoUrut(b.NoUrut);
 
-      // Jika sama, urutkan berdasarkan angka terakhir setelah "PBL-X-"
-      return aParts[2] - bParts[2];
+      return aX - bX || aY - bY;
     });
     return api.ok(res, data);
   } catch (error) {
@@ -321,7 +330,24 @@ const getFilterMRt3 = async (req, res) => {
   let { query } = req.params;
   try {
     let data = await model.getAllMRt3(query);
-    return api.ok(res, data); // Sorting sudah dilakukan di SQL
+
+    // Sorting di Node.js sesuai format "PBL-X-Y"
+    data.sort((a, b) => {
+      const parseNoUrut = (noUrut) => {
+        if (!noUrut) return [0, 0];
+        const parts = noUrut.split("-");
+        return parts.length >= 3
+          ? [parseInt(parts[1], 10) || 0, parseInt(parts[2], 10) || 0]
+          : [0, 0];
+      };
+
+      const [aX, aY] = parseNoUrut(a.NoUrut);
+      const [bX, bY] = parseNoUrut(b.NoUrut);
+
+      return aX - bX || aY - bY;
+    });
+
+    return api.ok(res, data);
   } catch (error) {
     console.error("❌ Error getting DataMR:", error);
     return api.error(res, "Failed to get DataMR", 500);
@@ -338,23 +364,6 @@ const generateFinishinCheecksheet = async (req, res) => {
     const data = await model.getMRt3ByKodeChecklist(kode_checklist);
     if (!data?.length)
       return res.status(404).json({ message: "Data tidak ditemukan!" });
-
-    // Sorting lebih efisien
-    data.sort((a, b) => {
-      const [_, a1, a2] = a.NoUrut.split("-").map(Number);
-      const [__, b1, b2] = b.NoUrut.split("-").map(Number);
-      return a1 - b1 || a2 - b2;
-    });
-
-    // Load font sekali
-    const fonts = {
-      Roboto: {
-        normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
-        bold: path.resolve("src/fonts/Roboto-Bold.ttf"),
-        italics: path.resolve("src/fonts/Roboto-Italic.ttf"),
-        bolditalics: path.resolve("src/fonts/Roboto-BoldItalic.ttf"),
-      },
-    };
 
     // Generate barcode sekali
     let barcodeImage;
@@ -530,22 +539,6 @@ const generateQcChecksheet = async (req, res) => {
     if (!data || data.length === 0)
       return res.status(404).json({ message: "Data tidak ditemukan!" });
 
-    // Sort data sekali saja
-    data.sort((a, b) => {
-      const [_, a1, a2] = a.NoUrut.split("-").map(Number);
-      const [__, b1, b2] = b.NoUrut.split("-").map(Number);
-      return a1 - b1 || a2 - b2;
-    });
-
-    // Fonts (load sekali saja)
-    const fonts = {
-      Roboto: {
-        normal: path.resolve("src/fonts/Roboto-Regular.ttf"),
-        bold: path.resolve("src/fonts/Roboto-Bold.ttf"),
-        italics: path.resolve("src/fonts/Roboto-Italic.ttf"),
-        bolditalics: path.resolve("src/fonts/Roboto-BoldItalic.ttf"),
-      },
-    };
     const printer = new PdfPrinter(fonts);
 
     // Generate barcode sekali

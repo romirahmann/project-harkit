@@ -28,6 +28,7 @@ const backupMDB = (sourceFile) => {
     const backupFilePath = path.join(backupDir, backupFileName);
 
     fs.copyFileSync(sourceFile, backupFilePath);
+    console.log(`✅ Backup selesai: ${backupFilePath}`);
   } catch (err) {
     console.error("❌ Gagal membackup database:", err.message);
     throw new Error(`Gagal membackup database: ${err.message}`);
@@ -45,14 +46,18 @@ const runInBatches = async (dataArray, batchSize, callback) => {
 // Modular update CANDRA
 const updateCandra = async (data) => {
   console.log("PROSES UPLOAD CANDRA");
+
+  // Ambil semua yang sudah ada
+  const existingRows = await modelCandra.getAllKeys();
+  const existingSet = new Set(
+    existingRows.map((r) => `${r.kode_checklist}-${r.idproses}`)
+  );
+
   const inserted = [];
 
-  await runInBatches(data, 25, async (candra) => {
-    const existing = await modelCandra.dataExisting(
-      candra.kode_checklist,
-      candra.idproses
-    );
-    if (!existing) {
+  await runInBatches(data, 50, async (candra) => {
+    const key = `${candra.kode_checklist}-${candra.idproses}`;
+    if (!existingSet.has(key)) {
       await modelCandra.createCandra(candra);
       inserted.push(candra);
     }
@@ -67,7 +72,7 @@ const updateMR = async (data) => {
   console.log("PROSES UPLOAD MR");
   const inserted = [];
 
-  await runInBatches(data, 25, async (mr) => {
+  await runInBatches(data, 50, async (mr) => {
     const existing = await modelMR.dataExisting(mr.NoUrut, mr.Kode_Checklist);
     if (!existing) {
       await modelMR.createDataMR(mr);
@@ -86,9 +91,10 @@ const updateMR3 = async (data) => {
   await modelMR.deletAllRowMrt3();
   const inserted = [];
 
-  await runInBatches(data, 25, async (mr3) => {
+  await runInBatches(data, 100, async (mr3) => {
     await modelMR.createDataMRt3(mr3);
     inserted.push(mr3);
+    console.log("Success Update: ", mr3);
   });
 
   console.log("✅ DATA MR3 UPDATED:", inserted.length);
@@ -96,6 +102,89 @@ const updateMR3 = async (data) => {
 };
 
 // Main uploadFile
+// const uploadFile = async (req, res) => {
+//   console.log("UPDATE");
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ message: "No file uploaded" });
+//     }
+//     console.log("UPDATE");
+
+//     const filename = req.file.originalname;
+//     const mdbFilePath = process.env.DB_PATH;
+
+//     backupMDB(mdbFilePath);
+
+//     // const sourceFile = path.join("X:\\DBASE\\dbTemp", "dbData.mdb");
+//     // const targetFile = path.join("X:\\DBASE", "dbDataKcp.mdb");
+//     // console.log(sourceFile);
+//     // console.log(targetFile);
+
+//     // Overwrite target dengan file dari temp
+//     // fs.copyFileSync(sourceFile, targetFile);
+//     // // === Proses file dbData.mdb ===
+//     if (filename === "dbData.mdb") {
+//       const [dataCandra, dataMR, dataMR3] = await Promise.all([
+//         modelUpdate.getAllCandra(),
+//         modelUpdate.getAllDataMR(),
+//         // modelUpdate.getAllDataMR3(),
+//       ]);
+
+//       const [insertedCandra, insertedMR, insertedMR3] = await Promise.all([
+//         updateCandra(dataCandra),
+//         updateMR(dataMR),
+//         // updateMR3(dataMR3),
+//       ]);
+
+//       // const sourceFile = path.join("X:\\DBASE\\dbTemp", "dbData.mdb");
+//       // const targetFile = path.join("O:\\DBASE\\DBASE", "dbDataKcp.mdb");
+
+//       // // Backup dulu target file sebelum ov erwrite
+//       // backupMDB(targetFile);
+
+//       // // Overwrite target dengan file dari temp
+//       // fs.copyFileSync(sourceFile, targetFile);
+
+//       return api.ok(res, {
+//         inserted: {
+//           candra: insertedCandra,
+//           mr: insertedMR,
+//           mr3: insertedMR3,
+//         },
+//       });
+//     }
+
+//     // === Proses file dbQty.mdb ===
+//     if (filename === "dbQty.mdb") {
+//       const newData = await modelUpdate.getQty();
+
+//       await runInBatches(newData, 20, async (data) => {
+//         const existing = await modelMR.dataExistingByMR(data.NoMR);
+//         if (existing) {
+//           await modelMR.updateQtyMR(data);
+//         }
+//       });
+
+//       const dataQTY = await modelMR.getQtyByMR();
+//       if (!dataQTY) {
+//         return api.error(res, "No Data on Table MR", 400);
+//       }
+
+//       await runInBatches(dataQTY, 20, async (qty) => {
+//         await modelCandra.updateCandraByMR(qty);
+//       });
+
+//       return api.ok(res, "UPDATE QTY SUCCESSFULLY!");
+//     }
+
+//     // Jika bukan file yang valid
+//     // await modelUpdate.clearData();
+//     return api.error(res, "Please Upload File dbData.mdb or dbQty.mdb");
+//   } catch (err) {
+//     console.error("❌ Internal Error:", err);
+//     return api.error(res, "Internal Server Error", 500);
+//   }
+// };
 const uploadFile = async (req, res) => {
   try {
     if (!req.file) {
@@ -106,26 +195,23 @@ const uploadFile = async (req, res) => {
     const mdbFilePath = process.env.DB_PATH;
 
     backupMDB(mdbFilePath);
-
+    console.log("📂 DB_PATH =", process.env.DB_PATH);
     // === Proses file dbData.mdb ===
     if (filename === "dbData.mdb") {
-      const [dataCandra, dataMR, dataMR3] = await Promise.all([
+      const [dataCandra, dataMR] = await Promise.all([
         modelUpdate.getAllCandra(),
         modelUpdate.getAllDataMR(),
-        modelUpdate.getAllDataMR3(),
       ]);
 
       const [insertedCandra, insertedMR, insertedMR3] = await Promise.all([
         updateCandra(dataCandra),
         updateMR(dataMR),
-        updateMR3(dataMR3),
       ]);
 
       return api.ok(res, {
         inserted: {
           candra: insertedCandra,
           mr: insertedMR,
-          mr3: insertedMR3,
         },
       });
     }

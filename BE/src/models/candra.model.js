@@ -1,8 +1,45 @@
 const moment = require("moment");
 const { getDB } = require("../database/db.config");
 
+/* =========================
+ * Helpers (aman & konsisten)
+ * ========================= */
+
+const escapeString = (str) =>
+  str === null || str === undefined ? "" : String(str).replace(/'/g, "''");
+
+const toAccessDate = (dateLike) => {
+  if (!dateLike) return "NULL";
+  const m = moment(
+    dateLike,
+    ["YYYY-MM-DD", "MM/DD/YYYY", moment.ISO_8601],
+    true
+  );
+  if (!m.isValid()) return "NULL";
+  return `#${m.format("MM/DD/YYYY")}#`;
+};
+
+const toAccessTime = (timeLike) => {
+  if (!timeLike) return "NULL";
+  // terima "HH:mm:ss" atau Date/ISO
+  const m = moment(timeLike, ["HH:mm:ss", moment.ISO_8601], true);
+  if (!m.isValid()) return "NULL";
+  // literal time di Access pakai #HH:mm:ss#
+  return `#${m.format("HH:mm:ss")}#`;
+};
+
+const toInt = (val, def = 0) => {
+  const n = parseInt(val, 10);
+  return Number.isFinite(n) ? n : def;
+};
+
+/* =========================
+ * Queries
+ * ========================= */
+
 const getAllCandra = async (q) => {
   const db = getDB();
+
   let query = `
     SELECT 
       id,
@@ -13,22 +50,36 @@ const getAllCandra = async (q) => {
       nama_proses, 
       nama_karyawan, 
       tanggal, 
-      FORMAT(mulai, 'HH:mm:ss') AS mulai_formatted, 
-      FORMAT(selesai, 'HH:mm:ss') AS selesai_formatted, 
-      submittedby,
-      editBy
+      mulai, 
+      selesai
     FROM tblcandra
   `;
+
   if (q) {
-    const safeQ = q.replace(/'/g, "''");
-    query += ` WHERE kode_checklist LIKE '${safeQ}%' OR idproses LIKE '${safeQ}%' OR nama_karyawan LIKE '${safeQ}%' OR nama_proses LIKE '${safeQ}%' `;
+    const safeQ = escapeString(q);
+    query += `
+      WHERE kode_checklist LIKE '${safeQ}%'
+         OR idproses LIKE '${safeQ}%'
+         OR nama_karyawan LIKE '${safeQ}%'
+         OR nama_proses LIKE '${safeQ}%'
+    `;
   }
-  const result = await db.query(query);
-  return result;
+
+  const rows = await db.query(query);
+
+  return rows.map((row) => ({
+    ...row,
+    mulai_formatted: row.mulai ? moment(row.mulai).format("HH:mm:ss") : null,
+    selesai_formatted: row.selesai
+      ? moment(row.selesai).format("HH:mm:ss")
+      : null,
+  }));
 };
 
 const getCandraByChecklist = async (Kode_Checklist) => {
   const db = getDB();
+  const safeKode = escapeString(Kode_Checklist);
+
   const query = `
     SELECT 
       id,
@@ -39,30 +90,38 @@ const getCandraByChecklist = async (Kode_Checklist) => {
       nama_proses, 
       nama_karyawan, 
       tanggal, 
-      FORMAT(mulai, 'HH:mm:ss') AS mulai_formatted, 
-      FORMAT(selesai, 'HH:mm:ss') AS selesai_formatted, 
-      submittedby,
-      editBy
-    FROM tblcandra WHERE kode_checklist = ${Kode_Checklist}
+      mulai, 
+      selesai
+    FROM tblcandra 
+    WHERE kode_checklist = '${safeKode}'
   `;
-  const result = await db.query(query);
-  return result;
+
+  const rows = await db.query(query);
+  return rows.map((row) => ({
+    ...row,
+    mulai_formatted: row.mulai ? moment(row.mulai).format("HH:mm:ss") : null,
+    selesai_formatted: row.selesai
+      ? moment(row.selesai).format("HH:mm:ss")
+      : null,
+  }));
 };
 
 const dataExisting = async (kode_checklist, idproses) => {
   const db = getDB();
-
   const query = `
-    SELECT COUNT(*) as count FROM tblcandra 
-    WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
+    SELECT COUNT(*) AS cnt
+    FROM tblcandra
+    WHERE kode_checklist = '${escapeString(kode_checklist)}'
+      AND idproses = '${escapeString(idproses)}'
   `;
-
   const result = await db.query(query);
-  return result[0].count > 0;
+  return (result[0]?.cnt || 0) > 0;
 };
 
 const getAllByDateNow = async () => {
   const db = getDB();
+  const today = moment().format("MM/DD/YYYY");
+
   const query = `
     SELECT 
       id,
@@ -73,30 +132,44 @@ const getAllByDateNow = async () => {
       nama_proses, 
       nama_karyawan, 
       tanggal, 
-      FORMAT(mulai, 'HH:nn:ss') AS mulai_formatted, 
-      FORMAT(selesai, 'HH:nn:ss') AS selesai_formatted, 
+      mulai, 
+      selesai,
       submittedby,
-      editBy
+      editby
     FROM tblcandra
-    WHERE tanggal = FORMAT(NOW(), 'yyyy-MM-dd')
+    WHERE tanggal = #${today}#
     ORDER BY 
-    IIF(FORMAT(selesai, 'hh:nn:ss') = '00:00:00', 0, 1), 
-    mulai DESC;
+      IIF(selesai IS NULL OR selesai = #00:00:00#, 0, 1),
+      mulai DESC
   `;
-  const result = await db.query(query);
-  return result;
+
+  const rows = await db.query(query);
+  return rows.map((row) => ({
+    ...row,
+    mulai_formatted: row.mulai ? moment(row.mulai).format("HH:mm:ss") : null,
+    selesai_formatted: row.selesai
+      ? moment(row.selesai).format("HH:mm:ss")
+      : null,
+  }));
 };
 
 const getCandraByKeys = async (kode_checklist, idproses) => {
   const db = getDB();
-
   const query = `
-    SELECT * FROM tblcandra 
-    WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
+    SELECT *
+    FROM tblcandra
+    WHERE kode_checklist = '${escapeString(kode_checklist)}'
+      AND idproses = '${escapeString(idproses)}'
   `;
-
   const result = await db.query(query);
   return result.length > 0 ? result[0] : null;
+};
+
+const getAllKeys = async () => {
+  // Dipakai controller-mu buat dedup insert
+  const db = getDB();
+  const query = `SELECT kode_checklist, idproses FROM tblcandra`;
+  return await db.query(query);
 };
 
 const createCandra = async (data) => {
@@ -108,47 +181,30 @@ const createCandra = async (data) => {
     qty_image,
     nama_proses,
     nama_karyawan,
-    tanggal,
-    mulai_formatted,
-    selesai_formatted,
+    tanggal, // ekspektasi 'YYYY-MM-DD' atau Date
+    mulai_formatted, // 'HH:mm:ss' (opsional)
+    selesai_formatted, // 'HH:mm:ss' (opsional)
     submittedby,
   } = data;
 
-  // Format tanggal MM/DD/YYYY untuk Access
-  const formattedTanggal = moment(tanggal, "YYYY-MM-DD").format("MM/DD/YYYY");
-
-  // Escape petik satu
-  const escapeString = (str) => (str ? String(str).replace(/'/g, "''") : "");
-
-  // Format waktu
-  const mulai = mulai_formatted
-    ? `#${moment(mulai_formatted, "HH:mm:ss").format("HH:mm:ss")}#`
-    : "NULL";
-  const selesai = selesai_formatted
-    ? `#${moment(selesai_formatted, "HH:mm:ss").format("HH:mm:ss")}#`
-    : "NULL";
-
-  const query = `
+  const q = `
     INSERT INTO tblcandra (
       kode_checklist, idproses, nik, qty_image, nama_proses, nama_karyawan,
-      [tanggal], [mulai], [selesai], submittedby
-    )
-    VALUES (
+      tanggal, mulai, selesai, submittedby
+    ) VALUES (
       '${escapeString(kode_checklist)}',
       '${escapeString(idproses)}',
       '${escapeString(nik)}',
-      ${parseInt(qty_image || 0)},
+      ${toInt(qty_image, 0)},
       '${escapeString(nama_proses)}',
       '${escapeString(nama_karyawan)}',
-      #${formattedTanggal}#,
-      ${mulai},
-      ${selesai},
+      ${toAccessDate(tanggal)},
+      ${toAccessTime(mulai_formatted)},
+      ${toAccessTime(selesai_formatted)},
       '${escapeString(submittedby)}'
     )
   `;
-
-  const result = await db.query(query);
-  return result;
+  return await db.query(q);
 };
 
 const createCandraFromScan = async (data) => {
@@ -160,21 +216,32 @@ const createCandraFromScan = async (data) => {
     qty_image,
     nama_proses,
     nama_karyawan,
-    tanggal,
-    mulai,
-    selesai,
+    tanggal, // bisa 'YYYY-MM-DD' atau 'MM/DD/YYYY'
+    mulai, // 'HH:mm:ss'
+    selesai, // 'HH:mm:ss'
     submittedby,
   } = data;
 
-  const query = `
-    INSERT INTO tblcandra (kode_checklist, idproses, nik, qty_image, nama_proses, nama_karyawan, tanggal, mulai, selesai, submittedby)
-    VALUES ('${kode_checklist}', '${idproses}', '${nik}', ${parseInt(
-    qty_image
-  )}, '${nama_proses}', '${nama_karyawan}', #${tanggal}#, '${mulai}', '${selesai}', '${submittedby}')
+  const q = `
+    INSERT INTO tblcandra (
+      kode_checklist, idproses, nik, qty_image, nama_proses, nama_karyawan,
+      tanggal, mulai, selesai, submittedby
+    ) VALUES (
+      '${escapeString(kode_checklist)}',
+      '${escapeString(idproses)}',
+      '${escapeString(nik)}',
+      ${toInt(qty_image, 0)},
+      '${escapeString(nama_proses)}',
+      '${escapeString(nama_karyawan)}',
+      ${toAccessDate(tanggal)},
+      ${toAccessTime(mulai)},
+      ${toAccessTime(selesai)},
+      '${escapeString(submittedby)}'
+    )
   `;
 
-  const result = await db.query(query);
-  return result.count; // ✅ Return jumlah baris yang ditambahkan
+  const result = await db.query(q);
+  return result.count; // jumlah rows inserted
 };
 
 const updateCandra = async (kode_checklist, idproses, data) => {
@@ -184,123 +251,142 @@ const updateCandra = async (kode_checklist, idproses, data) => {
     nama_proses,
     nama_karyawan,
     qty_image,
-    tanggal,
-    mulai,
-    selesai,
+    tanggal, // 'YYYY-MM-DD' / 'MM/DD/YYYY' / null
+    mulai, // 'HH:mm:ss' / null
+    selesai, // 'HH:mm:ss' / null
     editby,
   } = data;
-  const formattedTanggal = tanggal ? `#${tanggal}#` : "NULL";
-  const query = `
+
+  const q = `
     UPDATE tblcandra
-    SET nik = '${nik}', nama_proses = '${nama_proses}', 
-        nama_karyawan = '${nama_karyawan}', tanggal = ${formattedTanggal}, mulai = '${mulai}', qty_image = ${parseInt(
-    qty_image
-  )}, 
-        selesai = '${selesai}', editby = '${editby}'
-    WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
+    SET nik = '${escapeString(nik)}',
+        nama_proses = '${escapeString(nama_proses)}',
+        nama_karyawan = '${escapeString(nama_karyawan)}',
+        tanggal = ${toAccessDate(tanggal)},
+        mulai = ${toAccessTime(mulai)},
+        qty_image = ${toInt(qty_image, 0)},
+        selesai = ${toAccessTime(selesai)},
+        editby = '${escapeString(editby)}'
+    WHERE kode_checklist = '${escapeString(kode_checklist)}'
+      AND idproses = '${escapeString(idproses)}'
   `;
 
-  const result = await db.query(query);
-  return result.count; // ✅ Return jumlah baris yang diperbarui
+  const result = await db.query(q);
+  return result.count; // rows updated
 };
 
 const finishedProses = async (kode_checklist, idproses, data) => {
   const db = getDB();
-  const { selesai_formatted } = data;
+  const { selesai_formatted } = data; // 'HH:mm:ss'
 
-  const query = `
+  const q = `
     UPDATE tblcandra
-    SET selesai = '${selesai_formatted}'
-    WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
+    SET selesai = ${toAccessTime(selesai_formatted)}
+    WHERE kode_checklist = '${escapeString(kode_checklist)}'
+      AND idproses = '${escapeString(idproses)}'
   `;
-
-  const result = await db.query(query);
-  return result.count; // ✅ Return jumlah baris yang diperbarui
+  const result = await db.query(q);
+  return result.count;
 };
+
 const finishedProsesScan = async (kode_checklist, idproses, data) => {
   const db = getDB();
   const { selesai_formatted, qty_image } = data;
 
-  const query = `
+  const q = `
     UPDATE tblcandra
-    SET selesai = '${selesai_formatted}', qty_image = ${qty_image}
-    WHERE kode_checklist = '${kode_checklist}' AND idproses = '${idproses}'
+    SET selesai = ${toAccessTime(selesai_formatted)},
+        qty_image = ${toInt(qty_image, 0)}
+    WHERE kode_checklist = '${escapeString(kode_checklist)}'
+      AND idproses = '${escapeString(idproses)}'
   `;
-
-  const result = await db.query(query);
-  return result.count; // ✅ Return jumlah baris yang diperbarui
+  const result = await db.query(q);
+  return result.count;
 };
 
 const updateCandraByMR = async (data) => {
   const db = getDB();
   let { Kode_Checklist, totalPages } = data;
-  if (totalPages === null) {
-    totalPages = 0;
-  }
-  const query = `UPDATE tblcandra SET qty_image = ${totalPages} WHERE kode_checklist = '${Kode_Checklist}' AND idproses = '1001'`;
-  const result = await db.query(query);
-  return result;
+  const qty = toInt(totalPages, 0);
+
+  const q = `
+    UPDATE tblcandra
+    SET qty_image = ${qty}
+    WHERE kode_checklist = '${escapeString(Kode_Checklist)}'
+      AND idproses = '1001'
+  `;
+  return await db.query(q);
 };
 
 const deleteCandra = async (id) => {
   const db = getDB();
-  const query = `
-    DELETE FROM tblcandra WHERE id = ${id}
-  `;
-
-  const result = await db.query(query);
-  return result.count; // ✅ Return jumlah baris yang dihapus
+  const numId = toInt(id, null);
+  if (numId === null) {
+    throw new Error("Invalid id untuk deleteCandra");
+  }
+  const q = `DELETE FROM tblcandra WHERE id = ${numId}`;
+  const result = await db.query(q);
+  return result.count;
 };
 
 const getCandraByDate1001 = async (date) => {
-  // console.log(date);
   const db = getDB();
-  const query = `
-  SELECT kode_checklist 
-  FROM tblcandra 
-  WHERE idproses = '1001' 
-  AND tanggal < #${date}#
-`;
-  const result = await db.query(query);
-  return result;
+  const m = moment(date, ["YYYY-MM-DD", "MM/DD/YYYY"], true);
+  if (!m.isValid())
+    throw new Error("Tanggal tidak valid (getCandraByDate1001)");
+
+  const q = `
+    SELECT kode_checklist
+    FROM tblcandra
+    WHERE idproses = '1001'
+      AND tanggal < #${m.format("MM/DD/YYYY")}#
+  `;
+  return await db.query(q);
 };
 
-const getCandraFilterByKode = async (kodeList) => {
+const getCandraFilterByKode = async (kodeList = []) => {
   const db = getDB();
+  if (!Array.isArray(kodeList) || kodeList.length === 0) return [];
 
-  // Pastikan semua kode di-escape dan dikutip
-  const inClause = kodeList
-    .map((kode) => `'${kode.replace(/'/g, "''")}'`)
-    .join(",");
+  const inClause = kodeList.map((k) => `'${escapeString(k)}'`).join(",");
 
-  const query = `
+  const q = `
     SELECT 
-      c.kode_checklist, 
+      c.kode_checklist,
       c.idproses,
       p.nama_proses,
-      FORMAT(c.selesai, 'HH:mm:ss') AS selesai
+      c.selesai
     FROM tblcandra c
     LEFT JOIN tblproses p ON c.idproses = p.idproses
     WHERE c.kode_checklist IN (${inClause})
   `;
 
-  const result = await db.query(query);
-  return result;
+  const rows = await db.query(q);
+  return rows.map((row) => ({
+    ...row,
+    selesai_formatted: row.selesai
+      ? moment(row.selesai).format("HH:mm:ss")
+      : null,
+  }));
 };
 
+/* =========================
+ * Exports
+ * ========================= */
 module.exports = {
   getAllCandra,
-  getCandraByKeys,
-  createCandra,
-  updateCandra,
-  deleteCandra,
-  dataExisting,
-  updateCandraByMR,
-  createCandraFromScan,
-  finishedProses,
-  getAllByDateNow,
-  finishedProsesScan,
   getCandraByChecklist,
+  dataExisting,
+  getAllByDateNow,
+  getCandraByKeys,
+  getAllKeys, // <— penting: dipakai controller
+  createCandra,
+  createCandraFromScan,
+  updateCandra,
+  finishedProses,
+  finishedProsesScan,
+  updateCandraByMR,
+  deleteCandra,
   getCandraByDate1001,
   getCandraFilterByKode,
 };

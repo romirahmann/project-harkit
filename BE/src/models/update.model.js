@@ -3,29 +3,48 @@ const {
   getDBQty,
   getDbRealQty,
 } = require("../database/update.config");
+const moment = require("moment");
 
-const getAllCandra = async () => {
+const getAllCandra = async (q) => {
   const db = getDBData();
-  const query = `
-      SELECT 
-        id,
-        kode_checklist, 
-        idproses, 
-        nik, 
-        qty_image, 
-        nama_proses, 
-        nama_karyawan, 
-        tanggal, 
-        FORMAT(mulai, 'HH:mm:ss') AS mulai_formatted, 
-        FORMAT(selesai, 'HH:mm:ss') AS selesai_formatted, 
-        submittedby,
-        editBy
-      FROM tblcandra
-    `;
 
-  const result = await db.query(query);
-  return result;
+  let query = `
+    SELECT 
+      id,
+      kode_checklist, 
+      idproses, 
+      nik, 
+      qty_image, 
+      nama_proses, 
+      nama_karyawan, 
+      tanggal, 
+      mulai, 
+      selesai
+    FROM tblcandra
+  `;
+
+  if (q) {
+    const safeQ = q.replace(/'/g, "''");
+    query += `
+      WHERE kode_checklist LIKE '${safeQ}%' 
+      OR idproses LIKE '${safeQ}%' 
+      OR nama_karyawan LIKE '${safeQ}%' 
+      OR nama_proses LIKE '${safeQ}%'
+    `;
+  }
+
+  const rows = await db.query(query);
+
+  // Format waktu di Node.js agar lebih cepat
+  return rows.map((row) => ({
+    ...row,
+    mulai_formatted: row.mulai ? moment(row.mulai).format("HH:mm:ss") : null,
+    selesai_formatted: row.selesai
+      ? moment(row.selesai).format("HH:mm:ss")
+      : null,
+  }));
 };
+
 const getAllDataMR = async () => {
   const db = getDBData();
   const query = `SELECT * FROM tblDataMR`;

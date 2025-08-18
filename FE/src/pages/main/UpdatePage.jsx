@@ -144,118 +144,119 @@ export function UpdatePage() {
         {isLoading ? (
           <LazyComponent />
         ) : (
-          <div className="grid grid-cols-2 gap-2">
-            {/* Update Database */}
-            <div className="updateCandra bg-gray-100 p-5">
-              <h1 className="font-bold text-2xl">UPDATE DATABASE</h1>
-              <div className="fileInput mt-5">
-                <label
-                  className="block text-sm mb-2 font-medium"
-                  htmlFor="file_candra"
-                >
-                  Upload file
-                </label>
-                <div className="relative">
-                  <input
-                    onChange={(e) => handleFileChange(e, "candra")}
-                    type="file"
-                    id="file_candra"
-                    className="hidden"
-                  />
+          <div>
+            <div className="grid grid-cols-2 gap-2">
+              {/* Update Database */}
+              <div className="updateCandra bg-gray-50 p-5">
+                <h1 className="font-bold text-2xl">UPDATE DATABASE</h1>
+                <div className="fileInput mt-5">
                   <label
+                    className="block text-sm mb-2 font-medium"
                     htmlFor="file_candra"
-                    className="flex items-center border border-gray-400 rounded-md cursor-pointer hover:shadow"
                   >
-                    <div className="p-2 bg-blue-900 w-32 text-center text-white rounded-l-md">
-                      Choose File
-                    </div>
-                    <p className="ms-5 text-sm text-gray-700 truncate">
-                      {selectedFiles?.candra?.name || "No file selected"}
-                    </p>
+                    Upload file
                   </label>
+                  <div className="relative">
+                    <input
+                      onChange={(e) => handleFileChange(e, "candra")}
+                      type="file"
+                      id="file_candra"
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="file_candra"
+                      className="flex items-center border border-gray-400 rounded-md cursor-pointer hover:shadow"
+                    >
+                      <div className="p-2 bg-blue-900 w-32 text-center text-white rounded-l-md">
+                        Choose File
+                      </div>
+                      <p className="ms-5 text-sm text-gray-700 truncate">
+                        {selectedFiles?.candra?.name || "No file selected"}
+                      </p>
+                    </label>
+                  </div>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Format file: .mdb, Filename: dbData.mdb
+                  </p>
                 </div>
-                <p className="mt-1 text-sm text-gray-500">
-                  Format file: .mdb, Filename: dbData.mdb
-                </p>
+                <div className="btn flex items-center">
+                  <button
+                    onClick={() => handleUpload("candra")}
+                    disabled={isLoading || candraNotComplete.length !== 0}
+                    className={`mt-5 text-white ${
+                      candraNotComplete.length === 0
+                        ? "bg-blue-700 hover:bg-blue-800"
+                        : "bg-gray-300 "
+                    } focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5`}
+                  >
+                    {isUpload ? <>Uploading... | Time: {timer}</> : "Upload"}
+                  </button>
+                  {candraNotComplete.length !== 0 && (
+                    <span className="mt-4 ms-3 text-red-600">
+                      Selesaikan proses terlebih dahulu !
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="btn flex items-center">
-                <button
-                  onClick={() => handleUpload("candra")}
-                  disabled={isLoading || candraNotComplete.length !== 0}
-                  className={`mt-5 text-white ${
-                    candraNotComplete.length === 0
-                      ? "bg-blue-700 hover:bg-blue-800"
-                      : "bg-gray-300 "
-                  } focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5`}
-                >
-                  {isUpload ? <>Uploading... | Time: {timer}</> : "Upload"}
-                </button>
-                {candraNotComplete.length !== 0 && (
-                  <span className="mt-4 ms-3 text-red-600">
-                    Selesaikan proses terlebih dahulu !
-                  </span>
-                )}
+
+              {/* Update Data Qty */}
+              <div className="updateQty bg-gray-50 p-5">
+                <h1 className="font-bold text-2xl">UPDATE DATA QTY</h1>
+                <div className="fileInput mt-5">
+                  <label
+                    className="block text-sm mb-2 font-medium"
+                    htmlFor="file_qty"
+                  >
+                    Upload file
+                  </label>
+                  <div className="relative">
+                    <input
+                      onChange={(e) => handleFileChange(e, "qty")}
+                      type="file"
+                      id="file_qty"
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="file_qty"
+                      className="flex items-center border border-gray-400 rounded-md cursor-pointer hover:shadow"
+                    >
+                      <div className="p-2 bg-blue-900 w-32 text-center text-white rounded-l-md">
+                        Choose File
+                      </div>
+                      <p className="ms-5 text-sm text-gray-700 truncate">
+                        {selectedFiles?.qty?.name || "No file selected"}
+                      </p>
+                    </label>
+                  </div>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Format file: .mdb, Filename: dbQty.mdb
+                  </p>
+                </div>
+                <div className="btn flex items-center">
+                  <button
+                    onClick={() => handleUpload("qty")}
+                    disabled={isLoading || candraNotComplete.length !== 0}
+                    className={`mt-5 text-white ${
+                      candraNotComplete.length === 0
+                        ? "bg-blue-700 hover:bg-blue-800"
+                        : "bg-gray-300"
+                    } focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5`}
+                  >
+                    {isUpload ? <>Uploading... {timer}</> : "Upload"}
+                  </button>
+                  {candraNotComplete.length !== 0 && (
+                    <span className="mt-4 ms-3 text-red-600">
+                      Selesaikan proses terlebih dahulu !
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-
-            {/* Update Data Qty */}
-            <div className="updateQty bg-gray-100 p-5">
-              <h1 className="font-bold text-2xl">UPDATE DATA QTY</h1>
-              <div className="fileInput mt-5">
-                <label
-                  className="block text-sm mb-2 font-medium"
-                  htmlFor="file_qty"
-                >
-                  Upload file
-                </label>
-                <div className="relative">
-                  <input
-                    onChange={(e) => handleFileChange(e, "qty")}
-                    type="file"
-                    id="file_qty"
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="file_qty"
-                    className="flex items-center border border-gray-400 rounded-md cursor-pointer hover:shadow"
-                  >
-                    <div className="p-2 bg-blue-900 w-32 text-center text-white rounded-l-md">
-                      Choose File
-                    </div>
-                    <p className="ms-5 text-sm text-gray-700 truncate">
-                      {selectedFiles?.qty?.name || "No file selected"}
-                    </p>
-                  </label>
-                </div>
-                <p className="mt-1 text-sm text-gray-500">
-                  Format file: .mdb, Filename: dbQty.mdb
-                </p>
-              </div>
-              <div className="btn flex items-center">
-                <button
-                  onClick={() => handleUpload("qty")}
-                  disabled={isLoading || candraNotComplete.length !== 0}
-                  className={`mt-5 text-white ${
-                    candraNotComplete.length === 0
-                      ? "bg-blue-700 hover:bg-blue-800"
-                      : "bg-gray-300"
-                  } focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5`}
-                >
-                  {isUpload ? <>Uploading... {timer}</> : "Upload"}
-                </button>
-                {candraNotComplete.length !== 0 && (
-                  <span className="mt-4 ms-3 text-red-600">
-                    Selesaikan proses terlebih dahulu !
-                  </span>
-                )}
-              </div>
+            <div className="max-w-full mt-5 bg-white p-5 ">
+              <TableUpdate data={candraNotComplete} />
             </div>
           </div>
         )}
-
-        <div className="max-w-full mt-5 bg-white p-5 ">
-          <TableUpdate data={candraNotComplete} />
-        </div>
       </div>
 
       <div>

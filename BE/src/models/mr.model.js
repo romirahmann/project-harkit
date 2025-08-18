@@ -1,4 +1,5 @@
 const { getDB } = require("../database/db.config");
+const { getDBKcp } = require("../database/update.config");
 const moment = require("moment");
 
 const getAllDataMR = async (q) => {
@@ -184,51 +185,44 @@ const deleteMRDouble = async (NoUrut, Kode_Checklist) => {
   return result;
 };
 
-// MR T3
-// const getAllMRt3 = async (q) => {
-//   const db = getDB();
-//   let query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3 `;
-//   if (q) {
-//     const safeQ = q.replace(/'/g, "''");
-//     query += ` WHERE Kode_Checklist LIKE '${safeQ}%'  `;
-//   }
-
-//   const result = await db.query(query);
-//   return result;
-// };
 const getAllMRt3 = async (q) => {
-  const db = getDB();
-  let query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3
+  const db = getDBKcp();
+  let query = `
+    SELECT 
+      NoUrut, NoMR, NamaPasien, Tanggal, Kode_Checklist, 
+      namadokumen, Periode_Ranap
+    FROM tblDataMRt3
   `;
 
   if (q && q.trim() !== "") {
     let safeQ = q.replace(/'/g, "''");
-    query += ` WHERE Kode_Checklist LIKE '${safeQ}%'`;
+    query += ` WHERE Kode_Checklist LIKE '%${safeQ}%'`;
   }
 
-  // Sorting selalu dijalankan, baik ada filter atau tidak
-  // query += ` ORDER BY
-  //     Val(Mid(NoUrut, InStr(NoUrut, "-") + 1, InStrRev(NoUrut, "-") - InStr(NoUrut, "-") - 1)),
-  //     Val(Mid(NoUrut, InStrRev(NoUrut, "-") + 1))
-  // `;
-
+  // ⚠️ tanpa ORDER BY
   return db.query(query);
 };
 
 const getMRt3ByKodeChecklist = async (kode_checklist) => {
-  const db = getDB();
-  const query = `SELECT NoUrut, Periode_Ranap, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen FROM tblDataMRt3 WHERE Kode_Checklist = '${kode_checklist}'`;
+  const db = getDBKcp();
+  let query = `SELECT NoUrut, Periode_Ranap, NoMR, NamaPasien, Tanggal, Kode_Checklist, namadokumen FROM tblDataMRt3 WHERE Kode_Checklist = '${kode_checklist}'`;
+  query += `
+    ORDER BY
+      VAL(MID(NoUrut, INSTR(NoUrut, '-') + 1, INSTRREV(NoUrut, '-') - INSTR(NoUrut, '-') - 1)),
+      VAL(MID(NoUrut, INSTRREV(NoUrut, '-') + 1))
+  `;
   const result = await db.query(query);
   return result;
 };
 const getMRt3ByKodeChecklistA2 = async (kode_checklist) => {
-  const db = getDB();
-  const query = `SELECT NoUrut, Periode_Ranap, NoMR, NamaPasien, Tanggal, Layanan, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen FROM tblDataMRt3_A2 WHERE Kode_Checklist = '${kode_checklist}'`;
+  const db = ggetDBKcp();
+  const query = `SELECT NoUrut, Periode_Ranap, NoMR, NamaPasien, Tanggal,  Kode_Checklist, namadokumen FROM tblDataMRt3_A2 WHERE Kode_Checklist = '${kode_checklist}'`;
   const result = await db.query(query);
   return result;
 };
 const createDataMRt3 = async (data) => {
-  const db = getDB();
+  const db = getDBKcp();
+  console.log(db);
   const {
     NoUrut,
     NoMR,
@@ -267,7 +261,7 @@ const createDataMRt3 = async (data) => {
 };
 
 const dataExistingT3 = async (NoUrut, Kode_Checklist) => {
-  const db = getDB();
+  const db = getDBKcp();
 
   const escapeString = (str) => (str ? String(str).replace(/'/g, "''") : "");
 
@@ -282,7 +276,7 @@ const dataExistingT3 = async (NoUrut, Kode_Checklist) => {
 };
 
 const updateDataMRt3 = async (data) => {
-  const db = getDB();
+  const db = getDBKcp();
   const {
     NoUrut,
     NoMR,
@@ -314,7 +308,7 @@ const updateDataMRt3 = async (data) => {
 };
 
 const deleteMRt3 = async (data) => {
-  const db = getDB();
+  const db = getDBKcp();
   const { NoUrut, Kode_Checklist } = data;
   const query = `DELETE FROM tblDataMRt3 WHERE NoUrut = '${NoUrut}' AND Kode_Checklist = '${Kode_Checklist}' `;
   const result = await db.query(query);
@@ -323,14 +317,14 @@ const deleteMRt3 = async (data) => {
 
 // MRt3 A2
 const getAllMRt3A2 = async () => {
-  const db = getDB();
+  const db = getDBKcp();
   const query = `SELECT NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Mulai, Selesai, namadokumen, Periode_Ranap FROM tblDataMRt3_A2 `;
   const result = await db.query(query);
   return result;
 };
 
 const updateDataMRt3A2 = async (data) => {
-  const db = getDB();
+  const db = getDBKcp();
   const {
     NoUrut,
     NoMR,

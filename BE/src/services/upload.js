@@ -5,6 +5,7 @@ const path = require("path");
 const fileFilter = (req, file, cb) => {
   const allowedExtensions = [".mdb"];
   const fileExt = path.extname(file.originalname).toLowerCase();
+  console.log("service uplaod!");
 
   if (!allowedExtensions.includes(fileExt)) {
     return cb(
@@ -13,17 +14,14 @@ const fileFilter = (req, file, cb) => {
     );
   }
   cb(null, true);
+  console.log("service jalan!");
 };
 
 // Konfigurasi penyimpanan file
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(
-      null,
-      path.join(
-        "\\\\192.168.9.251\\padaprima\\DBASE\\RSAB. HARAPAN KITA\\DBASE\\dbTemp"
-      )
-    ); // Simpan di folder uploads
+    console.log("Saving to:", "X:/DBASE/dbTemp");
+    cb(null, "X:/DBASE/dbTemp");
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);

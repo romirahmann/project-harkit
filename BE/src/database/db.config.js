@@ -3,10 +3,11 @@ require("dotenv").config();
 const path = require("path");
 
 const dbDataPath = process.env.DB_PATH;
+
 const dbPassword = process.env.DB_PASSWORD || "adi121711";
 
 // Konfigurasi koneksi ODBC tanpa DSN
-const connectionString = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${dbDataPath};PWD=${dbPassword};`;
+const connectionString = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${dbDataPath};PWD=${dbPassword};Mode=Share Deny None;`;
 
 let db;
 

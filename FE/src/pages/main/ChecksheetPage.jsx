@@ -38,7 +38,7 @@ export function ChecksheetPage() {
   const fetchDataFilter = async (q) => {
     try {
       let res = await api.get(`/master/filter-mrt3/${q}`);
-      console.log(res.data.data);
+      // console.log(res.data.data);
       let data = res.data.data;
       setDataMRt(data);
     } catch (error) {
