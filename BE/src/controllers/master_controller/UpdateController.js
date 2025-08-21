@@ -234,6 +234,7 @@ const uploadFile = async (req, res) => {
 
       await runInBatches(dataQTY, 20, async (qty) => {
         await modelCandra.updateCandraByMR(qty);
+        console.log(qty);
       });
 
       return api.ok(res, "UPDATE QTY SUCCESSFULLY!");
