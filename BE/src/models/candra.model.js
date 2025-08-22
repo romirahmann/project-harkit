@@ -55,16 +55,6 @@ const getAllCandra = async (q) => {
     FROM tblcandra
   `;
 
-  if (q) {
-    const safeQ = escapeString(q);
-    query += `
-      WHERE kode_checklist LIKE '${safeQ}%'
-         OR idproses LIKE '${safeQ}%'
-         OR nama_karyawan LIKE '${safeQ}%'
-         OR nama_proses LIKE '${safeQ}%'
-    `;
-  }
-
   const rows = await db.query(query);
 
   return rows.map((row) => ({

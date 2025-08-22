@@ -7,7 +7,6 @@ import { Titlepage } from "../../shared/Titlepage";
 import { LazyComponent } from "../../shared/LazyComponent";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import { MdBlock, MdDeleteForever } from "react-icons/md";
-
 import { AlertMessage } from "../../shared/AlertMessage";
 import { TableMR } from "../../components/MR/TableMR";
 import { MRAction } from "../../components/MR/MRAction";
@@ -15,7 +14,8 @@ import { FcProcess } from "react-icons/fc";
 
 export function MRpage() {
   const [isLoading, setLoading] = useState(true);
-  const [dataMR, setDataMR] = useState([]);
+  const [allDataMR, setAllDataMR] = useState([]); // simpan data asli
+  const [dataMR, setDataMR] = useState([]); // data untuk tabel
   const [showModal, setShowModal] = useState({
     show: false,
     type: "",
@@ -42,8 +42,8 @@ export function MRpage() {
   const fetchMR = async () => {
     try {
       const res = await api.get("/master/datamrs");
-
-      setDataMR(res.data.data);
+      setAllDataMR(res.data.data); // simpan semua data asli
+      setDataMR(res.data.data); // tampilkan semua data
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -53,7 +53,7 @@ export function MRpage() {
   const fetchMRNonactive = async () => {
     try {
       const res = await api.get("/master/nonaktif-mr");
-
+      setAllDataMR(res.data.data);
       setDataMR(res.data.data);
       setLoading(false);
     } catch (error) {
@@ -63,7 +63,6 @@ export function MRpage() {
 
   const handleSwitchData = (e) => {
     let type = e.target.value;
-
     switch (type) {
       case "ACTIVE":
         setActive(true);
@@ -74,40 +73,32 @@ export function MRpage() {
       default:
         console.log("Invalid type");
     }
+    setQuery(""); // reset query tiap ganti tab
   };
 
-  const handleSearch = async (query) => {
-    setQuery(query);
-    try {
-      let res;
+  const handleSearch = (val) => {
+    setQuery(val);
 
-      if (isActive) {
-        if (query.trim() === "") {
-          res = await api.get("/master/datamrs");
-        } else {
-          res = await api.get(`/master/filter-datamr/${query}`);
-        }
-        setDataMR(res.data.data);
-        setLoading(false);
-      }
-      if (!isActive) {
-        if (query.trim() === "") {
-          res = await api.get("/master/nonaktif-mr");
-        } else {
-          res = await api.get(`/master/filter-nonaktif-mr/${query}`);
-        }
-        setDataMR(res.data.data);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.log(error);
+    if (!val.trim()) {
+      // kalau query kosong tampilkan semua data
+      setDataMR(allDataMR);
+      return;
     }
+
+    const lowerVal = val.toLowerCase();
+
+    // filter berdasarkan beberapa field (sesuaikan dengan kebutuhan)
+    const filtered = allDataMR.filter((item) =>
+      item.NoMR?.toLowerCase().includes(lowerVal)
+    );
+
+    setDataMR(filtered);
   };
 
   const handleAction = (type) => {
     switch (type) {
       case "EDIT":
-        if (selectedData.length > 1 || selectedData.length === 0) {
+        if (selectedData.length !== 1) {
           setAlert({
             show: true,
             message:
@@ -118,58 +109,31 @@ export function MRpage() {
           });
           return;
         }
-        setShowModal({ show: true, type: type, data: selectedData[0] });
+        setShowModal({ show: true, type, data: selectedData[0] });
         break;
+
       case "DELETE":
-        if (selectedData.length > 1 || selectedData.length === 0) {
-          setAlert({
-            show: true,
-            message:
-              selectedData.length === 0
-                ? "Please select a Data MR to delete"
-                : "Please select only one MR to delete",
-            type: "warning",
-          });
-          return;
-        }
-
-        setShowModal({ show: true, type: type, data: selectedData[0] });
-        break;
       case "NONACTIVE":
-        if (selectedData.length > 1 || selectedData.length === 0) {
-          setAlert({
-            show: true,
-            message:
-              selectedData.length === 0
-                ? "Please select a Data MR to INACTIVE"
-                : "Please select only one MR to INACTIVE",
-            type: "warning",
-          });
-          return;
-        }
-
-        setShowModal({ show: true, type: type, data: selectedData[0] });
-        break;
       case "ACTIVE":
-        if (selectedData.length > 1 || selectedData.length === 0) {
+        if (selectedData.length !== 1) {
           setAlert({
             show: true,
             message:
               selectedData.length === 0
-                ? "Please select a Data MR to ACTIVE MR"
-                : "Please select only one MR to ACTIVE MR",
+                ? `Please select a Data MR to ${type}`
+                : "Please select only one MR",
             type: "warning",
           });
           return;
         }
-
-        setShowModal({ show: true, type: type, data: selectedData[0] });
+        setShowModal({ show: true, type, data: selectedData[0] });
         break;
 
       default:
         break;
     }
   };
+
   const handleOnAction = (val) => {
     if (isActive) {
       fetchMR();
@@ -190,9 +154,11 @@ export function MRpage() {
     setSelcetedData([]);
     setResetChecklist(true);
   };
+
   const handleSelectedData = (val) => {
     setSelcetedData(val);
   };
+
   const handleExportCsv = () => {
     const exportCsv = async () => {
       try {
@@ -210,8 +176,8 @@ export function MRpage() {
         link.href = url;
         link.setAttribute(
           "download",
-          `data_MR_${query !== null ? query : dateNow}.xlsx`
-        ); // Nama file
+          `data_MR_${query !== "" ? query : dateNow}.xlsx`
+        );
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -238,50 +204,40 @@ export function MRpage() {
               <div className="btn-Action ">
                 {isActive && (
                   <div className="flex gap-2">
-                    <div className="btn-add">
-                      <button
-                        onClick={() => handleExportCsv()}
-                        className="border hover:bg-blue-600 hover:text-white border-blue-600 p-2  rounded-md text-green-800  "
-                      >
-                        <PiMicrosoftExcelLogoFill size={21} />
-                      </button>
-                    </div>
-                    <div className="btn-edit">
-                      <button
-                        onClick={() => handleAction("EDIT")}
-                        className="border hover:bg-blue-600 hover:text-white border-blue-600 p-2 text-xl rounded-md text-green-800  "
-                      >
-                        <FaEdit />
-                      </button>
-                    </div>
-                    <div className="btn-recycle">
-                      <button
-                        onClick={() => handleAction("NONACTIVE")}
-                        className="border hover:bg-red-600 hover:text-white border-blue-600 p-2 text-xl rounded-md text-red-800  "
-                      >
-                        <MdBlock />
-                      </button>
-                    </div>
-                    <div className="btn-delete">
-                      <button
-                        onClick={() => handleAction("DELETE")}
-                        className="border hover:bg-red-600 hover:text-white border-blue-600 p-2 text-xl rounded-md text-red-800  "
-                      >
-                        <MdDeleteForever />
-                      </button>
-                    </div>
+                    <button
+                      onClick={handleExportCsv}
+                      className="border hover:bg-blue-600 hover:text-white border-blue-600 p-2 rounded-md text-green-800"
+                    >
+                      <PiMicrosoftExcelLogoFill size={21} />
+                    </button>
+                    <button
+                      onClick={() => handleAction("EDIT")}
+                      className="border hover:bg-blue-600 hover:text-white border-blue-600 p-2 text-xl rounded-md text-green-800"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleAction("NONACTIVE")}
+                      className="border hover:bg-red-600 hover:text-white border-blue-600 p-2 text-xl rounded-md text-red-800"
+                    >
+                      <MdBlock />
+                    </button>
+                    <button
+                      onClick={() => handleAction("DELETE")}
+                      className="border hover:bg-red-600 hover:text-white border-blue-600 p-2 text-xl rounded-md text-red-800"
+                    >
+                      <MdDeleteForever />
+                    </button>
                   </div>
                 )}
                 {!isActive && (
                   <div className="flex gap-2">
-                    <div className="btn-recycle">
-                      <button
-                        onClick={() => handleAction("ACTIVE")}
-                        className="border hover:bg-red-600 hover:text-white border-blue-600 p-2 text-xl rounded-md text-red-800  "
-                      >
-                        <FcProcess />
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => handleAction("ACTIVE")}
+                      className="border hover:bg-red-600 hover:text-white border-blue-600 p-2 text-xl rounded-md text-red-800"
+                    >
+                      <FcProcess />
+                    </button>
                   </div>
                 )}
               </div>
@@ -298,9 +254,7 @@ export function MRpage() {
             <div className="bg-white p-3 rounded-lg">
               <TableMR
                 data={dataMR}
-                selectedData={(selectedCandra) =>
-                  handleSelectedData(selectedCandra)
-                }
+                selectedData={handleSelectedData}
                 resetChecklist={resetChecklist}
               />
             </div>

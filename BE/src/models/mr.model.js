@@ -6,10 +6,6 @@ const getAllDataMR = async (q) => {
   const db = getDB();
   let query =
     "SELECT NoUrut, NoMR, NamaPasien, Tanggal, Qty_Image, Kode_Checklist, Urut, Mulai, Selesai, rumahsakit, nobox, FilePath FROM tblDataMR";
-  if (q) {
-    const safeQ = q.replace(/'/g, "''");
-    query += ` WHERE NoUrut LIKE '${safeQ}%' OR NoMR LIKE '${safeQ}%' OR NamaPasien LIKE '${safeQ}%' OR Kode_Checklist LIKE '${safeQ}%' OR FilePath LIKE '${safeQ}%' `;
-  }
 
   return await db.query(query);
 };
@@ -185,7 +181,7 @@ const deleteMRDouble = async (NoUrut, Kode_Checklist) => {
   return result;
 };
 
-const getAllMRt3 = async (q) => {
+const getAllMRt3 = async () => {
   const db = getDBKcp();
   let query = `
     SELECT 
@@ -193,13 +189,12 @@ const getAllMRt3 = async (q) => {
       namadokumen, Periode_Ranap
     FROM tblDataMRt3
   `;
+  // if (q && q.trim() !== "") {
+  //   let safeQ = q.replace(/'/g, "''");
+  //   query += ` WHERE Kode_Checklist LIKE '%${safeQ}%'`;
+  // }
 
-  if (q && q.trim() !== "") {
-    let safeQ = q.replace(/'/g, "''");
-    query += ` WHERE Kode_Checklist LIKE '%${safeQ}%'`;
-  }
-
-  // ⚠️ tanpa ORDER BY
+  // // ⚠️ tanpa ORDER BY
   return db.query(query);
 };
 

@@ -10,7 +10,8 @@ import { TableChecksheet } from "../../components/Checksheet/TableChecksheet";
 import { AlertMessage } from "../../shared/AlertMessage";
 
 export function ChecksheetPage() {
-  const [dataMRt, setDataMRt] = useState([]);
+  const [allDataMRt, setAllDataMRt] = useState([]); // data asli
+  const [dataMRt, setDataMRt] = useState([]); // data yang ditampilkan
   const [isLoading, setLoading] = useState(true);
   const [alert, setAlert] = useState({
     show: false,
@@ -28,6 +29,7 @@ export function ChecksheetPage() {
       const res = await api.get(`/master/datMRt3`);
       let data = res.data.data;
 
+      setAllDataMRt(data);
       setDataMRt(data);
       setLoading(false);
     } catch (error) {
@@ -35,19 +37,21 @@ export function ChecksheetPage() {
     }
   };
 
-  const fetchDataFilter = async (q) => {
-    try {
-      let res = await api.get(`/master/filter-mrt3/${q}`);
-      // console.log(res.data.data);
-      let data = res.data.data;
-      setDataMRt(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const handleSearch = (val) => {
     setQuery(val);
-    fetchDataFilter(val);
+
+    if (!val.trim()) {
+      setDataMRt(allDataMRt);
+      return;
+    }
+
+    const lowerVal = val.toLowerCase();
+
+    const filtered = allDataMRt.filter((item) =>
+      item.Kode_Checklist?.toLowerCase().includes(lowerVal)
+    );
+
+    setDataMRt(filtered);
   };
 
   const handleExportPDF = async (type) => {
@@ -57,6 +61,7 @@ export function ChecksheetPage() {
         message: "Please search a kode checklist of check sheet to export",
         type: "warning",
       });
+      return;
     }
     switch (type) {
       case "QC":
@@ -90,7 +95,9 @@ export function ChecksheetPage() {
         break;
     }
   };
+
   const handleSelectedData = () => {};
+
   return (
     <>
       <div className="max-w-full">

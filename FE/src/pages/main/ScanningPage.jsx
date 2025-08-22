@@ -20,7 +20,7 @@ export function ScanningPage() {
 
   useEffect(() => {
     fetchDataScanning();
-    console.log(filterProses);
+    // console.log(filterProses);
   }, [filterProses]);
 
   const fetchDataScanning = async () => {
