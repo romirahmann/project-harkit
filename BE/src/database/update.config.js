@@ -63,13 +63,19 @@ async function connectDB2() {
   });
 }
 
-// ambil koneksi sesuai nama (data, qty, realQty, kcp)
+// Generic
 function getDB(name) {
   if (!dbs[name]) {
     throw new Error(`Database "${name}" not connected`);
   }
   return dbs[name];
 }
+
+// Gaya lama → fungsi per DB
+const getDBData = () => getDB("data");
+const getDBQty = () => getDB("qty");
+const getDbRealQty = () => getDB("realQty");
+const getDBKcp = () => getDB("kcp");
 
 // close semua koneksi saat shutdown
 async function closeAll() {
@@ -85,4 +91,12 @@ async function closeAll() {
   }
 }
 
-module.exports = { connectDB2, getDB, closeAll };
+module.exports = {
+  connectDB2,
+  getDB,
+  getDBData,
+  getDBQty,
+  getDbRealQty,
+  getDBKcp,
+  closeAll,
+};
