@@ -1,48 +1,88 @@
 const odbc = require("odbc");
 const fs = require("fs");
 
-// Path file database
-const dbDataPath = "X:\\DBASE\\dbTemp\\dbData.mdb";
-const dbQtyPath = "X:\\DBASE\\dbTemp\\dbQty.mdb";
-const realQtyPath = "X:\\DBASE\\dbQty.mdb";
-const dbDataKcpPath = "X:\\DBASE\\dbDataKcp.mdb";
-const dbPassword = "adi121711";
+// Konfigurasi file MDB
+const dbPassword = process.env.DB_PASSWORD || "adi121711";
 
-function logPathInfo(label, filePath) {
+const dbPaths = {
+  data: "X:\\DBASE\\dbTemp\\dbData.mdb",
+  qty: "X:\\DBASE\\dbTemp\\dbQty.mdb",
+  realQty: "X:\\DBASE\\dbQty.mdb",
+  kcp: "X:\\DBASE\\dbDataKcp.mdb",
+  // kalau mau UNC path bisa pakai:
+  // data: "\\\\192.168.9.251\\padaprima\\DBASE\\RSAB. HARAPAN KITA\\DBASE\\dbTemp\\dbData.mdb",
+};
+
+function logPath(label, filePath) {
   console.log(`\n[CHECK] ${label}`);
   console.log(`Path: ${filePath}`);
   console.log(`Exists: ${fs.existsSync(filePath)}`);
 }
 
-const connectionStringData = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${dbDataPath};PWD=${dbPassword};Mode=Share Deny None;`;
-const connectionStringQty = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${dbQtyPath};PWD=${dbPassword};Mode=Share Deny None;`;
-const connectionRealQty = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${realQtyPath};PWD=${dbPassword};Mode=Share Deny None;`;
-const connectionKCP = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${dbDataKcpPath};PWD=${dbPassword};Mode=Share Deny None;`;
+function buildConnStr(path, password) {
+  let str = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${path};Mode=Share Deny None;`;
+  if (password) str += `PWD=${password};`;
+  return str;
+}
 
-let dbData, dbQty, realQty, dbKcp;
+const dbs = {}; // simpan semua koneksi
 
 async function connectDB2() {
-  try {
-    logPathInfo("dbData.mdb", dbDataPath);
-    logPathInfo("dbQty.mdb", dbQtyPath);
-    logPathInfo("realQty.mdb", realQtyPath);
-    logPathInfo("dbDataKcp.mdb", dbDataKcpPath);
+  for (const [name, path] of Object.entries(dbPaths)) {
+    logPath(name, path);
 
-    dbData = await odbc.connect(connectionStringData);
-    dbQty = await odbc.connect(connectionStringQty);
-    realQty = await odbc.connect(connectionRealQty);
-    dbKcp = await odbc.connect(connectionKCP);
+    if (!fs.existsSync(path)) {
+      console.error(`❌ File not found: ${path}`);
+      continue;
+    }
 
-    console.log("\n✅ Semua database connected successfully!");
-  } catch (error) {
-    console.error("\n❌ Database connection error:", error.message);
-    process.exit(1);
+    try {
+      const connStr = buildConnStr(path, dbPassword);
+      dbs[name] = await odbc.connect(connStr);
+      console.log(`✅ Connected: ${name}`);
+    } catch (err) {
+      console.error(
+        `❌ Failed to connect (${name}) with password:`,
+        err.message
+      );
+
+      // coba ulang tanpa password
+      try {
+        const connStrNoPwd = buildConnStr(path, "");
+        dbs[name] = await odbc.connect(connStrNoPwd);
+        console.log(`⚠️ Connected without password: ${name}`);
+      } catch (err2) {
+        console.error(`❌ Still failed (${name}):`, err2.message);
+      }
+    }
+  }
+
+  console.log("\nℹ️ Connection summary:");
+  Object.entries(dbs).forEach(([key, conn]) => {
+    console.log(`${key}: ${conn ? "connected" : "not connected"}`);
+  });
+}
+
+// ambil koneksi sesuai nama (data, qty, realQty, kcp)
+function getDB(name) {
+  if (!dbs[name]) {
+    throw new Error(`Database "${name}" not connected`);
+  }
+  return dbs[name];
+}
+
+// close semua koneksi saat shutdown
+async function closeAll() {
+  for (const [name, conn] of Object.entries(dbs)) {
+    if (conn) {
+      try {
+        await conn.close();
+        console.log(`🔒 Closed: ${name}`);
+      } catch (err) {
+        console.error(`❌ Failed to close ${name}:`, err.message);
+      }
+    }
   }
 }
 
-const getDBData = () => dbData;
-const getDBQty = () => dbQty;
-const getDbRealQty = () => realQty;
-const getDBKcp = () => dbKcp;
-
-module.exports = { connectDB2, getDBData, getDBQty, getDbRealQty, getDBKcp };
+module.exports = { connectDB2, getDB, closeAll };
