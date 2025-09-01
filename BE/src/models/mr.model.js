@@ -200,13 +200,25 @@ const getAllMRt3 = async () => {
 
 const getMRt3ByKodeChecklist = async (kode_checklist) => {
   const db = getDBKcp();
-  let query = `SELECT NoUrut, Periode_Ranap, NoMR, NamaPasien, Tanggal, Kode_Checklist, namadokumen FROM tblDataMRt3 WHERE Kode_Checklist = '${kode_checklist}'`;
-  query += `
-    ORDER BY
-      VAL(MID(NoUrut, INSTR(NoUrut, '-') + 1, INSTRREV(NoUrut, '-') - INSTR(NoUrut, '-') - 1)),
-      VAL(MID(NoUrut, INSTRREV(NoUrut, '-') + 1))
+  let query = `
+    SELECT NoUrut, Periode_Ranap, NoMR, NamaPasien, Tanggal, Kode_Checklist, namadokumen 
+    FROM tblDataMRt3
+    WHERE Kode_Checklist = '${kode_checklist}'
   `;
   const result = await db.query(query);
+
+  // Urutkan manual di Node.js
+  result.sort((a, b) => {
+    const partsA = (a.NoUrut || "").split("-");
+    const partsB = (b.NoUrut || "").split("-");
+    const numA1 = parseInt(partsA[1] || "0", 10);
+    const numB1 = parseInt(partsB[1] || "0", 10);
+    const numA2 = parseInt(partsA[2] || "0", 10);
+    const numB2 = parseInt(partsB[2] || "0", 10);
+
+    return numA1 - numB1 || numA2 - numB2;
+  });
+
   return result;
 };
 const getMRt3ByKodeChecklistA2 = async (kode_checklist) => {

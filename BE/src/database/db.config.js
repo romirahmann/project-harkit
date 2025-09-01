@@ -7,14 +7,13 @@ const dbDataPath = process.env.DB_PATH;
 const dbPassword = process.env.DB_PASSWORD || "adi121711";
 
 // Konfigurasi koneksi ODBC tanpa DSN
-const connectionString = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${dbDataPath};PWD=${dbPassword};Mode=Share Deny None;`;
-
+const connectionString = `DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=${dbDataPath};PWD=${dbPassword};Exclusive=0;Readonly=0;`;
 let db;
 
 async function connectDB() {
   try {
     db = await odbc.connect(connectionString);
-    console.log("✅ Database 1 connected successfully!");
+    console.log("✅ Primary Database connected successfully!");
   } catch (error) {
     console.error("❌ Database connection error:", error);
     process.exit(1);
